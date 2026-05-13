@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta name="description" content="Sistema de registro, seguimiento y valoración de incidentes de soporte IT.">
     <title>Registro de Incidentes</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -617,45 +615,6 @@
             }, 3000);
         };
 
-        // --- UTILIDADES DE PRODUCCIÓN: seguridad y consistencia ---
-        const safeHTML = (value) => String(value ?? '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-
-        const safeAttr = safeHTML;
-        const jsArg = (value) => JSON.stringify(String(value ?? ''));
-
-        const csvCell = (value) => {
-            const text = String(value ?? '');
-            return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-        };
-
-        function parseCSVLine(line) {
-            const result = [];
-            let current = '';
-            let inQuotes = false;
-            for (let i = 0; i < line.length; i++) {
-                const char = line[i];
-                const next = line[i + 1];
-                if (char === '"' && inQuotes && next === '"') {
-                    current += '"';
-                    i++;
-                } else if (char === '"') {
-                    inQuotes = !inQuotes;
-                } else if (char === ',' && !inQuotes) {
-                    result.push(current.trim());
-                    current = '';
-                } else {
-                    current += char;
-                }
-            }
-            result.push(current.trim());
-            return result;
-        }
-
         // --- ENRUTADOR BASADO EN URL ---
         function checkURLParameters() {
             const ticketToRate = getParamRobust('rate_ticket');
@@ -765,10 +724,10 @@
                                 
                                 let mensajeError = error.message;
                                 if (error.code === 'permission-denied') {
-                                    mensajeError = "No tienes permiso para escribir en la base de datos.<br><br><b>Solución para el administrador:</b><br>Entra a Firebase > Firestore Database > Rules (Reglas) y publica reglas restrictivas por ruta. Usa el archivo <code>firestore.rules</code> incluido en este paquete como base, ajustando dominios y permisos antes de producción.";
+                                    mensajeError = "No tienes permiso para escribir en la base de datos.<br><br><b>Solución para el administrador:</b><br>Entra a Firebase > Firestore Database > Rules (Reglas) y asegúrate de que diga:<br><code>allow read, write: if true;</code>";
                                 }
                                 
-                                document.getElementById('rating-error-text').innerHTML = sanitizeHTML(String(mensajeError));
+                                document.getElementById('rating-error-text').innerHTML = mensajeError;
                                 btn.innerHTML = 'Intentar Nuevamente'; 
                                 btn.disabled = false;
                             }
@@ -860,7 +819,7 @@
             const ticketsRef = collection(db, ...basePath, 'tickets');
             unsubscribeTickets = onSnapshot(ticketsRef, (snapshot) => {
                 window.ticketsData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
-                window.ticketsData.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0));
+                window.ticketsData.sort((a, b) => { if(!a.timestamp || !b.timestamp) return 0; return b.timestamp.seconds - a.timestamp.seconds; });
                 window.renderTickets(); if(document.getElementById('tab-dashboard').classList.contains('active')) window.renderDashboard();
             });
         }
@@ -875,33 +834,14 @@
         window.toggleMobileMenu = function() { const sidebar = document.querySelector('aside'); sidebar.classList.toggle('hidden'); sidebar.classList.toggle('absolute'); sidebar.classList.toggle('h-full'); sidebar.classList.toggle('z-50'); };
 
         document.getElementById('search-user').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            const resultsBox = document.getElementById('search-results');
+            const term = e.target.value.toLowerCase(); const resultsBox = document.getElementById('search-results');
             if (term.length < 2) { resultsBox.classList.add('hidden'); return; }
-            const matches = window.directorioData
-                .filter(u => String(u.nombres || '').toLowerCase().includes(term) || String(u.cedula || '').includes(term))
-                .slice(0, 8);
-            if (matches.length > 0) {
-                resultsBox.innerHTML = matches.map(u => `
-                    <li data-user-id="${safeAttr(u.firebaseId)}" class="p-3 hover:bg-gray-50 cursor-pointer border-b text-sm">
-                        <div class="font-semibold text-instVerdeOscuro">${safeHTML(u.nombres)}</div>
-                        <div class="text-xs text-gray-500">C.I: ${safeHTML(u.cedula)} | ${safeHTML(u.tipo)}</div>
-                    </li>`).join('');
-                resultsBox.classList.remove('hidden');
-            } else {
-                resultsBox.innerHTML = '<li class="p-3 text-sm text-gray-500 text-center">No encontrado</li>';
-                resultsBox.classList.remove('hidden');
-            }
+            const matches = window.directorioData.filter(u => u.nombres.toLowerCase().includes(term) || u.cedula.includes(term)).slice(0, 5);
+            if (matches.length > 0) { resultsBox.innerHTML = matches.map(u => `<li onclick='seleccionarUsuario(${JSON.stringify(u)})' class="p-3 hover:bg-gray-50 cursor-pointer border-b text-sm"><div class="font-semibold text-instVerdeOscuro">${u.nombres}</div><div class="text-xs text-gray-500">C.I: ${u.cedula} | ${u.tipo}</div></li>`).join(''); resultsBox.classList.remove('hidden'); } 
+            else { resultsBox.innerHTML = '<li class="p-3 text-sm text-gray-500 text-center">No encontrado</li>'; resultsBox.classList.remove('hidden'); }
         });
 
         document.addEventListener('click', (e) => { if (!e.target.closest('#search-results') && !e.target.closest('#search-user')) document.getElementById('search-results').classList.add('hidden'); });
-
-        document.getElementById('search-results').addEventListener('click', (e) => {
-            const item = e.target.closest('li[data-user-id]');
-            if (!item) return;
-            const user = window.directorioData.find(u => u.firebaseId === item.dataset.userId);
-            if (user) window.seleccionarUsuario(user);
-        });
 
         window.seleccionarUsuario = function(u) {
             document.getElementById('u-nombre').value = u.nombres; document.getElementById('u-cedula').value = u.cedula; document.getElementById('u-tipo').value = u.tipo || ''; document.getElementById('u-periodo').value = u.periodo || ''; document.getElementById('u-carrera').value = u.carrera || ''; document.getElementById('u-nivel').value = u.nivel || ''; document.getElementById('u-correo').value = u.correo || '';
@@ -924,55 +864,28 @@
         };
 
         window.renderTickets = function() {
-            const tbody = document.getElementById('tickets-table-body');
-            const filterText = document.getElementById('filter-tickets').value.toLowerCase().trim();
+            const tbody = document.getElementById('tickets-table-body'); const filterText = document.getElementById('filter-tickets').value.toLowerCase();
             let filtered = window.ticketsData;
-            if(filterText) {
-                filtered = filtered.filter(t =>
-                    String(t.idStr || '').toLowerCase().includes(filterText) ||
-                    String(t.usuario?.nombres || '').toLowerCase().includes(filterText) ||
-                    String(t.asunto || '').toLowerCase().includes(filterText) ||
-                    String(t.estado || '').toLowerCase().includes(filterText) ||
-                    String(t.categoria || '').toLowerCase().includes(filterText)
-                );
-            }
+            if(filterText) filtered = filtered.filter(t => (t.idStr && t.idStr.toLowerCase().includes(filterText)) || (t.usuario && t.usuario.nombres.toLowerCase().includes(filterText)) || (t.asunto && t.asunto.toLowerCase().includes(filterText)));
 
-            if (filtered.length === 0) {
-                tbody.innerHTML = '';
-                document.getElementById('empty-tickets').classList.remove('hidden');
-                return;
+            if (filtered.length === 0) { tbody.innerHTML = ''; document.getElementById('empty-tickets').classList.remove('hidden'); } 
+            else {
+                document.getElementById('empty-tickets').classList.add('hidden');
+                tbody.innerHTML = filtered.map(t => {
+                    const badge = t.estado === 'Resuelto' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-orange-100 text-orange-700 border-orange-200';
+                    let ratingHTML = `<span class="text-xs text-gray-400 italic">Pendiente</span>`;
+                    if(t.valoracion && t.valoracion.calificacion) {
+                        let stars = ''; for(let i=1; i<=5; i++) stars += `<i class="fa-solid fa-star ${i <= t.valoracion.calificacion ? 'text-yellow-400' : 'text-gray-200'}"></i>`;
+                        ratingHTML = `<div class="flex flex-col items-center"><div class="text-sm">${stars}</div></div>`;
+                    }
+                    return `<tr class="hover:bg-gray-50"><td class="px-6 py-4"><div class="font-bold text-instVerdeOscuro">${t.idStr}</div><div class="text-xs text-gray-500">${t.fecha ? t.fecha.split(',')[0] : ''}</div></td><td class="px-6 py-4"><div class="font-medium">${t.usuario.nombres}</div><div class="text-xs text-gray-500"><i class="fa-solid fa-headset mr-1"></i>${t.agente}</div></td><td class="px-6 py-4 truncate max-w-xs" title="${t.asunto}"><div class="font-medium">${t.asunto}</div><div class="text-xs text-instPlomo">${t.categoria}</div></td><td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-semibold border ${badge}">${t.estado}</span></td><td class="px-6 py-4 text-center">${ratingHTML}</td><td class="px-6 py-4 text-center">${t.estado === 'Resuelto' ? `<button onclick="abrirModalLink('${t.firebaseId}')" class="text-yellow-500 hover:bg-yellow-50 p-2 rounded mr-1" title="Solicitar Valoración"><i class="fa-solid fa-star"></i></button>` : ''}<button onclick="abrirModalEditarTicket('${t.firebaseId}')" class="text-blue-500 hover:bg-blue-50 p-2 rounded mr-1" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarTicket('${t.firebaseId}')" class="text-instTomate hover:bg-red-50 p-2 rounded" title="Eliminar"><i class="fa-solid fa-trash"></i></button></td></tr>`;
+                }).join('');
             }
-
-            document.getElementById('empty-tickets').classList.add('hidden');
-            tbody.innerHTML = filtered.map(t => {
-                const badge = t.estado === 'Resuelto' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-orange-100 text-orange-700 border-orange-200';
-                let ratingHTML = `<span class="text-xs text-gray-400 italic">Pendiente</span>`;
-                if(t.valoracion && t.valoracion.calificacion) {
-                    let stars = '';
-                    for(let i=1; i<=5; i++) stars += `<i class="fa-solid fa-star ${i <= t.valoracion.calificacion ? 'text-yellow-400' : 'text-gray-200'}"></i>`;
-                    ratingHTML = `<div class="flex flex-col items-center"><div class="text-sm" aria-label="${safeAttr(t.valoracion.calificacion)} de 5 estrellas">${stars}</div></div>`;
-                }
-                const fecha = t.fecha ? String(t.fecha).split(',')[0] : '';
-                return `<tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4"><div class="font-bold text-instVerdeOscuro">${safeHTML(t.idStr)}</div><div class="text-xs text-gray-500">${safeHTML(fecha)}</div></td>
-                    <td class="px-6 py-4"><div class="font-medium">${safeHTML(t.usuario?.nombres)}</div><div class="text-xs text-gray-500"><i class="fa-solid fa-headset mr-1"></i>${safeHTML(t.agente)}</div></td>
-                    <td class="px-6 py-4 truncate max-w-xs" title="${safeAttr(t.asunto)}"><div class="font-medium">${safeHTML(t.asunto)}</div><div class="text-xs text-instPlomo">${safeHTML(t.categoria)}</div></td>
-                    <td class="px-6 py-4"><span class="px-3 py-1 rounded-full text-xs font-semibold border ${badge}">${safeHTML(t.estado)}</span></td>
-                    <td class="px-6 py-4 text-center">${ratingHTML}</td>
-                    <td class="px-6 py-4 text-center">
-                        ${t.estado === 'Resuelto' ? `<button onclick='abrirModalLink(${jsArg(t.firebaseId)})' class="text-yellow-500 hover:bg-yellow-50 p-2 rounded mr-1" title="Solicitar Valoración"><i class="fa-solid fa-star"></i></button>` : ''}
-                        <button onclick='abrirModalEditarTicket(${jsArg(t.firebaseId)})' class="text-blue-500 hover:bg-blue-50 p-2 rounded mr-1" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick='eliminarTicket(${jsArg(t.firebaseId)})' class="text-instTomate hover:bg-red-50 p-2 rounded" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-                    </td>
-                </tr>`;
-            }).join('');
         };
 
-        window.eliminarTicket = async function(id) {
-            if (!confirm('¿Eliminar este ticket? Esta acción no se puede deshacer.')) return;
+        window.eliminarTicket = async function(id) { 
             const basePath = getBasePath();
-            try { await deleteDoc(doc(db, ...basePath, 'tickets', id)); window.showToast("Ticket eliminado", "error"); }
-            catch(e) { console.error(e); window.showToast("No se pudo eliminar", "error"); }
+            try { await deleteDoc(doc(db, ...basePath, 'tickets', id)); window.showToast("Eliminado", "error"); } catch(e) {} 
         };
 
         window.renderDashboard = function() {
@@ -1003,34 +916,31 @@
         window.renderDirectorio = function() {
             document.getElementById('dir-count').textContent = window.directorioData.length;
             const tbody = document.getElementById('directorio-table-body');
-            const limit = 50;
+            
+            const limit = 50; 
             const renderData = window.directorioData.slice(0, limit);
+            
             tbody.innerHTML = renderData.map((u) => `
                 <tr class="hover:bg-gray-50 border-b">
-                    <td class="px-4 py-3 font-medium text-sm">${safeHTML(u.cedula)}</td>
-                    <td class="px-4 py-3 text-sm">${safeHTML(u.nombres)}</td>
-                    <td class="px-4 py-3 text-xs"><span class="bg-purple-100 text-purple-700 px-2 py-1 rounded">${safeHTML(u.tipo)}</span></td>
-                    <td class="px-4 py-3">
-                        <button onclick='abrirModalEditarUsuario(${jsArg(u.firebaseId)})' class="text-blue-500 hover:bg-blue-50 p-1 rounded mr-2"><i class="fa-solid fa-pen"></i></button>
-                        <button onclick='eliminarUsuario(${jsArg(u.firebaseId)})' class="text-red-500 hover:bg-red-50 p-1 rounded"><i class="fa-solid fa-trash"></i></button>
-                    </td>
+                    <td class="px-4 py-3 font-medium text-sm">${u.cedula}</td><td class="px-4 py-3 text-sm">${u.nombres}</td>
+                    <td class="px-4 py-3 text-xs"><span class="bg-purple-100 text-purple-700 px-2 py-1 rounded">${u.tipo}</span></td>
+                    <td class="px-4 py-3"><button onclick="abrirModalEditarUsuario('${u.firebaseId}')" class="text-blue-500 hover:bg-blue-50 p-1 rounded mr-2"><i class="fa-solid fa-pen"></i></button><button onclick="eliminarUsuario('${u.firebaseId}')" class="text-red-500 hover:bg-red-50 p-1 rounded"><i class="fa-solid fa-trash"></i></button></td>
                 </tr>`).join('');
+                
             if (window.directorioData.length > limit) {
                 tbody.innerHTML += `<tr><td colspan="4" class="text-center py-4 bg-gray-50 text-gray-500 text-xs italic font-medium"><i class="fa-solid fa-eye-slash mr-1"></i> Mostrando ${limit} de ${window.directorioData.length} registros para mayor velocidad. Usa el buscador en "Nuevo Ticket" para encontrar a alguien específico.</td></tr>`;
             }
         };
 
-        window.eliminarUsuario = async function(id) {
-            if (!confirm('¿Eliminar este usuario del directorio?')) return;
+        window.eliminarUsuario = async function(id) { 
             const basePath = getBasePath();
-            try { await deleteDoc(doc(db, ...basePath, 'directorio', id)); window.showToast("Usuario eliminado"); }
-            catch(e) { console.error(e); window.showToast("No se pudo eliminar", "error"); }
+            try { await deleteDoc(doc(db, ...basePath, 'directorio', id)); window.showToast("Eliminado"); } catch(e) {} 
         };
 
         window.abrirModalEditarTicket = function(id) {
             const t = window.ticketsData.find(x => x.firebaseId === id); if(!t) return;
             document.getElementById('edit-t-firebase-id').value = id; document.getElementById('edit-t-id-display').textContent = t.idStr; document.getElementById('edit-t-asunto').value = t.asunto; document.getElementById('edit-t-estado').value = t.estado; document.getElementById('edit-t-subcategoria').value = t.subcategoria || ''; document.getElementById('edit-t-prioridad').value = t.prioridad; document.getElementById('edit-t-descripcion').value = t.descripcion || '';
-            document.getElementById('edit-t-categoria').innerHTML = window.configData.categorias.map(c => `<option value="${safeAttr(c)}" ${c===t.categoria?'selected':''}>${safeHTML(c)}</option>`).join(''); document.getElementById('edit-t-canal').innerHTML = window.configData.canales.map(c => `<option value="${safeAttr(c)}" ${c===t.canal?'selected':''}>${safeHTML(c)}</option>`).join('');
+            document.getElementById('edit-t-categoria').innerHTML = window.configData.categorias.map(c => `<option value="${c}" ${c===t.categoria?'selected':''}>${c}</option>`).join(''); document.getElementById('edit-t-canal').innerHTML = window.configData.canales.map(c => `<option value="${c}" ${c===t.canal?'selected':''}>${c}</option>`).join('');
             document.getElementById('modal-editar-ticket').classList.remove('hidden');
         };
 
@@ -1044,14 +954,12 @@
         };
 
         window.abrirModalLink = function(firebaseId) {
-            // GitHub Pages sirve esta app como archivo estático.
-            // Por eso usamos hash (#rate_ticket=...) y no una ruta del servidor.
             const baseUrl = window.location.href.split('#')[0].split('?')[0];
-            const appIdStr = appId || 'registro-incidentes-app';
+            const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'registro-incidentes-app';
             
             const isPreview = baseUrl.startsWith('blob:');
-            const displayBase = isPreview ? 'https://usuario.github.io/registro-incidentes/' : baseUrl;
-            const link = `${displayBase}#rate_ticket=${encodeURIComponent(firebaseId)}&app_id_ref=${encodeURIComponent(appIdStr)}`;
+            const displayBase = isPreview ? 'https://mi-sistema-it.com/soporte' : baseUrl;
+            const link = `${displayBase}#rate_ticket=${firebaseId}&app_id_ref=${appIdStr}`;
             
             document.getElementById('url-valoracion').value = link;
             
@@ -1072,16 +980,8 @@
         };
 
         window.cerrarModalLink = () => document.getElementById('modal-link-valoracion').classList.add('hidden');
-        window.copiarUrlValoracion = async function() {
-            const input = document.getElementById('url-valoracion');
-            try {
-                await navigator.clipboard.writeText(input.value);
-                window.showToast("Enlace copiado");
-            } catch (e) {
-                input.select();
-                document.execCommand('copy');
-                window.showToast("Enlace copiado");
-            }
+        window.copiarUrlValoracion = function() {
+            const input = document.getElementById('url-valoracion'); input.select(); document.execCommand('copy'); window.showToast("Enlace copiado");
         };
 
         window.abrirModalEditarUsuario = function(id) {
@@ -1100,10 +1000,10 @@
 
         window.actualizarSelectsConfig = function() {
             const cats = window.configData.categorias || []; const cans = window.configData.canales || [];
-            document.getElementById('t-categoria').innerHTML = cats.map(c => `<option value="${safeAttr(c)}">${safeHTML(c)}</option>`).join('');
-            document.getElementById('t-canal').innerHTML = cans.map(c => `<option value="${safeAttr(c)}">${safeHTML(c)}</option>`).join('');
-            document.getElementById('list-categorias').innerHTML = cats.map((c, i) => `<span class="bg-gray-100 text-sm px-3 py-1 rounded-full flex items-center gap-2 border">${safeHTML(c)} <i onclick="removeConfigItem('categorias', ${i})" class="fa-solid fa-xmark text-red-500 cursor-pointer"></i></span>`).join('');
-            document.getElementById('list-canales').innerHTML = cans.map((c, i) => `<span class="bg-gray-100 text-sm px-3 py-1 rounded-full flex items-center gap-2 border">${safeHTML(c)} <i onclick="removeConfigItem('canales', ${i})" class="fa-solid fa-xmark text-red-500 cursor-pointer"></i></span>`).join('');
+            document.getElementById('t-categoria').innerHTML = cats.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('t-canal').innerHTML = cans.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('list-categorias').innerHTML = cats.map((c, i) => `<span class="bg-gray-100 text-sm px-3 py-1 rounded-full flex items-center gap-2 border">${c} <i onclick="removeConfigItem('categorias', ${i})" class="fa-solid fa-xmark text-red-500 cursor-pointer"></i></span>`).join('');
+            document.getElementById('list-canales').innerHTML = cans.map((c, i) => `<span class="bg-gray-100 text-sm px-3 py-1 rounded-full flex items-center gap-2 border">${c} <i onclick="removeConfigItem('canales', ${i})" class="fa-solid fa-xmark text-red-500 cursor-pointer"></i></span>`).join('');
         };
 
         window.addConfigItem = async function(t, id) { 
@@ -1126,7 +1026,7 @@
                 try {
                     let batch = writeBatch(db); let countOp = 0;
                     for (let i = 1; i < lines.length; i++) {
-                        const row = parseCSVLine(lines[i]);
+                        const row = lines[i].split(',');
                         if(row.length >= 2 && row[0].trim() !== "") {
                             const cedula = row[0].trim();
                             if(!window.directorioData.some(u => u.cedula === cedula)) {
@@ -1145,30 +1045,16 @@
 
         window.exportarCSV = function() {
             if(window.ticketsData.length === 0) return window.showToast("No hay datos", "error");
-            const header = ["ID","Fecha","Agente","Cedula_Usuario","Nombre_Usuario","Asunto","Categoria","Subcategoria","Prioridad","Canal","Estado","Valoracion_Estrellas","Comentario_Valoracion"];
-            const rows = window.ticketsData.map(t => [
-                t.idStr, t.fecha, t.agente, t.usuario?.cedula, t.usuario?.nombres, t.asunto, t.categoria, t.subcategoria,
-                t.prioridad, t.canal, t.estado, t.valoracion ? t.valoracion.calificacion : "No valorado",
-                t.valoracion?.comentario || ""
-            ]);
-            const csv = [header, ...rows].map(row => row.map(csvCell).join(',')).join('\n');
-            const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = "tickets.csv";
-            link.click();
-            URL.revokeObjectURL(link.href);
+            let csv = "data:text/csv;charset=utf-8,ID,Fecha,Agente,Cedula_Usuario,Nombre_Usuario,Asunto,Categoria,Subcategoria,Prioridad,Canal,Estado,Valoracion_Estrellas,Comentario_Valoracion\n";
+            window.ticketsData.forEach(t => csv += `${t.idStr},"${t.fecha}","${t.agente}",${t.usuario.cedula},"${t.usuario.nombres}","${t.asunto}",${t.categoria},${t.subcategoria},${t.prioridad},${t.canal},${t.estado},${t.valoracion?t.valoracion.calificacion:"No valorado"},${t.valoracion&&t.valoracion.comentario?`"${t.valoracion.comentario}"`:""}\n`);
+            const link = document.createElement("a"); link.href = encodeURI(csv); link.download = "tickets.csv"; link.click();
         };
 
         window.exportarHTML = function() {
             if(window.ticketsData.length === 0) return window.showToast("No hay datos", "error");
-            let html = `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Tickets</title><style>table{width:100%;border-collapse:collapse;font-family:sans-serif;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#006068;color:white;}</style></head><body><h2>Tickets</h2><table><tr><th>ID</th><th>Fecha</th><th>Usuario</th><th>Asunto</th><th>Estado</th><th>Valoración</th><th>Agente</th></tr>`;
-            window.ticketsData.forEach(t => html += `<tr><td>${safeHTML(t.idStr)}</td><td>${safeHTML(t.fecha)}</td><td>${safeHTML(t.usuario?.nombres)}</td><td>${safeHTML(t.asunto)}</td><td>${safeHTML(t.estado)}</td><td>${safeHTML(t.valoracion?t.valoracion.calificacion+" Estrellas":"N/A")}</td><td>${safeHTML(t.agente)}</td></tr>`);
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(new Blob([html+"</table></body></html>"], {type: "text/html;charset=utf-8"}));
-            link.download = "tickets.html";
-            link.click();
-            URL.revokeObjectURL(link.href);
+            let html = `<html><head><title>Tickets</title><style>table{width:100%;border-collapse:collapse;font-family:sans-serif;}th,td{border:1px solid #ddd;padding:8px;text-align:left;}th{background-color:#006068;color:white;}</style></head><body><h2>Tickets</h2><table><tr><th>ID</th><th>Fecha</th><th>Usuario</th><th>Asunto</th><th>Estado</th><th>Valoración</th><th>Agente</th></tr>`;
+            window.ticketsData.forEach(t => html += `<tr><td>${t.idStr}</td><td>${t.fecha}</td><td>${t.usuario.nombres}</td><td>${t.asunto}</td><td>${t.estado}</td><td>${t.valoracion?t.valoracion.calificacion+" Estrellas":"N/A"}</td><td>${t.agente}</td></tr>`);
+            const link = document.createElement("a"); link.href = URL.createObjectURL(new Blob([html+"</table></body></html>"], {type: "text/html"})); link.download = "tickets.html"; link.click();
         };
 
         window.exportarPDF = function() {
