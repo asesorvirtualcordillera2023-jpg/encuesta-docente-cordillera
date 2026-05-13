@@ -382,7 +382,6 @@
                                 <h3 class="font-semibold text-gray-700">Registros Actuales</h3>
                                 <span class="text-xs bg-instVerdeClaro text-white px-2 py-1 rounded-full" id="dir-count">0</span>
                             </div>
-                            <!-- AQUI ESTÁ LA SOLUCIÓN AL CONGELAMIENTO (Límite visual) -->
                             <div class="overflow-y-auto h-[400px]">
                                 <table class="w-full text-left text-sm whitespace-nowrap">
                                     <thead class="bg-gray-50 text-instPlomo sticky top-0 shadow-sm">
@@ -528,7 +527,34 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc, updateDoc, writeBatch } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        // --- 1. CONFIGURACIÓN DE BASE DE DATOS (REEMPLAZA ESTO EN GITHUB PAGES) ---
+        // Debes reemplazar los valores de "TU_API_KEY", etc., con los de tu proyecto de Firebase.
+        const configManual = {
+            apiKey: "AIzaSyAWliE0FTwwnk6nIInMFHNpv68U2woyrro",
+            authDomain: "registro-incidentes-3d30c.firebaseapp.com",
+            projectId: "registro-incidentes-3d30c",
+            storageBucket: "registro-incidentes-3d30c.firebasestorage.app",
+            messagingSenderId: "305296845704",
+            appId: "1:305296845704:web:0080f3ad12a727d2e1a83d",
+            measurementId: "G-92TDWP1VV8"
+        };
+
+        // El sistema detecta si está en el Canvas o en la vida real (GitHub Pages)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : configManual;
+
+        // Si estás fuera del canvas y aún no has puesto tus credenciales, muestra un aviso claro:
+        if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "TU_API_KEY" || firebaseConfig.apiKey === "PEGA_AQUI_TU_API_KEY_COMPLETA") {
+            document.getElementById('loading-screen').innerHTML = `
+                <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md text-center border-t-4 border-instTomate mx-4">
+                    <i class="fa-solid fa-database text-5xl text-instTomate mb-4"></i>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">Falta conectar la Base de Datos</h2>
+                    <p class="text-gray-600 text-sm mb-4">El sistema está alojado correctamente, pero no sabe a dónde guardar los datos.</p>
+                    <p class="text-gray-600 text-sm">Abre tu archivo <code>index.html</code>, ve a la <b>línea ~476</b> y reemplaza <code>"PEGA_AQUI_TU_API_KEY_COMPLETA"</code> con tu clave real de Firebase.</p>
+                </div>
+            `;
+            throw new Error("Faltan credenciales de Firebase");
+        }
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -719,14 +745,17 @@
 
         function setupFirestoreListeners() {
             if (!window.currentUser) return;
-            const configRef = collection(db, 'artifacts', appId, 'public', 'data', 'config');
+            // En entorno real de producción usamos una ruta simplificada
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            
+            const configRef = collection(db, ...basePath, 'config');
             unsubscribeConfig = onSnapshot(configRef, (snapshot) => {
                 if (!snapshot.empty) { const docData = snapshot.docs[0]; window.configDocId = docData.id; window.configData = docData.data(); } 
                 else { addDoc(configRef, window.configData).then(docRef => window.configDocId = docRef.id); }
                 window.actualizarSelectsConfig();
             });
 
-            const dirRef = collection(db, 'artifacts', appId, 'public', 'data', 'directorio');
+            const dirRef = collection(db, ...basePath, 'directorio');
             unsubscribeDir = onSnapshot(dirRef, (snapshot) => {
                 window.directorioData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
                 window.renderDirectorio();
@@ -738,7 +767,7 @@
                 }
             });
 
-            const ticketsRef = collection(db, 'artifacts', appId, 'public', 'data', 'tickets');
+            const ticketsRef = collection(db, ...basePath, 'tickets');
             unsubscribeTickets = onSnapshot(ticketsRef, (snapshot) => {
                 window.ticketsData = snapshot.docs.map(doc => ({ firebaseId: doc.id, ...doc.data() }));
                 window.ticketsData.sort((a, b) => { if(!a.timestamp || !b.timestamp) return 0; return b.timestamp.seconds - a.timestamp.seconds; });
@@ -779,7 +808,9 @@
                 usuario: { cedula: document.getElementById('u-cedula').value, nombres: document.getElementById('u-nombre').value },
                 asunto: document.getElementById('t-asunto').value, categoria: document.getElementById('t-categoria').value, subcategoria: document.getElementById('t-subcategoria').value, prioridad: document.getElementById('t-prioridad').value, canal: document.getElementById('t-canal').value, descripcion: document.getElementById('t-descripcion').value, estado: estado, valoracion: null
             };
-            try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'tickets'), nuevoTicket); form.reset(); ['u-nombre', 'u-cedula', 'u-tipo', 'u-periodo', 'u-carrera', 'u-nivel', 'u-correo'].forEach(id => document.getElementById(id).value = ''); window.showToast(`Ticket guardado`); } 
+            
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            try { await addDoc(collection(db, ...basePath, 'tickets'), nuevoTicket); form.reset(); ['u-nombre', 'u-cedula', 'u-tipo', 'u-periodo', 'u-carrera', 'u-nivel', 'u-correo'].forEach(id => document.getElementById(id).value = ''); window.showToast(`Ticket guardado`); } 
             catch (e) { console.error(e); window.showToast("Error al guardar", "error"); }
         };
 
@@ -803,7 +834,10 @@
             }
         };
 
-        window.eliminarTicket = async function(id) { try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'tickets', id)); window.showToast("Eliminado", "error"); } catch(e) {} };
+        window.eliminarTicket = async function(id) { 
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            try { await deleteDoc(doc(db, ...basePath, 'tickets', id)); window.showToast("Eliminado", "error"); } catch(e) {} 
+        };
 
         window.renderDashboard = function() {
             document.getElementById('kpi-total').textContent = window.ticketsData.length;
@@ -825,7 +859,9 @@
             e.preventDefault(); const ci = document.getElementById('dir-cedula').value;
             if(window.directorioData.some(u => u.cedula === ci)) { window.showToast("La cédula ya existe", "error"); return; }
             const u = { cedula: ci, nombres: document.getElementById('dir-nombres').value, carrera: document.getElementById('dir-carrera').value, correo: document.getElementById('dir-correo').value, nivel: document.getElementById('dir-nivel').value, tipo: document.getElementById('dir-tipo').value, periodo: document.getElementById('dir-periodo').value };
-            try { await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'directorio'), u); e.target.reset(); window.showToast("Guardado"); } catch(e) {}
+            
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            try { await addDoc(collection(db, ...basePath, 'directorio'), u); e.target.reset(); window.showToast("Guardado"); } catch(e) {}
         });
 
         // OPTIMIZACIÓN CRÍTICA: Límite de dibujado
@@ -848,7 +884,10 @@
             }
         };
 
-        window.eliminarUsuario = async function(id) { try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'directorio', id)); window.showToast("Eliminado"); } catch(e) {} };
+        window.eliminarUsuario = async function(id) { 
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            try { await deleteDoc(doc(db, ...basePath, 'directorio', id)); window.showToast("Eliminado"); } catch(e) {} 
+        };
 
         window.abrirModalEditarTicket = function(id) {
             const t = window.ticketsData.find(x => x.firebaseId === id); if(!t) return;
@@ -861,7 +900,9 @@
         window.guardarEdicionTicket = async function() {
             const id = document.getElementById('edit-t-firebase-id').value; if(!id) return;
             const data = { asunto: document.getElementById('edit-t-asunto').value, estado: document.getElementById('edit-t-estado').value, categoria: document.getElementById('edit-t-categoria').value, subcategoria: document.getElementById('edit-t-subcategoria').value, prioridad: document.getElementById('edit-t-prioridad').value, canal: document.getElementById('edit-t-canal').value, descripcion: document.getElementById('edit-t-descripcion').value };
-            try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'tickets', id), data); window.showToast("Actualizado"); window.cerrarModalEditarTicket(); } catch(e) {}
+            
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            try { await updateDoc(doc(db, ...basePath, 'tickets', id), data); window.showToast("Actualizado"); window.cerrarModalEditarTicket(); } catch(e) {}
         };
 
         // --- ENLACE VALORACIÓN (SOLUCIÓN BLOB Y PRODUCCIÓN) ---
@@ -909,7 +950,9 @@
         window.guardarEdicionUsuario = async function() {
             const id = document.getElementById('edit-u-firebase-id').value; if(!id) return;
             const data = { nombres: document.getElementById('edit-u-nombres').value, correo: document.getElementById('edit-u-correo').value, carrera: document.getElementById('edit-u-carrera').value, nivel: document.getElementById('edit-u-nivel').value, tipo: document.getElementById('edit-u-tipo').value, periodo: document.getElementById('edit-u-periodo').value };
-            try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'directorio', id), data); window.showToast("Actualizado"); window.cerrarModalEditarUsuario(); } catch(e) {}
+            
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            try { await updateDoc(doc(db, ...basePath, 'directorio', id), data); window.showToast("Actualizado"); window.cerrarModalEditarUsuario(); } catch(e) {}
         };
 
         window.actualizarSelectsConfig = function() {
@@ -920,14 +963,23 @@
             document.getElementById('list-canales').innerHTML = cans.map((c, i) => `<span class="bg-gray-100 text-sm px-3 py-1 rounded-full flex items-center gap-2 border">${c} <i onclick="removeConfigItem('canales', ${i})" class="fa-solid fa-xmark text-red-500 cursor-pointer"></i></span>`).join('');
         };
 
-        window.addConfigItem = async function(t, id) { const input = document.getElementById(id); const val = input.value.trim(); if(val && window.configDocId) { const newData = { ...window.configData }; if(!newData[t]) newData[t] = []; newData[t].push(val); try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', window.configDocId), newData); input.value = ''; } catch(e){} } };
-        window.removeConfigItem = async function(t, i) { if(window.configDocId) { const newData = { ...window.configData }; newData[t].splice(i, 1); try { await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'config', window.configDocId), newData); } catch(e){} } };
+        window.addConfigItem = async function(t, id) { 
+            const input = document.getElementById(id); const val = input.value.trim(); 
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            if(val && window.configDocId) { const newData = { ...window.configData }; if(!newData[t]) newData[t] = []; newData[t].push(val); try { await updateDoc(doc(db, ...basePath, 'config', window.configDocId), newData); input.value = ''; } catch(e){} } 
+        };
+        window.removeConfigItem = async function(t, i) { 
+            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            if(window.configDocId) { const newData = { ...window.configData }; newData[t].splice(i, 1); try { await updateDoc(doc(db, ...basePath, 'config', window.configDocId), newData); } catch(e){} } 
+        };
 
         window.handleCSVUpload = function(event) {
             const file = event.target.files[0]; if (!file) return;
             document.getElementById('file-name-display').textContent = "Procesando..."; const reader = new FileReader();
             reader.onload = async function(e) {
-                const lines = e.target.result.split('\n'); let agregados = 0; const dirRef = collection(db, 'artifacts', appId, 'public', 'data', 'directorio');
+                const lines = e.target.result.split('\n'); let agregados = 0; 
+                const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+                const dirRef = collection(db, ...basePath, 'directorio');
                 try {
                     let batch = writeBatch(db); let countOp = 0;
                     for (let i = 1; i < lines.length; i++) {
