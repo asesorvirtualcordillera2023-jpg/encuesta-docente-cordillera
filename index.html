@@ -49,6 +49,9 @@
 </head>
 <body class="h-screen flex overflow-hidden text-gray-800 relative">
 
+    <!-- TOAST CONTAINER GLOBAL -->
+    <div id="toast-container" class="fixed top-4 right-4 z-[300] flex flex-col gap-2 pointer-events-none"></div>
+
     <!-- PANTALLA DE CARGA INICIAL -->
     <div id="loading-screen" class="fixed inset-0 bg-white z-[200] flex flex-col items-center justify-center">
         <i class="fa-solid fa-circle-notch fa-spin text-5xl text-instVerdeClaro mb-4"></i>
@@ -96,6 +99,12 @@
                 <p class="text-gray-600 mt-2">Por favor, califica la atención recibida:</p>
             </div>
 
+            <!-- CONTENEDOR DE ERRORES DE FIREBASE -->
+            <div id="rating-error-message" class="hidden bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 text-sm shadow-sm">
+                <p class="font-bold flex items-center gap-2"><i class="fa-solid fa-triangle-exclamation"></i> Error de permisos</p>
+                <p id="rating-error-text" class="mt-1 text-xs"></p>
+            </div>
+
             <form id="rating-form" class="space-y-6">
                 <div class="text-center">
                     <div id="star-container" class="star-rating text-4xl text-gray-300 flex justify-center gap-2 mb-2">
@@ -114,7 +123,7 @@
                     <textarea id="rating-comment" rows="3" class="w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-instVerdeClaro outline-none resize-none" placeholder="¿Cómo podemos mejorar?"></textarea>
                 </div>
 
-                <button type="submit" id="btn-submit-rating" class="w-full bg-instVerdeClaro hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-lg">
+                <button type="submit" id="btn-submit-rating" class="w-full bg-instVerdeClaro hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl transition-colors shadow-lg pointer-events-auto">
                     Enviar Calificación
                 </button>
             </form>
@@ -186,8 +195,6 @@
                 <h1 class="font-bold"><i class="fa-solid fa-ticket mr-2 text-instVerdeClaro"></i> Gestión IT</h1>
                 <button onclick="toggleMobileMenu()" class="text-2xl"><i class="fa-solid fa-bars"></i></button>
             </header>
-
-            <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2"></div>
 
             <div class="flex-1 overflow-y-auto p-4 md:p-8">
                 
@@ -527,8 +534,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
         import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, setDoc, deleteDoc, getDoc, updateDoc, writeBatch } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        // --- 1. CONFIGURACIÓN DE BASE DE DATOS (REEMPLAZA ESTO EN GITHUB PAGES) ---
-        // Debes reemplazar los valores de "TU_API_KEY", etc., con los de tu proyecto de Firebase.
+        // --- 1. CONFIGURACIÓN DE BASE DE DATOS ---
         const configManual = {
             apiKey: "AIzaSyAWliE0FTwwnk6nIInMFHNpv68U2woyrro",
             authDomain: "registro-incidentes-3d30c.firebaseapp.com",
@@ -539,17 +545,14 @@
             measurementId: "G-92TDWP1VV8"
         };
 
-        // El sistema detecta si está en el Canvas o en la vida real (GitHub Pages)
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : configManual;
 
-        // Si estás fuera del canvas y aún no has puesto tus credenciales, muestra un aviso claro:
         if (!firebaseConfig.apiKey || firebaseConfig.apiKey === "TU_API_KEY" || firebaseConfig.apiKey === "PEGA_AQUI_TU_API_KEY_COMPLETA") {
             document.getElementById('loading-screen').innerHTML = `
                 <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md text-center border-t-4 border-instTomate mx-4">
                     <i class="fa-solid fa-database text-5xl text-instTomate mb-4"></i>
                     <h2 class="text-xl font-bold text-gray-800 mb-2">Falta conectar la Base de Datos</h2>
                     <p class="text-gray-600 text-sm mb-4">El sistema está alojado correctamente, pero no sabe a dónde guardar los datos.</p>
-                    <p class="text-gray-600 text-sm">Abre tu archivo <code>index.html</code>, ve a la <b>línea ~476</b> y reemplaza <code>"PEGA_AQUI_TU_API_KEY_COMPLETA"</code> con tu clave real de Firebase.</p>
                 </div>
             `;
             throw new Error("Faltan credenciales de Firebase");
@@ -570,6 +573,19 @@
         let appId = typeof __app_id !== 'undefined' ? __app_id : 'registro-incidentes-app';
         if (appIdRef) appId = appIdRef;
 
+        // -------------------------------------------------------------------------------------
+        // FUNCIÓN INTELIGENTE DE RUTAS: 
+        // Si está en el simulador, usa las rutas de prueba obligatorias ('artifacts/...')
+        // Si está en GitHub Pages (Producción), usa tu ruta elegida ('incidentes_data/institucion')
+        // -------------------------------------------------------------------------------------
+        function getBasePath() {
+            if (typeof __firebase_config !== 'undefined') {
+                return ['artifacts', appId, 'public', 'data']; // Modo Simulador
+            } else {
+                return ['incidentes_data', 'institucion'];     // Modo Producción en Github Pages
+            }
+        }
+
         window.currentUser = null;
         window.agentName = "";
         window.ticketsData = [];
@@ -585,10 +601,11 @@
 
         window.showToast = function(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if(!container) return; 
             const toast = document.createElement('div');
             const colorClass = type === 'success' ? 'bg-instVerdeClaro' : 'bg-instTomate';
             const icon = type === 'success' ? 'fa-check-circle' : 'fa-circle-exclamation';
-            toast.className = `${colorClass} text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0`;
+            toast.className = `${colorClass} text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0 pointer-events-auto`;
             toast.innerHTML = `<i class="fa-solid ${icon} text-xl"></i><span class="font-medium text-sm">${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => toast.classList.remove('translate-x-full', 'opacity-0'), 10);
@@ -621,8 +638,34 @@
                 } else {
                     await signInAnonymously(auth);
                 }
+            } catch (authError) {
+                console.error("Error Auth Firebase:", authError);
+                document.getElementById('loading-screen').classList.add('hidden');
+                document.body.innerHTML = `
+                    <div class="h-screen flex items-center justify-center p-4 bg-gray-50 text-center">
+                        <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border-t-4 border-instTomate">
+                            <i class="fa-solid fa-user-lock text-5xl text-instTomate mb-4"></i>
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">La Base de Datos rechazó la conexión</h2>
+                            <p class="text-sm text-gray-600 mb-4">El sistema no permite que clientes sin cuenta escriban valoraciones.</p>
+                            <div class="text-xs bg-orange-50 p-4 border border-orange-200 rounded-lg text-left text-orange-800">
+                                <p class="font-bold mb-1">Solución para el administrador:</p>
+                                <ol class="list-decimal pl-4 space-y-1">
+                                    <li>Ve a tu consola de Firebase.</li>
+                                    <li>Entra a <b>Authentication</b> > <b>Sign-in method</b>.</li>
+                                    <li>Haz clic en <b>Add new provider</b>.</li>
+                                    <li>Selecciona <b>Anónimo (Anonymous)</b> y habilítalo.</li>
+                                    <li>Guarda los cambios y recarga esta página.</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
                 
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'tickets', ticketId);
+            try {
+                const basePath = getBasePath();
+                const docRef = doc(db, ...basePath, 'tickets', ticketId);
                 const docSnap = await getDoc(docRef);
 
                 document.getElementById('loading-screen').classList.add('hidden');
@@ -632,6 +675,7 @@
                     if(ticket.valoracion && ticket.valoracion.calificacion) {
                          document.getElementById('public-rating-view').classList.remove('hidden');
                          document.getElementById('rating-form').classList.add('hidden');
+                         document.getElementById('rating-error-message').classList.add('hidden');
                          document.getElementById('rating-success-message').classList.remove('hidden');
                          document.getElementById('rating-success-message').innerHTML = `
                             <i class="fa-solid fa-star text-5xl text-yellow-400 mb-4"></i>
@@ -663,39 +707,45 @@
 
                         document.getElementById('rating-form').onsubmit = async (e) => {
                             e.preventDefault();
-                            if(!ratingValueInput.value) { showToast("Por favor selecciona una calificación", "error"); return; }
+                            if(!ratingValueInput.value) { window.showToast("Por favor selecciona una calificación de estrellas", "error"); return; }
+                            
                             const btn = document.getElementById('btn-submit-rating');
-                            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...'; btn.disabled = true;
+                            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando calificación...'; 
+                            btn.disabled = true;
+                            document.getElementById('rating-error-message').classList.add('hidden');
 
                             try {
                                 await updateDoc(docRef, { valoracion: { calificacion: parseInt(ratingValueInput.value), comentario: document.getElementById('rating-comment').value, fecha: new Date().toLocaleString() }});
                                 document.getElementById('rating-form').classList.add('hidden');
                                 document.getElementById('rating-success-message').classList.remove('hidden');
                             } catch (error) {
-                                console.error(error); showToast("Error al guardar", "error");
-                                btn.innerHTML = 'Enviar Calificación'; btn.disabled = false;
+                                console.error("Error al guardar en Firebase:", error); 
+                                document.getElementById('rating-error-message').classList.remove('hidden');
+                                
+                                let mensajeError = error.message;
+                                if (error.code === 'permission-denied') {
+                                    mensajeError = "No tienes permiso para escribir en la base de datos.<br><br><b>Solución para el administrador:</b><br>Entra a Firebase > Firestore Database > Rules (Reglas) y asegúrate de que diga:<br><code>allow read, write: if true;</code>";
+                                }
+                                
+                                document.getElementById('rating-error-text').innerHTML = mensajeError;
+                                btn.innerHTML = 'Intentar Nuevamente'; 
+                                btn.disabled = false;
                             }
                         };
                     }
                 } else {
-                    // Diagnóstico Seguro
                     document.body.innerHTML = `
                         <div class="h-screen flex flex-col items-center justify-center p-4 text-center bg-gray-50">
                             <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border-t-4 border-instTomate">
                                 <div class="w-20 h-20 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-4xl shadow-sm"><i class="fa-solid fa-triangle-exclamation"></i></div>
                                 <h2 class="text-2xl font-bold text-gray-800 mb-2">Ticket no encontrado</h2>
                                 <p class="text-gray-600 mb-6 text-sm">El enlace no es válido, ha caducado o el ticket fue eliminado.</p>
-                                <div class="text-left bg-gray-50 p-4 rounded-lg border border-gray-200 text-xs text-gray-500 overflow-hidden shadow-inner">
-                                    <p class="font-bold mb-2 text-gray-700 uppercase">Diagnóstico:</p>
-                                    <p class="truncate mb-1"><b>ID Ticket:</b> <span class="font-mono text-instTomate">${ticketId || 'NULO'}</span></p>
-                                    <p class="truncate"><b>App ID:</b> <span class="font-mono text-instVerdeOscuro">${appId || 'NULO'}</span></p>
-                                </div>
                                 <button onclick="window.location.hash=''; window.location.reload();" class="mt-6 w-full py-3 bg-instVerdeOscuro text-white rounded-xl font-bold hover:bg-instVerdeClaro transition-colors">Volver a la App</button>
                             </div>
                         </div>
                     `;
                 }
-            } catch(e) { console.error(e); alert("Error de conexión"); }
+            } catch(e) { console.error(e); alert("Error crítico de conexión al consultar base de datos."); }
         }
 
         // --- INICIO ---
@@ -704,7 +754,7 @@
                 try {
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) { await signInWithCustomToken(auth, __initial_auth_token); } 
                     else { await signInAnonymously(auth); }
-                } catch (error) { document.getElementById('loading-screen').innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`; }
+                } catch (error) { document.getElementById('loading-screen').innerHTML = `<div class="p-8 text-center"><i class="fa-solid fa-triangle-exclamation text-4xl text-red-500 mb-4"></i><p class="text-red-500 font-bold mb-2">Error de autenticación</p><p class="text-sm text-gray-600">Asegúrate de habilitar "Anonymous" en Firebase Authentication.</p></div>`; }
             };
             onAuthStateChanged(auth, (user) => {
                 window.currentUser = user;
@@ -745,8 +795,7 @@
 
         function setupFirestoreListeners() {
             if (!window.currentUser) return;
-            // En entorno real de producción usamos una ruta simplificada
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             
             const configRef = collection(db, ...basePath, 'config');
             unsubscribeConfig = onSnapshot(configRef, (snapshot) => {
@@ -809,7 +858,7 @@
                 asunto: document.getElementById('t-asunto').value, categoria: document.getElementById('t-categoria').value, subcategoria: document.getElementById('t-subcategoria').value, prioridad: document.getElementById('t-prioridad').value, canal: document.getElementById('t-canal').value, descripcion: document.getElementById('t-descripcion').value, estado: estado, valoracion: null
             };
             
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             try { await addDoc(collection(db, ...basePath, 'tickets'), nuevoTicket); form.reset(); ['u-nombre', 'u-cedula', 'u-tipo', 'u-periodo', 'u-carrera', 'u-nivel', 'u-correo'].forEach(id => document.getElementById(id).value = ''); window.showToast(`Ticket guardado`); } 
             catch (e) { console.error(e); window.showToast("Error al guardar", "error"); }
         };
@@ -835,7 +884,7 @@
         };
 
         window.eliminarTicket = async function(id) { 
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             try { await deleteDoc(doc(db, ...basePath, 'tickets', id)); window.showToast("Eliminado", "error"); } catch(e) {} 
         };
 
@@ -860,11 +909,10 @@
             if(window.directorioData.some(u => u.cedula === ci)) { window.showToast("La cédula ya existe", "error"); return; }
             const u = { cedula: ci, nombres: document.getElementById('dir-nombres').value, carrera: document.getElementById('dir-carrera').value, correo: document.getElementById('dir-correo').value, nivel: document.getElementById('dir-nivel').value, tipo: document.getElementById('dir-tipo').value, periodo: document.getElementById('dir-periodo').value };
             
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             try { await addDoc(collection(db, ...basePath, 'directorio'), u); e.target.reset(); window.showToast("Guardado"); } catch(e) {}
         });
 
-        // OPTIMIZACIÓN CRÍTICA: Límite de dibujado
         window.renderDirectorio = function() {
             document.getElementById('dir-count').textContent = window.directorioData.length;
             const tbody = document.getElementById('directorio-table-body');
@@ -885,7 +933,7 @@
         };
 
         window.eliminarUsuario = async function(id) { 
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             try { await deleteDoc(doc(db, ...basePath, 'directorio', id)); window.showToast("Eliminado"); } catch(e) {} 
         };
 
@@ -901,19 +949,15 @@
             const id = document.getElementById('edit-t-firebase-id').value; if(!id) return;
             const data = { asunto: document.getElementById('edit-t-asunto').value, estado: document.getElementById('edit-t-estado').value, categoria: document.getElementById('edit-t-categoria').value, subcategoria: document.getElementById('edit-t-subcategoria').value, prioridad: document.getElementById('edit-t-prioridad').value, canal: document.getElementById('edit-t-canal').value, descripcion: document.getElementById('edit-t-descripcion').value };
             
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             try { await updateDoc(doc(db, ...basePath, 'tickets', id), data); window.showToast("Actualizado"); window.cerrarModalEditarTicket(); } catch(e) {}
         };
 
-        // --- ENLACE VALORACIÓN (SOLUCIÓN BLOB Y PRODUCCIÓN) ---
         window.abrirModalLink = function(firebaseId) {
             const baseUrl = window.location.href.split('#')[0].split('?')[0];
             const appIdStr = typeof __app_id !== 'undefined' ? __app_id : 'registro-incidentes-app';
             
-            // Detección de entorno de prueba (blob del simulador)
             const isPreview = baseUrl.startsWith('blob:');
-            
-            // Si está en el simulador, mostramos un enlace bonito como "Ejemplo" para no confundir con "blob:"
             const displayBase = isPreview ? 'https://mi-sistema-it.com/soporte' : baseUrl;
             const link = `${displayBase}#rate_ticket=${firebaseId}&app_id_ref=${appIdStr}`;
             
@@ -925,7 +969,6 @@
                 document.getElementById('blob-warning').classList.add('hidden'); 
             }
             
-            // Botón mágico para simular el estudiante en el mismo canvas
             document.getElementById('btn-test-valoracion').onclick = () => {
                 window.cerrarModalLink();
                 document.getElementById('app-container').classList.add('hidden');
@@ -951,7 +994,7 @@
             const id = document.getElementById('edit-u-firebase-id').value; if(!id) return;
             const data = { nombres: document.getElementById('edit-u-nombres').value, correo: document.getElementById('edit-u-correo').value, carrera: document.getElementById('edit-u-carrera').value, nivel: document.getElementById('edit-u-nivel').value, tipo: document.getElementById('edit-u-tipo').value, periodo: document.getElementById('edit-u-periodo').value };
             
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             try { await updateDoc(doc(db, ...basePath, 'directorio', id), data); window.showToast("Actualizado"); window.cerrarModalEditarUsuario(); } catch(e) {}
         };
 
@@ -965,11 +1008,11 @@
 
         window.addConfigItem = async function(t, id) { 
             const input = document.getElementById(id); const val = input.value.trim(); 
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             if(val && window.configDocId) { const newData = { ...window.configData }; if(!newData[t]) newData[t] = []; newData[t].push(val); try { await updateDoc(doc(db, ...basePath, 'config', window.configDocId), newData); input.value = ''; } catch(e){} } 
         };
         window.removeConfigItem = async function(t, i) { 
-            const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+            const basePath = getBasePath();
             if(window.configDocId) { const newData = { ...window.configData }; newData[t].splice(i, 1); try { await updateDoc(doc(db, ...basePath, 'config', window.configDocId), newData); } catch(e){} } 
         };
 
@@ -978,7 +1021,7 @@
             document.getElementById('file-name-display').textContent = "Procesando..."; const reader = new FileReader();
             reader.onload = async function(e) {
                 const lines = e.target.result.split('\n'); let agregados = 0; 
-                const basePath = firebaseConfig.apiKey === "TU_API_KEY" ? ['artifacts', appId, 'public', 'data'] : ['incidentes_data', 'institucion'];
+                const basePath = getBasePath();
                 const dirRef = collection(db, ...basePath, 'directorio');
                 try {
                     let batch = writeBatch(db); let countOp = 0;
