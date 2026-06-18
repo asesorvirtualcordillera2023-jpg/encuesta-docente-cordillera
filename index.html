@@ -90,7 +90,14 @@
             <label>Nombre del periodo</label><input id="pName" placeholder="Abril - Septiembre 2026">
             <div class="formrow" style="grid-template-columns:1fr 1fr"><div><label>Fecha inicio</label><input id="pStart" type="date"></div><div><label>Fecha fin</label><input id="pEnd" type="date"></div></div>
             <label>Estado</label><select id="pStatus"><option value="active">Activo</option><option value="inactive">Inactivo</option></select>
-            <p class="small">La URL pública siempre es la misma; el sistema muestra automáticamente el periodo activo según fechas.</p>
+            <label style="margin-top:10px">Modalidades habilitadas para la encuesta</label>
+            <div class="conf" style="background:#f8fafc;border-color:#dbe5e8;color:#334155;margin-bottom:10px">
+              <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:700"><input type="checkbox" id="pModOnline" style="width:auto" checked> En línea</label>
+              <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:700"><input type="checkbox" id="pModPresencial" style="width:auto"> Presencial</label>
+              <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:700"><input type="checkbox" id="pModHibrida" style="width:auto"> Híbrida</label>
+              <p class="small" style="margin:6px 0 0">Por ahora deja activa únicamente <b>En línea</b>. Cuando requieras abrir la encuesta a otra modalidad, el administrador la habilita aquí.</p>
+            </div>
+            <p class="small">La URL pública siempre es la misma; el sistema muestra automáticamente el periodo activo según fechas y modalidad habilitada.</p>
             <div class="twoActions"><button class="btn brandBtn" onclick="savePeriodForm()">Guardar periodo</button><button class="btn secondary" onclick="clearPeriodForm()">Limpiar</button></div>
           </div></div>
           <div class="card col-7"><div class="head"><b>Periodos configurados</b></div><div class="body" id="periodList"></div></div>
@@ -419,7 +426,7 @@ const seedSections = [
   }
 ];
 const seedPeriods = [
-  {id:'p_abr_sep_2026',name:'Abril - Septiembre 2026',start:'2026-04-01',end:'2026-09-30',status:'active'},
+  {id:'p_abr_sep_2026',name:'Abril - Septiembre 2026',start:'2026-04-01',end:'2026-09-30',status:'active',modalities:['En línea']},
   {id:'p_oct_mar_2027',name:'Octubre 2026 - Marzo 2027',start:'2026-10-01',end:'2027-03-31',status:'inactive'}
 ];
 const scale = [{v:1,emoji:'😠',label:'Totalmente en desacuerdo',cls:'f1'},{v:2,emoji:'🙁',label:'En desacuerdo',cls:'f2'},{v:3,emoji:'😐',label:'Ni de acuerdo ni en desacuerdo',cls:'f3'},{v:4,emoji:'🙂',label:'De acuerdo',cls:'f4'},{v:5,emoji:'😄',label:'Totalmente de acuerdo',cls:'f5'}];
@@ -438,6 +445,12 @@ function setSyncStatus(msg){const el=document.getElementById('syncStatus'); if(e
 function saveQuestions(){localStorage.setItem('cordillera_questions_v2',JSON.stringify(sections));}
 function saveRecords(){localStorage.setItem('cordillera_records_v2',JSON.stringify(records));}
 function savePeriods(){localStorage.setItem('cordillera_periods_v2',JSON.stringify(periods));}
+const DEFAULT_ENABLED_MODALITIES = ['En línea'];
+function normalizeText(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
+function enabledModalitiesForPeriod(p){return (p && Array.isArray(p.modalities) && p.modalities.length) ? p.modalities : DEFAULT_ENABLED_MODALITIES;}
+function modalityAllowedForPeriod(row,p){const allowed=enabledModalitiesForPeriod(p).map(normalizeText); return allowed.includes(normalizeText(row.modality));}
+function getPeriodModalitiesFromForm(){const arr=[]; if(document.getElementById('pModOnline')?.checked)arr.push('En línea'); if(document.getElementById('pModPresencial')?.checked)arr.push('Presencial'); if(document.getElementById('pModHibrida')?.checked)arr.push('Híbrida'); return arr;}
+function setPeriodModalitiesForm(mods){const allowed=(Array.isArray(mods)&&mods.length?mods:DEFAULT_ENABLED_MODALITIES).map(normalizeText); if(document.getElementById('pModOnline'))pModOnline.checked=allowed.includes(normalizeText('En línea')); if(document.getElementById('pModPresencial'))pModPresencial.checked=allowed.includes(normalizeText('Presencial')); if(document.getElementById('pModHibrida'))pModHibrida.checked=allowed.includes(normalizeText('Híbrida'));}
 async function sbFetch(path,options={}){
   const headers={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=representation',...(options.headers||{})};
   const res=await fetch(SUPABASE_URL+'/'+path,{...options,headers});
@@ -482,7 +495,7 @@ async function loadSupabaseData(){
 
     if(ps?.length){
       periods = ps.filter(p=>p.estado!==false).map(p=>({
-        id:String(p.id), name:p.nombre, start:p.fecha_inicio, end:p.fecha_fin, status:p.activo?'active':'inactive'
+        id:String(p.id), name:p.nombre, start:p.fecha_inicio, end:p.fecha_fin, status:p.activo?'active':'inactive', modalities:Array.isArray(p.modalidades_habilitadas)?p.modalidades_habilitadas:DEFAULT_ENABLED_MODALITIES
       }));
       savePeriods();
     }
@@ -585,7 +598,7 @@ function fillSelectFromRows(id, rows, labelKey, idKey){
   if([...el.options].some(o=>o.value===old)) el.value=old;
 }
 function filterCatalogByCurrentSelections(changed){
-  const p=getCurrentPeriod(); let rows=academicCatalog.filter(r=>!p || String(r.periodId)===String(p.id));
+  const p=getCurrentPeriod(); let rows=academicCatalog.filter(r=>(!p || String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)));
   const order=['career','modality','shift','level','subject','teacher','parallel'];
   for(const id of order){
     const el=document.getElementById(id); if(!el || !el.value) continue;
@@ -593,11 +606,11 @@ function filterCatalogByCurrentSelections(changed){
     const key={career:'career',modality:'modality',shift:'shift',level:'level',subject:'subject',teacher:'teacher',parallel:'parallel'}[id];
     rows=rows.filter(r=>String(r[key]||'')===String(el.value));
   }
-  return rows.length?rows:academicCatalog.filter(r=>!p || String(r.periodId)===String(p.id));
+  return rows.length?rows:academicCatalog.filter(r=>(!p || String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)));
 }
 function updateAcademicSelectors(changed){
   if(!academicCatalog.length){return;}
-  const p=getCurrentPeriod(); const periodRows=academicCatalog.filter(r=>!p || String(r.periodId)===String(p.id));
+  const p=getCurrentPeriod(); const periodRows=academicCatalog.filter(r=>(!p || String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)));
   if(!periodRows.length){return;}
   const base=filterCatalogByCurrentSelections(changed);
   fillSelectFromRows('career', periodRows, 'career', 'careerId');
@@ -617,9 +630,9 @@ function updateAcademicSelectors(changed){
 function selectedOptionData(id,field){const el=document.getElementById(id); const opt=el?.options?.[el.selectedIndex]; return opt?.dataset?.[field]||'';}
 function currentCatalogMatch(){
   const p=getCurrentPeriod();
-  return academicCatalog.find(r=>(!p||String(r.periodId)===String(p.id)) && r.career===career.value && r.modality===modality.value && r.shift===shift.value && r.level===level.value && r.subject===subject.value && r.teacher===teacher.value && r.parallel===parallel.value) || null;
+  return academicCatalog.find(r=>(!p||String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)) && r.career===career.value && r.modality===modality.value && r.shift===shift.value && r.level===level.value && r.subject===subject.value && r.teacher===teacher.value && r.parallel===parallel.value) || null;
 }
-function refreshSurveyAvailability(){const p=getCurrentPeriod(); const open=p&&periodIsOpen(p); document.getElementById('surveyOpenBox').classList.toggle('hidden',!open); document.getElementById('surveyClosedBox').classList.toggle('hidden',open); if(open){document.getElementById('activePeriodLabel').textContent=p.name+' · '+p.start+' al '+p.end; const sel=document.getElementById('period'); sel.innerHTML=`<option value="${p.id}">${p.name}</option>`; updateAcademicSelectors(); renderSurvey();} else {let reason=p?'Existe un periodo activo, pero aún está fuera del rango de fechas configurado.':'No existe un periodo activo.'; document.getElementById('closedReason').textContent=reason;}}
+function refreshSurveyAvailability(){const p=getCurrentPeriod(); const open=p&&periodIsOpen(p); document.getElementById('surveyOpenBox').classList.toggle('hidden',!open); document.getElementById('surveyClosedBox').classList.toggle('hidden',open); if(open){document.getElementById('activePeriodLabel').textContent=p.name+' · '+p.start+' al '+p.end+' · Modalidad habilitada: '+enabledModalitiesForPeriod(p).join(', '); const sel=document.getElementById('period'); sel.innerHTML=`<option value="${p.id}">${p.name}</option>`; updateAcademicSelectors(); const available=academicCatalog.filter(r=>String(r.periodId)===String(p.id) && modalityAllowedForPeriod(r,p)); if(!available.length){['career','modality','shift','level','subject','teacher','parallel'].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML='<option value="">Sin datos para la modalidad habilitada</option>';});} renderSurvey();} else {let reason=p?'Existe un periodo activo, pero aún está fuera del rango de fechas configurado.':'No existe un periodo activo.'; document.getElementById('closedReason').textContent=reason;}}
 function renderStepbar(){const n=activeSections().length;document.getElementById('stepbar').innerHTML=Array.from({length:n},(_,i)=>`<div class="dot ${i===currentStep?'active':i<currentStep?'done':''}">${i+1}</div>${i<n-1?'<div class="dash"></div>':''}`).join('');}
 function renderSurvey(){const secs=activeSections(); if(!secs.length){surveyContent.innerHTML='<div class="sectionTitle">Sin preguntas activas</div>'; return;} if(currentStep>=secs.length)currentStep=secs.length-1; renderStepbar(); const s=secs[currentStep]; let html=`<div class="sectionTitle">${s.title}</div>`; s.questions.forEach(q=>{ html+=`<div class="question"><div class="qtext">${q.text}</div><div class="faces">${scale.map(f=>`<button title="${f.label}" class="face ${f.cls} ${answers[q.id]===f.v?'selected':''}" onclick="setAnswer('${q.id}',${f.v})">${f.emoji}</button>`).join('')}</div></div>`; }); surveyContent.innerHTML=html; nextBtn.classList.toggle('hidden',currentStep===secs.length-1); submitBtn.classList.toggle('hidden',currentStep!==secs.length-1);}
 function setAnswer(id,v){answers[id]=v;renderSurvey();}
@@ -632,13 +645,13 @@ async function submitSurvey(){const p=getCurrentPeriod(); if(!p||!periodIsOpen(p
 function loginAdmin(){if(adminPass.value==='1234'){adminLogged=true;document.body.classList.add('admin-authenticated');adminLogin.classList.add('hidden');adminArea.classList.remove('hidden');if(adminGeneratedUrl) adminGeneratedUrl.value=PUBLIC_STUDENT_URL;renderAdminSetup();renderReports();alert('Acceso administrador habilitado.');}else alert('Clave incorrecta.')}
 function showAdminTab(id,btn){document.querySelectorAll('.admin-tab').forEach(x=>x.classList.add('hidden'));document.getElementById('admin-'+id).classList.remove('hidden');document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active')); if(btn)btn.classList.add('active'); if(id==='history')renderHistory();}
 function renderAdminSetup(){renderPeriods(); const sel=adminSection; if(sel){sel.innerHTML=sections.map((s,i)=>`<option value="${i}">${s.title}</option>`).join(''); renderAdminQuestions();} renderAdminRecords(); renderHistory(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-function clearPeriodForm(){periodEditId.value='';pName.value='';pStart.value='';pEnd.value='';pStatus.value='active';}
-async function savePeriodForm(){if(!pName.value.trim())return alert('Ingresa el nombre del periodo.'); if(!pStart.value||!pEnd.value)return alert('Configura fecha de inicio y fin.'); if(pStart.value>pEnd.value)return alert('La fecha de inicio no puede ser mayor que la fecha fin.'); const isEdit=!!periodEditId.value; let id=periodEditId.value||('p_'+Date.now()); const obj={id,name:pName.value.trim(),start:pStart.value,end:pEnd.value,status:pStatus.value}; try{if(SUPABASE_ENABLED){const payload={nombre:obj.name,fecha_inicio:obj.start,fecha_fin:obj.end,activo:obj.status==='active',estado:true}; if(isEdit){await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});} else {const ins=await sbFetch('periodos',{method:'POST',body:JSON.stringify(payload)}); obj.id=String(ins?.[0]?.id||id);}}}catch(e){alert('No se pudo sincronizar el periodo en Supabase: '+e.message);} const i=periods.findIndex(p=>String(p.id)===String(id)); if(i>=0)periods[i]=obj; else periods.push(obj); savePeriods(); clearPeriodForm(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-function editPeriod(id){const p=periods.find(x=>x.id===id); periodEditId.value=p.id;pName.value=p.name;pStart.value=p.start;pEnd.value=p.end;pStatus.value=p.status;}
+function clearPeriodForm(){periodEditId.value='';pName.value='';pStart.value='';pEnd.value='';pStatus.value='active';setPeriodModalitiesForm(DEFAULT_ENABLED_MODALITIES);}
+async function savePeriodForm(){if(!pName.value.trim())return alert('Ingresa el nombre del periodo.'); if(!pStart.value||!pEnd.value)return alert('Configura fecha de inicio y fin.'); if(pStart.value>pEnd.value)return alert('La fecha de inicio no puede ser mayor que la fecha fin.'); const mods=getPeriodModalitiesFromForm(); if(!mods.length)return alert('Selecciona al menos una modalidad habilitada.'); const isEdit=!!periodEditId.value; let id=periodEditId.value||('p_'+Date.now()); const obj={id,name:pName.value.trim(),start:pStart.value,end:pEnd.value,status:pStatus.value,modalities:mods}; try{if(SUPABASE_ENABLED){const payload={nombre:obj.name,fecha_inicio:obj.start,fecha_fin:obj.end,activo:obj.status==='active',estado:true,modalidades_habilitadas:mods}; if(isEdit){await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});} else {const ins=await sbFetch('periodos',{method:'POST',body:JSON.stringify(payload)}); obj.id=String(ins?.[0]?.id||id);}}}catch(e){alert('No se pudo sincronizar el periodo en Supabase: '+e.message);} const i=periods.findIndex(p=>String(p.id)===String(id)); if(i>=0)periods[i]=obj; else periods.push(obj); savePeriods(); clearPeriodForm(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
+function editPeriod(id){const p=periods.find(x=>x.id===id); periodEditId.value=p.id;pName.value=p.name;pStart.value=p.start;pEnd.value=p.end;pStatus.value=p.status;setPeriodModalitiesForm(p.modalities);}
 async function togglePeriod(id){const p=periods.find(x=>String(x.id)===String(id)); p.status=p.status==='active'?'inactive':'active'; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({activo:p.status==='active'})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
 async function deletePeriod(id){const count=records.filter(r=>String(r.meta.periodId)===String(id)).length; if(count && !confirm('Este periodo tiene registros históricos. Se inactivará para mantener el historial. ¿Continuar?')) return; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({estado:false,activo:false})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} periods=periods.filter(p=>String(p.id)!==String(id)); savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
 function periodBadge(p){if(periodIsOpen(p))return '<span class="pill ok">Abierta ahora</span>'; if(p.status==='active')return '<span class="pill warn">Activa fuera de fecha</span>'; return '<span class="pill off">Inactiva</span>';}
-function renderPeriods(){if(!periodList)return; periodList.innerHTML=periods.map(p=>`<div class="periodCard ${periodIsOpen(p)?'activePeriod':''}"><b>${p.name}</b> ${periodBadge(p)}<div class="small">${p.start} al ${p.end} · Registros: ${records.filter(r=>String(r.meta.periodId)===String(p.id)||r.meta.period===p.name).length}</div><div class="twoActions"><button class="btn secondary" onclick="editPeriod('${p.id}')">Editar</button><button class="btn ${p.status==='active'?'danger':'ok'}" onclick="togglePeriod('${p.id}')">${p.status==='active'?'Inactivar':'Activar'}</button><button class="btn danger" onclick="deletePeriod('${p.id}')">Eliminar</button></div></div>`).join('') || '<p class="small">No hay periodos configurados.</p>';}
+function renderPeriods(){if(!periodList)return; periodList.innerHTML=periods.map(p=>`<div class="periodCard ${periodIsOpen(p)?'activePeriod':''}"><b>${p.name}</b> ${periodBadge(p)}<div class="small">${p.start} al ${p.end} · Modalidades habilitadas: <b>${enabledModalitiesForPeriod(p).join(', ')}</b> · Registros: ${records.filter(r=>String(r.meta.periodId)===String(p.id)||r.meta.period===p.name).length}</div><div class="twoActions"><button class="btn secondary" onclick="editPeriod('${p.id}')">Editar</button><button class="btn ${p.status==='active'?'danger':'ok'}" onclick="togglePeriod('${p.id}')">${p.status==='active'?'Inactivar':'Activar'}</button><button class="btn danger" onclick="deletePeriod('${p.id}')">Eliminar</button></div></div>`).join('') || '<p class="small">No hay periodos configurados.</p>';}
 function renderAdminQuestions(){const idx=+adminSection.value||0; if(!adminQuestions)return; adminQuestions.innerHTML=sections[idx].questions.map((q,qi)=>`<div class="adminQuestion"><textarea onchange="editQuestion(${idx},${qi},this.value)">${q.text}</textarea><button class="btn ${q.active?'ok':'secondary'}" onclick="toggleQuestion(${idx},${qi})">${q.active?'Activa':'Inactiva'}</button><button class="btn danger" onclick="deleteQuestion(${idx},${qi})">Eliminar</button></div>`).join('');}
 async function editQuestion(si,qi,val){sections[si].questions[qi].text=val;saveQuestions();renderSurvey();renderReports(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({texto:val})});}catch(e){console.error(e);}}
 async function toggleQuestion(si,qi){sections[si].questions[qi].active=!sections[si].questions[qi].active;saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({estado:sections[si].questions[qi].active})});}catch(e){console.error(e);}}
