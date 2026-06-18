@@ -1,843 +1,147 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Encuesta de satisfacción Docente · ITU Cordillera</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta de satisfacción Docente</title>
 <style>
-:root{
-  --primary:#006068;--primary2:#00CE7C;--cyan:#0797bd;--dark:#1f2933;--bg:#f4f7f8;--card:#ffffff;--muted:#64748b;--line:#dbe5e8;--good:#22b14c;--warn:#ff981a;--bad:#d61f2a;--shadow:0 18px 42px rgba(15,23,42,.14)
-}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#eef8f6 0%,#f6f8fb 45%,#f4f7f8 100%);color:#14252d}button,input,select,textarea{font:inherit}.app{max-width:1240px;margin:0 auto;padding:18px}.top{background:linear-gradient(135deg,var(--primary) 0%,#00856f 48%,var(--primary2) 100%);color:white;border-radius:22px;padding:18px 22px;box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:15px}.logoMark{width:92px;height:92px;background:white;border-radius:18px;padding:8px;box-shadow:0 12px 28px rgba(0,0,0,.18);object-fit:contain}.top h1{margin:0 0 5px;font-size:25px}.top p{margin:0;opacity:.96}.urlBox{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);border-radius:16px;padding:12px;max-width:410px}.urlBox b{display:block;margin-bottom:5px}.urlBox code{font-size:12px;color:white;word-break:break-all}.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}.tab{border:0;border-radius:999px;background:white;color:#243447;padding:11px 17px;cursor:pointer;box-shadow:0 4px 14px rgba(15,23,42,.08);font-weight:800}.tab.active{background:var(--primary);color:white}.panel{display:none}.panel.active{display:block}.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}.card{background:white;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 22px rgba(15,23,42,.07);overflow:hidden}.card .head{padding:16px 18px;border-bottom:1px solid var(--line);background:#fbfffd}.card .body{padding:18px}.col-3{grid-column:span 3}.col-4{grid-column:span 4}.col-5{grid-column:span 5}.col-6{grid-column:span 6}.col-7{grid-column:span 7}.col-8{grid-column:span 8}.col-12{grid-column:span 12}.kpi{padding:18px}.kpi .label{color:var(--muted);font-size:13px}.kpi .value{font-size:34px;font-weight:900;margin-top:6px}.kpi .hint{font-size:12px;color:var(--muted);margin-top:7px}.formrow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}label{font-weight:800;font-size:13px;color:#334155;display:block;margin:0 0 6px}select,input,textarea{width:100%;border:1px solid #cbd5e1;border-radius:11px;padding:10px 11px;background:white}textarea{min-height:104px;resize:vertical}.survey-shell{max-width:900px;margin:0 auto;background:white;border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid #ddede9}.surveyBrand{display:flex;align-items:center;gap:12px;padding:14px 22px;background:#FFFFFF;border-bottom:4px solid var(--primary2);color:var(--primary);font-size:18px}.surveyBrand img{width:58px;height:58px;object-fit:contain}.stepbar{background:#252525;padding:23px 18px;display:flex;align-items:center;justify-content:center;gap:14px}.dot{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#9ca3af;color:white;font-weight:900;border:4px solid rgba(255,255,255,.24)}.dot.active,.dot.done{background:#149ac1}.dash{width:58px;border-top:6px dotted white;opacity:.95}.intro{background:#eaf4f2;padding:15px 22px;font-weight:800;border-bottom:1px solid #d3e4e0}.sectionTitle{padding:14px 22px;background:#e9ecef;font-weight:900;color:#334155}.question{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:13px 22px;border-bottom:1px solid #f1f5f9}.question:nth-child(even){background:#fbfbfb}.qtext{line-height:1.35}.faces{display:flex;gap:9px;white-space:nowrap}.face{border:0;width:38px;height:38px;border-radius:50%;cursor:pointer;font-size:20px;display:inline-flex;align-items:center;justify-content:center;filter:grayscale(.18);transform:scale(1);transition:.15s;opacity:.86}.face:hover,.face.selected{transform:scale(1.12);opacity:1;outline:3px solid rgba(0,96,104,.27)}.f1{background:#d91f2b}.f2{background:#ff5d1d}.f3{background:#ff981a}.f4{background:#84cc32}.f5{background:#28b946}.survey-actions{background:linear-gradient(135deg,var(--primary),var(--cyan));padding:18px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}.btn{border:0;border-radius:11px;background:#0f172a;color:white;padding:11px 16px;cursor:pointer;font-weight:900}.btn.secondary{background:white;color:#0f172a;border:1px solid #cbd5e1}.btn.outline{background:transparent;border:1px solid white;color:white}.btn.danger{background:#d61f2a}.btn.ok{background:#16a34a}.btn.brandBtn{background:linear-gradient(135deg,var(--primary),var(--primary2))}.small{font-size:12px;color:var(--muted);line-height:1.45}.pill{display:inline-flex;align-items:center;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900;background:#e0f2fe;color:#03647f}.pill.ok{background:#dcfce7;color:#166534}.pill.off{background:#fee2e2;color:#991b1b}.pill.warn{background:#fef3c7;color:#92400e}.tablewrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:10px;border-bottom:1px solid #e5e7eb;text-align:left;vertical-align:top}th{background:#f8fafc;color:#334155}.progress{height:10px;background:#e2e8f0;border-radius:999px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary2));width:0%}.indicator{display:flex;align-items:center;gap:10px;margin:10px 0}.indicator span{width:210px;font-size:13px}.adminQuestion{display:grid;grid-template-columns:1fr 120px 110px;gap:10px;align-items:start;margin-bottom:10px;padding:10px;border:1px solid var(--line);border-radius:12px}.login{max-width:430px;margin:20px auto}.conf{background:#ecfeff;border:1px solid #67e8f9;color:#155e75;border-radius:12px;padding:12px;margin-bottom:14px}.closed{padding:28px;text-align:center}.hidden{display:none!important}.subtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:15px}.subtab{border:1px solid #cbd5e1;background:#fff;padding:9px 12px;border-radius:999px;font-weight:800;cursor:pointer}.subtab.active{background:#e6f7f2;border-color:#85d6c4;color:#006068}.periodCard{border:1px solid #dbe5e8;border-radius:14px;padding:12px;margin-bottom:10px;background:#fbfffd}.periodCard.activePeriod{border-color:var(--primary2);box-shadow:0 0 0 3px rgba(0,206,124,.16)}.twoActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.adminOnly{display:none!important}body.admin-authenticated .adminOnly{display:inline-flex!important}body.admin-authenticated .urlBox.adminOnly{display:block!important}body.admin-authenticated nav .adminOnly{display:inline-flex!important}.studentOnlyNote{margin-top:14px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);border-radius:14px;padding:10px 12px;font-size:13px;max-width:380px}body.admin-authenticated .studentOnlyNote{display:none!important}
-@media(max-width:980px){.top{align-items:flex-start;flex-direction:column}.col-3,.col-4,.col-5,.col-6,.col-7,.col-8{grid-column:span 12}.formrow{grid-template-columns:1fr 1fr}.question{grid-template-columns:1fr}}@media(max-width:640px){.app{padding:8px}.top{border-radius:14px}.formrow{grid-template-columns:1fr}.dash{width:24px}.dot{width:34px;height:34px}.faces{gap:5px}.face{width:33px;height:33px;font-size:17px}.question{padding:12px}.adminQuestion{grid-template-columns:1fr}.logoMark{width:68px;height:68px}.top h1{font-size:20px}}
-@media print{.tabs,.top,.survey-actions,.no-print,.btn,.subtabs{display:none!important}body{background:white}.panel{display:block}.card,.survey-shell{box-shadow:none;border:1px solid #ddd}}
-
+:root{--verde:#00CE7C;--oscuro:#006068;--tomate:#E47E3D;--plomo:#666666;--blanco:#FFFFFF;--bg:#eef7f5;--line:#d8e5e2;--txt:#12272c;--shadow:0 18px 45px rgba(0,96,104,.16)}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#e9f8f4,#f7faf9);color:var(--txt)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}.wrap{max-width:1160px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,var(--oscuro),#008b78 55%,var(--verde));border-radius:22px;color:white;padding:22px;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow)}.logo{width:92px;height:92px;border-radius:18px;background:white;padding:9px;object-fit:contain}.hero h1{margin:0 0 8px;font-size:28px}.hero p{margin:0;max-width:820px;font-size:16px}.survey-card{max-width:920px;margin:22px auto;background:white;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:var(--shadow)}.survey-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:5px solid var(--verde);color:var(--oscuro);font-weight:900;font-size:20px}.survey-head img{width:56px;height:56px;object-fit:contain}.notice{background:#edf6f4;border-bottom:1px solid var(--line);padding:14px 20px;font-weight:700}.formgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:18px}.field label{font-size:13px;font-weight:800;color:#334155;display:block;margin-bottom:6px}.field select,.field input,.field textarea{width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:10px 12px;background:white}.section-title{padding:13px 20px;background:#e9ecef;font-weight:900;color:#334155;border-top:1px solid #d9e2e5;border-bottom:1px solid #d9e2e5}.question{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;padding:16px 20px;border-bottom:1px solid #eef2f3}.question:nth-child(even){background:#fbfbfb}.faces{display:flex;gap:8px}.face{width:38px;height:38px;border:0;border-radius:50%;font-size:19px;opacity:.9;transition:.14s}.face:hover,.face.sel{transform:scale(1.12);outline:4px solid rgba(0,96,104,.18)}.f1{background:#d71f2d}.f2{background:#ef6b2d}.f3{background:#f6a323}.f4{background:#8ac943}.f5{background:#2fbd58}.actions{padding:18px;background:linear-gradient(135deg,var(--oscuro),#078a8a);display:flex;gap:10px;justify-content:center;flex-wrap:wrap}.btn{border:0;border-radius:12px;background:var(--oscuro);color:white;padding:11px 16px;font-weight:900}.btn.light{background:white;color:#0f172a;border:1px solid #cbd5e1}.btn.green{background:var(--verde);color:white}.btn.tomate{background:var(--tomate)}.btn.danger{background:#cf1f32}.btn.small{padding:7px 10px;font-size:12px}.status{font-size:13px;color:#46606a;margin-top:10px}.login-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}.login-card{width:100%;max-width:430px;background:white;border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}.login-card .brand-login{display:flex;align-items:center;gap:12px;margin-bottom:18px}.brand-login img{width:70px;height:70px;object-fit:contain;border-radius:14px}.login-card h2{margin:0;color:var(--oscuro)}.login-card input{width:100%;border:1px solid #cbd5e1;border-radius:12px;padding:12px;margin:8px 0 12px}.link{background:none;border:0;color:var(--oscuro);font-weight:800;text-decoration:underline;padding:0}.admin-layout{display:grid;grid-template-columns:280px 1fr;min-height:100vh;background:#f4f8f7}.sidebar{background:linear-gradient(180deg,var(--oscuro),#00494f);color:white;padding:18px;position:sticky;top:0;height:100vh;overflow:auto}.side-brand{display:flex;gap:10px;align-items:center;margin-bottom:18px}.side-brand img{width:58px;height:58px;background:white;border-radius:12px;padding:6px}.side-brand b{font-size:17px}.side-menu{display:flex;flex-direction:column;gap:8px}.side-menu button{width:100%;text-align:left;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.08);color:white;padding:12px;border-radius:12px;font-weight:800}.side-menu button.active,.side-menu button:hover{background:var(--verde)}.admin-main{padding:22px}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.panel{display:none}.panel.active{display:block}.card{background:white;border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 24px rgba(15,23,42,.06);margin-bottom:16px;overflow:hidden}.card h3{margin:0;padding:16px 18px;border-bottom:1px solid var(--line);color:var(--oscuro)}.card-body{padding:18px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.kpi{background:white;border:1px solid var(--line);border-radius:16px;padding:16px}.kpi b{display:block;color:var(--plomo);font-size:13px}.kpi span{display:block;font-size:32px;font-weight:900;color:var(--oscuro);margin-top:6px}.row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px}table{width:100%;border-collapse:collapse;font-size:13px}th,td{border-bottom:1px solid #e5e7eb;padding:10px;text-align:left;vertical-align:top}th{background:#f1f7f5;color:#334155}.tablewrap{overflow:auto}.pill{display:inline-block;padding:5px 9px;border-radius:99px;font-weight:900;font-size:12px;background:#e9f8f4;color:var(--oscuro)}.pill.ok{background:#dcfce7;color:#166534}.pill.warn{background:#ffedd5;color:#9a3412}.pill.bad{background:#fee2e2;color:#991b1b}.qedit{display:grid;grid-template-columns:1fr 130px 110px;gap:10px;align-items:start;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:10px}.admin-card-mini{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:#fbfffd}.help{background:#e6fffb;border:1px solid #99f6e4;color:#115e59;border-radius:12px;padding:12px;margin-bottom:14px}.student-footer{max-width:920px;margin:0 auto 18px;font-size:12px;color:#64748b;text-align:center}.student-footer button{font-size:11px;color:#94a3b8;text-decoration:none}.toast{position:fixed;right:18px;bottom:18px;background:#0f172a;color:white;border-radius:14px;padding:14px 16px;box-shadow:var(--shadow);z-index:99;max-width:360px}.closed{text-align:center;padding:32px}.modes{display:flex;gap:10px;flex-wrap:wrap}.modes label{display:inline-flex;gap:8px;align-items:center;background:#f8fafc;border:1px solid #cbd5e1;border-radius:12px;padding:10px}.modes input{width:auto;margin:0}.plan{border-left:5px solid var(--tomate);padding:12px;background:#fff8f3;border-radius:10px;margin:10px 0}
+@media(max-width:900px){.formgrid,.row,.kpis{grid-template-columns:1fr}.question{grid-template-columns:1fr}.admin-layout{grid-template-columns:1fr}.sidebar{position:relative;height:auto}.side-menu{display:grid;grid-template-columns:repeat(2,1fr)}.qedit{grid-template-columns:1fr}.hero{align-items:flex-start;flex-direction:column}.logo{width:74px;height:74px}}@media print{.sidebar,.topbar,.actions,.btn,.student-footer{display:none!important}.admin-layout{display:block}.admin-main{padding:0}.card{box-shadow:none;border:1px solid #ccc}.panel{display:block}}
 </style>
-
 </head>
 <body>
-<div class="app">
-  <header class="top">
-    <div class="brand">
-      <img class="logoMark" src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo Instituto Cordillera" />
-      <div>
-        <h1>Encuesta de satisfacción Docente</h1>
-        <p>Instituto Superior Universitario Cordillera · evaluación confidencial por materia, periodo académico y docente.</p>
-      </div>
-    </div>
-    <div class="urlBox no-print adminOnly">
-      <b>URL pública permanente para estudiantes</b>
-      <code id="publicUrl">https://asesorvirtualcordillera2023-jpg.github.io/encuesta-docente-cordillera/</code><div class="small" id="syncStatus" style="color:white;margin-top:6px">Conectando con Supabase...</div>
-      <div class="twoActions"><button class="btn secondary" onclick="copyPublicUrl()">Copiar URL</button><button class="btn outline" onclick="showPanel('student')">Abrir encuesta</button></div>
-      <div class="small" style="color:white;margin-top:6px">Acceso administrativo: agrega <b>?admin=1</b> al final del enlace.</div>
-    </div>
-    <div class="studentOnlyNote no-print"><b>Encuesta confidencial</b><br>Completa la evaluación según la materia y docente correspondiente.<div class="twoActions"><button class="btn secondary" onclick="showPanel('admin')">Acceso administrador</button></div></div>
+<div id="publicApp" class="wrap">
+  <header class="hero">
+    <img class="logo" src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo Cordillera">
+    <div><h1>Encuesta de satisfacción Docente</h1><p>Instituto Superior Universitario Cordillera · evaluación confidencial por materia, periodo académico y docente.</p><div id="publicStatus" class="status" style="color:white">Conectando con Supabase...</div></div>
   </header>
-  <nav class="tabs no-print">
-    <button class="tab active" onclick="showPanel('student',this)">Encuesta estudiantes</button>
-    <button class="tab" onclick="showPanel('admin',this)">Acceso administrador</button>
-    <button class="tab adminOnly" onclick="showPanel('admin',this)">Administración</button>
-    <button class="tab adminOnly" onclick="showPanel('reports',this)">Dashboard y reportes</button>
-  </nav>
-
-  <section id="student" class="panel active">
-    <div class="survey-shell" id="surveyOpenBox">
-      <div class="surveyBrand"><img src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo Instituto Cordillera"><b>Encuesta de satisfacción Docente</b></div>
-      <div class="stepbar" id="stepbar"></div>
-      <div class="intro">Por favor, indica tu grado de acuerdo. La encuesta es confidencial y no solicita nombres, cédula, correo ni código estudiantil.</div>
-      <div class="body">
-        <div class="conf"><b>Periodo activo:</b> <span id="activePeriodLabel"></span><br><span class="small">Cada periodo académico inicia desde cero. Las respuestas anteriores quedan en historial y reportes históricos.</span></div>
-        <div class="formrow" id="academicForm">
-          <div><label>Periodo académico</label><select id="period" disabled></select></div>
-          <div><label>Carrera</label><select id="career" onchange="updateAcademicSelectors('career')"><option>Cargando carreras...</option></select></div>
-          <div><label>Modalidad</label><select id="modality" onchange="updateAcademicSelectors('modality')"><option>Cargando...</option></select></div>
-          <div><label>Jornada</label><select id="shift" onchange="updateAcademicSelectors('shift')"><option>Cargando...</option></select></div>
-          <div><label>Nivel / semestre</label><select id="level" onchange="updateAcademicSelectors('level')"><option>Cargando...</option></select></div>
-          <div><label>Materia</label><select id="subject" onchange="updateAcademicSelectors('subject')"><option>Cargando materias...</option></select></div>
-          <div><label>Docente evaluado</label><select id="teacher" onchange="updateAcademicSelectors('teacher')"><option>Cargando docentes...</option></select></div>
-          <div><label>Paralelo</label><select id="parallel" onchange="updateAcademicSelectors('parallel')"><option>Cargando...</option></select></div>
-        </div>
-      </div>
-      <div id="surveyContent"></div>
-      <div class="body"><label>Observaciones generales opcionales</label><textarea id="generalComment" placeholder="Añade observaciones sobre la experiencia académica, docente o emocional... No incluyas datos personales."></textarea></div>
-      <div class="survey-actions">
-        <button class="btn outline" onclick="prevStep()">Anterior</button>
-        <button class="btn outline" onclick="nextStep()" id="nextBtn">Siguiente</button>
-        <button class="btn ok hidden" onclick="submitSurvey()" id="submitBtn">Enviar encuesta</button>
-      </div>
+  <main class="survey-card" id="surveyBox">
+    <div class="survey-head"><img src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo"> Encuesta de satisfacción Docente</div>
+    <div class="notice">Selecciona la materia y docente que vas a evaluar. La encuesta no solicita datos personales.</div>
+    <div class="formgrid">
+      <div class="field"><label>Periodo activo</label><select id="periodo" disabled></select></div>
+      <div class="field"><label>Carrera</label><select id="career" onchange="cascade('career')"></select></div>
+      <div class="field"><label>Modalidad</label><select id="modality" onchange="cascade('modality')"></select></div>
+      <div class="field"><label>Jornada</label><select id="shift" onchange="cascade('shift')"></select></div>
+      <div class="field"><label>Nivel / semestre</label><select id="level" onchange="cascade('level')"></select></div>
+      <div class="field"><label>Paralelo</label><select id="parallel" onchange="cascade('parallel')"></select></div>
+      <div class="field"><label>Materia</label><select id="subject" onchange="cascade('subject')"></select></div>
+      <div class="field"><label>Docente</label><select id="teacher" onchange="cascade('teacher')"></select></div>
     </div>
-    <div class="survey-shell hidden" id="surveyClosedBox"><div class="closed"><h2>Encuesta no disponible</h2><p id="closedReason">No existe un periodo activo dentro de fechas.</p><p class="small">El administrador puede activar la encuesta por periodo académico desde el módulo de administración.</p></div></div>
-  </section>
-
-  <section id="admin" class="panel">
-    <div id="adminLogin" class="card login"><div class="head"><b>Acceso administrador</b></div><div class="body">
-      <p class="small">Ingresa con tu usuario administrativo para gestionar periodos, preguntas, administradores, dashboard y reportes.</p>
-      <label>Usuario o correo</label><input id="adminUser" placeholder="admin@cordillera.edu.ec">
-      <label style="margin-top:10px">Clave</label><input type="password" id="adminPass" placeholder="Ingrese clave">
-      <br><br><button class="btn brandBtn" onclick="loginAdmin()">Ingresar</button>
-      <p class="small">Usuario inicial demo: <b>admin</b> · clave: <b>1234</b>. Luego crea tus administradores reales y cambia la clave.</p>
-    </div></div>
-    <div id="adminArea" class="hidden">
-      <div class="card" style="margin-bottom:16px"><div class="head"><b>URL pública para estudiantes</b></div><div class="body">
-        <p class="small">Este es el enlace único que debes compartir. El estudiante verá solo la encuesta; no verá administración ni reportes.</p>
-        <div class="formrow" style="grid-template-columns:1fr auto"><div><label>URL pública permanente</label><input id="adminGeneratedUrl" readonly></div><div style="align-self:end"><button class="btn brandBtn" onclick="copyAdminGeneratedUrl()">Copiar URL</button></div></div>
-        <p class="small" id="adminSyncStatus">Estado: conectando con Supabase...</p>
-      </div></div>
-      <div class="subtabs no-print" id="adminSubtabs"></div>
-      <div id="admin-periods" class="admin-tab">
-        <div class="grid">
-          <div class="card col-5"><div class="head"><b>Crear / editar periodo</b></div><div class="body">
-            <input type="hidden" id="periodEditId">
-            <label>Nombre del periodo</label><input id="pName" placeholder="Abril - Septiembre 2026">
-            <div class="formrow" style="grid-template-columns:1fr 1fr"><div><label>Fecha inicio</label><input id="pStart" type="date"></div><div><label>Fecha fin</label><input id="pEnd" type="date"></div></div>
-            <label>Estado</label><select id="pStatus"><option value="active">Activo</option><option value="inactive">Inactivo</option></select>
-            <label style="margin-top:10px">Modalidades habilitadas para la encuesta</label>
-            <div class="conf" style="background:#f8fafc;border-color:#dbe5e8;color:#334155;margin-bottom:10px">
-              <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:700"><input type="checkbox" id="pModOnline" style="width:auto" checked> En línea</label>
-              <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:700"><input type="checkbox" id="pModPresencial" style="width:auto"> Presencial</label>
-              <label style="display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:700"><input type="checkbox" id="pModHibrida" style="width:auto"> Híbrida</label>
-              <p class="small" style="margin:6px 0 0">Por ahora deja activa únicamente <b>En línea</b>. Cuando requieras abrir la encuesta a otra modalidad, el administrador la habilita aquí.</p>
-            </div>
-            <p class="small">La URL pública siempre es la misma; el sistema muestra automáticamente el periodo activo según fechas y modalidad habilitada.</p>
-            <div class="twoActions"><button class="btn brandBtn" onclick="savePeriodForm()">Guardar periodo</button><button class="btn secondary" onclick="clearPeriodForm()">Limpiar</button></div>
-          </div></div>
-          <div class="card col-7"><div class="head"><b>Periodos configurados</b></div><div class="body" id="periodList"></div></div>
-        </div>
-      </div>
-      <div id="admin-questions" class="admin-tab hidden">
-        <div class="grid">
-          <div class="card col-4"><div class="head"><b>Gestión de preguntas</b></div><div class="body"><label>Indicador / sección</label><select id="adminSection" onchange="renderAdminQuestions()"></select><button class="btn secondary" onclick="addQuestion()">Agregar pregunta</button><p class="small">Modificar preguntas no altera los registros históricos ya guardados.</p></div></div>
-          <div class="card col-8"><div class="head"><b>Preguntas del indicador</b></div><div class="body" id="adminQuestions"></div></div>
-        </div>
-      </div>
-      <div id="admin-users" class="admin-tab hidden">
-        <div class="grid">
-          <div class="card col-5"><div class="head"><b>Ingreso de nuevos administradores</b></div><div class="body">
-            <input type="hidden" id="adminEditId">
-            <label>Nombre completo</label><input id="newAdminName" placeholder="Nombre del administrador">
-            <label>Usuario</label><input id="newAdminUser" placeholder="usuario.admin">
-            <label>Correo institucional</label><input id="newAdminEmail" placeholder="usuario@cordillera.edu.ec">
-            <label>Clave temporal</label><input id="newAdminPass" type="password" placeholder="Clave de acceso">
-            <label>Rol</label>
-            <select id="newAdminRole">
-              <option value="super_admin">Super administrador</option>
-              <option value="admin_general">Administrador general</option>
-              <option value="gestor_encuestas">Gestor de encuestas</option>
-              <option value="reportes">Reportes</option>
-              <option value="consulta">Consulta</option>
-            </select>
-            <p class="small"><b>Roles:</b> Super administrador gestiona todo; Administrador general gestiona operación; Gestor maneja periodos y preguntas; Reportes solo consulta dashboard/exportaciones; Consulta solo visualiza reportes.</p>
-            <div class="twoActions"><button class="btn brandBtn" onclick="saveAdminUser()">Guardar administrador</button><button class="btn secondary" onclick="clearAdminUserForm()">Limpiar</button></div>
-          </div></div>
-          <div class="card col-7"><div class="head"><b>Administradores registrados</b></div><div class="body"><div class="tablewrap"><table id="adminUsersTable"></table></div></div></div>
-        </div>
-      </div>
-      <div id="admin-records" class="admin-tab hidden"><div class="card"><div class="head"><b>Registros recolectados</b></div><div class="body"><button class="btn danger" onclick="deleteAllRecords()">Eliminar todos los registros</button><div class="tablewrap"><table id="recordsAdminTable"></table></div></div></div></div>
-      <div id="admin-history" class="admin-tab hidden"><div class="card"><div class="head"><b>Historial por periodo</b></div><div class="body" id="historyBox"></div></div></div>
-    </div>
-  </section>
-
-  <section id="reports" class="panel">
-    <div class="grid">
-      <div class="card col-12"><div class="head"><b>Filtros dinámicos del reporte</b></div><div class="body"><div class="formrow">
-        <div><label>Periodo</label><select id="fPeriod" onchange="renderReports()"><option value="">Todos</option></select></div>
-        <div><label>Carrera</label><select id="fCareer" onchange="renderReports()"><option value="">Todas</option></select></div>
-        <div><label>Materia</label><select id="fSubject" onchange="renderReports()"><option value="">Todas</option></select></div>
-        <div><label>Docente</label><select id="fTeacher" onchange="renderReports()"><option value="">Todos</option></select></div>
-        <div><label>Indicador</label><select id="fIndicator" onchange="renderReports()"><option value="">Todos</option></select></div>
-        <div><label>Semáforo</label><select id="fRisk" onchange="renderReports()"><option value="">Todos</option><option value="critico">Crítico (&lt; 3)</option><option value="medio">Medio (3 a 3.9)</option><option value="alto">Alto (≥ 4)</option></select></div>
-      </div>
-      <p class="small" style="margin-top:0"><b>Reporte descargable:</b> únicamente matriz de respuestas por pregunta, con encabezados completos y valoración numérica/textual registrada por cada estudiante.</p>
-      <button class="btn brandBtn" onclick="exportReport('pdf')">Exportar PDF matriz de respuestas</button>
-      <button class="btn secondary" onclick="exportReport('csv')">Exportar CSV matriz de respuestas</button>
-      <button class="btn secondary" onclick="exportReport('excel')">Exportar Excel matriz de respuestas</button>
-      <button class="btn secondary" onclick="exportReport('html')">Exportar HTML matriz de respuestas</button>
-      </div></div>
-      <div class="card col-3"><div class="kpi"><div class="label">Encuestas</div><div class="value" id="kTotal">0</div><div class="hint">Registros filtrados</div></div></div>
-      <div class="card col-3"><div class="kpi"><div class="label">Promedio general</div><div class="value" id="kAvg">0.00</div><div class="hint">Escala 1 a 5</div></div></div>
-      <div class="card col-3"><div class="kpi"><div class="label">Satisfacción alta</div><div class="value" id="kHigh">0%</div><div class="hint">Promedio ≥ 4</div></div></div>
-      <div class="card col-3"><div class="kpi"><div class="label">Alerta crítica</div><div class="value" id="kRisk">0%</div><div class="hint">Promedio &lt; 3</div></div></div>
-      <div class="card col-6"><div class="head"><b>Promedio por indicador</b></div><div class="body" id="indicatorBars"></div></div>
-      <div class="card col-6"><div class="head"><b>Distribución emocional / satisfacción</b></div><div class="body" id="emotionDist"></div></div>
-      <div class="card col-12"><div class="head"><b>Encuesta de satisfacción Docente · matriz de respuestas por pregunta</b></div><div class="body"><p class="small">Cada fila representa una encuesta confidencial. Cada encabezado corresponde a una pregunta y cada celda muestra únicamente la valoración registrada.</p><div class="tablewrap"><table id="reportTable"></table></div></div></div>
-    </div>
-  </section>
+    <div id="questionsBox"></div>
+    <div style="padding:18px"><label style="font-weight:900">Observaciones generales opcionales</label><textarea id="comment" placeholder="Añade observaciones sobre la experiencia académica o docente. No incluyas datos personales."></textarea></div>
+    <div class="actions"><button class="btn green" onclick="submitSurvey()">Enviar encuesta</button><button class="btn light" onclick="resetAnswers()">Limpiar respuestas</button></div>
+  </main>
+  <div class="student-footer">Sistema de evaluación confidencial. <button class="link" onclick="openAdminLogin()" title="Acceso restringido">.</button></div>
 </div>
+
+<div id="loginPage" class="login-page hidden">
+  <div class="login-card">
+    <div class="brand-login"><img src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo"><div><h2>Acceso administrativo</h2><div class="status">Encuesta de satisfacción Docente</div></div></div>
+    <label>Usuario o correo</label><input id="loginUser" autocomplete="username" placeholder="admin">
+    <label>Contraseña</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••">
+    <button class="btn green" style="width:100%" onclick="loginAdmin()">Ingresar</button>
+    <div style="display:flex;justify-content:space-between;margin-top:14px"><button class="link" onclick="recoverPassword()">¿Olvidaste tu contraseña?</button><button class="link" onclick="showPublic()">Volver a encuesta</button></div>
+    <div class="help" style="margin-top:16px">Para producción se recomienda activar Supabase Auth. Esta versión mantiene usuarios administradores en la tabla <b>administradores</b>.</div>
+  </div>
+</div>
+
+<div id="adminApp" class="admin-layout hidden">
+  <aside class="sidebar">
+    <div class="side-brand"><img src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo"><div><b>Panel administrativo</b><br><small id="adminName">Administrador</small></div></div>
+    <nav class="side-menu">
+      <button onclick="adminPanel('inicio',this)" class="active">Inicio KPI</button>
+      <button onclick="adminPanel('periodos',this)">Periodos y modalidad</button>
+      <button onclick="adminPanel('preguntas',this)">Preguntas</button>
+      <button onclick="adminPanel('admins',this)">Administradores y roles</button>
+      <button onclick="adminPanel('reportes',this)">Reportes matriz</button>
+      <button onclick="adminPanel('mejora',this)">Planes de mejora</button>
+      <button onclick="logoutAdmin()">Cerrar sesión</button>
+    </nav>
+  </aside>
+  <main class="admin-main">
+    <div class="topbar"><div><h2 style="margin:0;color:var(--oscuro)">Encuesta de satisfacción Docente</h2><div class="status" id="adminStatus">Datos conectados a Supabase</div></div><button class="btn light" onclick="copyStudentUrl()">Copiar URL pública</button></div>
+    <section id="p_inicio" class="panel active"><div class="kpis"><div class="kpi"><b>Total encuestas</b><span id="kpiTotal">0</span></div><div class="kpi"><b>Promedio general</b><span id="kpiAvg">0.00</span></div><div class="kpi"><b>Satisfacción alta</b><span id="kpiAlta">0%</span></div><div class="kpi"><b>Alertas críticas</b><span id="kpiCrit">0%</span></div></div><div class="card"><h3>Indicadores medibles</h3><div class="card-body" id="indicatorBars"></div></div></section>
+    <section id="p_periodos" class="panel"><div class="card"><h3>Activación por periodo y modalidad</h3><div class="card-body"><div class="row"><div><label>Periodo</label><input id="perName" placeholder="Abril - Septiembre 2026"></div><div><label>Inicio</label><input id="perStart" type="date"></div><div><label>Fin</label><input id="perEnd" type="date"></div><div><label>Estado</label><select id="perActive"><option value="true">Activo</option><option value="false">Inactivo</option></select></div></div><label>Modalidades habilitadas para la encuesta</label><div class="modes"><label><input type="checkbox" id="modLinea" value="En línea" checked> En línea</label><label><input type="checkbox" id="modPresencial" value="Presencial"> Presencial</label><label><input type="checkbox" id="modHibrida" value="Híbrida"> Híbrida</label></div><input type="hidden" id="perId"><br><button class="btn green" onclick="savePeriod()">Guardar periodo</button> <button class="btn light" onclick="clearPeriodForm()">Nuevo</button><div id="periodList" style="margin-top:16px"></div></div></div></section>
+    <section id="p_preguntas" class="panel"><div class="card"><h3>Gestión de preguntas</h3><div class="card-body"><div id="questionAdmin"></div><button class="btn green" onclick="addQuestion()">Agregar pregunta</button></div></div></section>
+    <section id="p_admins" class="panel"><div class="card"><h3>Ingreso de nuevos administradores con roles</h3><div class="card-body"><div class="row"><div><label>Nombre</label><input id="admNombre"></div><div><label>Usuario</label><input id="admUsuario"></div><div><label>Correo</label><input id="admCorreo"></div><div><label>Contraseña</label><input id="admClave" type="password"></div></div><div class="row"><div><label>Rol</label><select id="admRol"><option value="super_admin">Super administrador</option><option value="admin_general">Administrador general</option><option value="gestor_encuestas">Gestor de encuestas</option><option value="reportes">Reportes</option><option value="consulta">Consulta</option></select></div><div><label>Estado</label><select id="admEstado"><option value="true">Activo</option><option value="false">Inactivo</option></select></div></div><input type="hidden" id="admId"><button class="btn green" onclick="saveAdmin()">Guardar administrador</button> <button class="btn light" onclick="clearAdminForm()">Nuevo</button><div id="adminList" style="margin-top:16px"></div></div></div></section>
+    <section id="p_reportes" class="panel"><div class="card"><h3>Reporte matriz de respuestas por pregunta</h3><div class="card-body"><div class="row"><div><label>Periodo</label><select id="fPeriodo" onchange="renderReports()"></select></div><div><label>Carrera</label><select id="fCarrera" onchange="renderReports()"></select></div><div><label>Materia</label><select id="fMateria" onchange="renderReports()"></select></div><div><label>Docente</label><select id="fDocente" onchange="renderReports()"></select></div></div><button class="btn" onclick="exportCSV()">CSV</button> <button class="btn" onclick="exportExcel()">Excel</button> <button class="btn" onclick="exportHTML()">HTML</button> <button class="btn tomate" onclick="print()">PDF / Imprimir</button><div id="reportTable" class="tablewrap" style="margin-top:16px"></div></div></div></section>
+    <section id="p_mejora" class="panel"><div class="card"><h3>Planes de mejora sugeridos</h3><div class="card-body" id="plansBox"></div></div></section>
+  </main>
+</div>
+<div id="toast" class="toast hidden"></div>
 <script>
-const seedSections = [
-  {
-    "id": "sec_1",
-    "title": "Aula Virtual",
-    "questions": [
-      {
-        "id": "13348",
-        "type": "scale",
-        "active": true,
-        "text": "El diseño del aula virtual facilita la navegación y el acceso a los contenidos"
-      },
-      {
-        "id": "13349",
-        "type": "scale",
-        "active": true,
-        "text": "Los materiales de estudio en el aula virtual están bien organizados"
-      },
-      {
-        "id": "13350",
-        "type": "scale",
-        "active": true,
-        "text": "El aula virtual incluye todos los recursos necesarios para el aprendizaje"
-      },
-      {
-        "id": "13353",
-        "type": "scale",
-        "active": true,
-        "text": "La plataforma del aula virtual es estable y tiene un buen rendimiento"
-      },
-      {
-        "id": "13352",
-        "type": "scale",
-        "active": true,
-        "text": "La interacción en los foros y espacios colaborativos del aula virtual es efectiva"
-      }
-    ]
-  },
-  {
-    "id": "sec_2",
-    "title": "Uso de Herramientas Pedagógicas Digitales",
-    "questions": [
-      {
-        "id": "13355",
-        "type": "scale",
-        "active": true,
-        "text": "Se utilizaron adecuadamente las herramientas digitales (e.g., videos, cuestionarios interactivos)"
-      },
-      {
-        "id": "13357",
-        "type": "scale",
-        "active": true,
-        "text": "Las herramientas digitales contribuyeron significativamente a mi aprendizaje"
-      },
-      {
-        "id": "13358",
-        "type": "scale",
-        "active": true,
-        "text": "La variedad de herramientas pedagógicas digitales fue adecuada"
-      },
-      {
-        "id": "13359",
-        "type": "scale",
-        "active": true,
-        "text": "Las instrucciones para utilizar las herramientas digitales fueron claras"
-      },
-      {
-        "id": "13360",
-        "type": "scale",
-        "active": true,
-        "text": "Las actividades digitales fueron interactivas y motivadoras"
-      }
-    ]
-  },
-  {
-    "id": "sec_3",
-    "title": "Clases Sincrónicas a Través de Microsoft Teams",
-    "questions": [
-      {
-        "id": "13362",
-        "type": "scale",
-        "active": true,
-        "text": "Las clases sincrónicas fueron bien organizadas"
-      },
-      {
-        "id": "13363",
-        "type": "scale",
-        "active": true,
-        "text": "El uso de Microsoft Teams facilitó la comunicación durante las clases"
-      },
-      {
-        "id": "13364",
-        "type": "scale",
-        "active": true,
-        "text": "Las clases sincrónicas en Microsoft Teams fueron interactivas"
-      },
-      {
-        "id": "13365",
-        "type": "scale",
-        "active": true,
-        "text": "Los materiales presentados durante las clases sincrónicas fueron claros y relevantes"
-      },
-      {
-        "id": "13366",
-        "type": "scale",
-        "active": true,
-        "text": "La calidad del audio y video en Microsoft Teams fue adecuada"
-      }
-    ]
-  },
-  {
-    "id": "sec_4",
-    "title": "Desempeño Docente",
-    "questions": [
-      {
-        "id": "13368",
-        "type": "scale",
-        "active": true,
-        "text": "El docente mostró un buen dominio del contenido de la asignatura"
-      },
-      {
-        "id": "13369",
-        "type": "scale",
-        "active": true,
-        "text": "El docente utilizó estrategias pedagógicas efectivas en línea"
-      },
-      {
-        "id": "13370",
-        "type": "scale",
-        "active": true,
-        "text": "El docente fomentó la participación activa de los estudiantes durante las clases"
-      },
-      {
-        "id": "13371",
-        "type": "scale",
-        "active": true,
-        "text": "El docente estuvo disponible para resolver dudas fuera del horario de clase"
-      },
-      {
-        "id": "13372",
-        "type": "scale",
-        "active": true,
-        "text": "El docente brindó retroalimentación constructiva y oportuna"
-      }
-    ]
-  },
-  {
-    "id": "sec_5",
-    "title": "Desempeño del Tutor/Asesor Virtual",
-    "questions": [
-      {
-        "id": "13374",
-        "type": "scale",
-        "active": true,
-        "text": "El tutor/asesor virtual estuvo disponible cuando lo necesité"
-      },
-      {
-        "id": "13375",
-        "type": "scale",
-        "active": true,
-        "text": "El tutor/asesor virtual me brindó orientación clara y útil"
-      },
-      {
-        "id": "13376",
-        "type": "scale",
-        "active": true,
-        "text": "El tutor/asesor virtual hizo un seguimiento adecuado de mi progreso"
-      },
-      {
-        "id": "13377",
-        "type": "scale",
-        "active": true,
-        "text": "El tutor/asesor virtual facilitó la resolución de problemas técnicos o académicos"
-      },
-      {
-        "id": "13378",
-        "type": "scale",
-        "active": true,
-        "text": "La comunicación con el tutor/asesor virtual fue fluida y efectiva"
-      }
-    ]
-  },
-  {
-    "id": "sec_6",
-    "title": "Aprendizaje del Estudiante",
-    "questions": [
-      {
-        "id": "13380",
-        "type": "scale",
-        "active": true,
-        "text": "Considero que he alcanzado los objetivos de aprendizaje de la asignatura"
-      },
-      {
-        "id": "13381",
-        "type": "scale",
-        "active": true,
-        "text": "Las actividades en línea contribuyeron a mi comprensión del contenido"
-      },
-      {
-        "id": "13382",
-        "type": "scale",
-        "active": true,
-        "text": "He desarrollado nuevas habilidades a través de este curso en línea"
-      },
-      {
-        "id": "13383",
-        "type": "scale",
-        "active": true,
-        "text": "La modalidad en línea me ha permitido estudiar de manera flexible"
-      },
-      {
-        "id": "13384",
-        "type": "scale",
-        "active": true,
-        "text": "Mi desempeño académico ha mejorado gracias al curso en línea"
-      }
-    ]
-  },
-  {
-    "id": "sec_7",
-    "title": "Nivel de Satisfacción del Estudiante",
-    "questions": [
-      {
-        "id": "13386",
-        "type": "scale",
-        "active": true,
-        "text": "Estoy satisfecho con la experiencia de aprendizaje en línea en general"
-      },
-      {
-        "id": "13387",
-        "type": "scale",
-        "active": true,
-        "text": "La carga de trabajo fue adecuada para el tiempo disponible"
-      },
-      {
-        "id": "13388",
-        "type": "scale",
-        "active": true,
-        "text": "Los recursos proporcionados fueron suficientes para apoyar mi aprendizaje"
-      },
-      {
-        "id": "13389",
-        "type": "scale",
-        "active": true,
-        "text": "Estoy satisfecho con la interacción que tuve con mis compañeros"
-      },
-      {
-        "id": "13390",
-        "type": "scale",
-        "active": true,
-        "text": "Recomendaría esta modalidad de estudios a otros estudiantes"
-      },
-      {
-        "id": "13391",
-        "type": "scale",
-        "active": true,
-        "text": "Mi experiencia en este curso ha superado mis expectativas iniciales"
-      },
-      {
-        "id": "13392",
-        "type": "scale",
-        "active": true,
-        "text": "Estoy satisfecho con la tecnología utilizada en el curso"
-      },
-      {
-        "id": "13393",
-        "type": "scale",
-        "active": true,
-        "text": "La modalidad en línea se adaptó bien a mis necesidades personales y académicas"
-      },
-      {
-        "id": "13394",
-        "type": "scale",
-        "active": true,
-        "text": "Me siento motivado para continuar con más cursos en línea"
-      },
-      {
-        "id": "13395",
-        "type": "scale",
-        "active": true,
-        "text": "La evaluación del curso reflejó adecuadamente mi aprendizaje"
-      }
-    ]
-  }
-];
-const seedPeriods = [
-  {id:'p_abr_sep_2026',name:'Abril - Septiembre 2026',start:'2026-04-01',end:'2026-09-30',status:'active',modalities:['En línea']},
-  {id:'p_oct_mar_2027',name:'Octubre 2026 - Marzo 2027',start:'2026-10-01',end:'2027-03-31',status:'inactive'}
-];
-const scale = [{v:1,emoji:'😠',label:'Totalmente en desacuerdo',cls:'f1'},{v:2,emoji:'🙁',label:'En desacuerdo',cls:'f2'},{v:3,emoji:'😐',label:'Ni de acuerdo ni en desacuerdo',cls:'f3'},{v:4,emoji:'🙂',label:'De acuerdo',cls:'f4'},{v:5,emoji:'😄',label:'Totalmente de acuerdo',cls:'f5'}];
-const PUBLIC_STUDENT_URL = location.origin + location.pathname;
-const ADMIN_URL = PUBLIC_STUDENT_URL;
-const SUPABASE_URL = 'https://fskkoitsnmxbfvqnroid.supabase.co/rest/v1';
-const SUPABASE_KEY = 'sb_publishable_OF9NiY_W8Q4W5GuNrCaU6A_yBKF6Ew1';
-const SUPABASE_ENABLED = true;
-let sections = JSON.parse(localStorage.getItem('cordillera_questions_v2')||JSON.stringify(seedSections));
-let records = JSON.parse(localStorage.getItem('cordillera_records_v2')||'[]');
-let periods = JSON.parse(localStorage.getItem('cordillera_periods_v2')||JSON.stringify(seedPeriods));
-let formularioId = null;
-let academicCatalog = [];
-let currentStep = 0; let answers = {}; let adminLogged=false; let currentAdmin=null; let administrators=[];
-function setSyncStatus(msg){const el=document.getElementById('syncStatus'); if(el)el.textContent=msg; const ad=document.getElementById('adminSyncStatus'); if(ad)ad.textContent='Estado: '+msg;}
-function saveQuestions(){localStorage.setItem('cordillera_questions_v2',JSON.stringify(sections));}
-function saveRecords(){localStorage.setItem('cordillera_records_v2',JSON.stringify(records));}
-function savePeriods(){localStorage.setItem('cordillera_periods_v2',JSON.stringify(periods));}
-function saveAdminsLocal(){localStorage.setItem('cordillera_admins_v1',JSON.stringify(administrators));}
-const roleConfig={
-  super_admin:{label:'Super administrador',modules:['periods','questions','users','records','history','reports'],write:true},
-  admin_general:{label:'Administrador general',modules:['periods','questions','records','history','reports'],write:true},
-  gestor_encuestas:{label:'Gestor de encuestas',modules:['periods','questions','history'],write:true},
-  reportes:{label:'Reportes',modules:['reports','history'],write:false},
-  consulta:{label:'Consulta',modules:['reports','history'],write:false}
-};
-function roleLabel(role){return (roleConfig[role]||roleConfig.consulta).label;}
-function adminCan(module){return !!(currentAdmin && (roleConfig[currentAdmin.rol]||roleConfig.consulta).modules.includes(module));}
-function adminCanWrite(){return !!(currentAdmin && (roleConfig[currentAdmin.rol]||roleConfig.consulta).write);}
-function requireAdmin(module,write=false){if(!currentAdmin){alert('Primero inicia sesión como administrador.');showPanel('admin');return false;} if(module && !adminCan(module)){alert('Tu rol no tiene permiso para este módulo.');return false;} if(write && !adminCanWrite()){alert('Tu rol solo permite consulta. No puede guardar, editar ni eliminar.');return false;} return true;}
-const DEFAULT_ENABLED_MODALITIES = ['En línea'];
-function normalizeText(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
-function enabledModalitiesForPeriod(p){return (p && Array.isArray(p.modalities) && p.modalities.length) ? p.modalities : DEFAULT_ENABLED_MODALITIES;}
-function modalityAllowedForPeriod(row,p){const allowed=enabledModalitiesForPeriod(p).map(normalizeText); return allowed.includes(normalizeText(row.modality));}
-function getPeriodModalitiesFromForm(){const arr=[]; if(document.getElementById('pModOnline')?.checked)arr.push('En línea'); if(document.getElementById('pModPresencial')?.checked)arr.push('Presencial'); if(document.getElementById('pModHibrida')?.checked)arr.push('Híbrida'); return arr;}
-function setPeriodModalitiesForm(mods){const allowed=(Array.isArray(mods)&&mods.length?mods:DEFAULT_ENABLED_MODALITIES).map(normalizeText); if(document.getElementById('pModOnline'))pModOnline.checked=allowed.includes(normalizeText('En línea')); if(document.getElementById('pModPresencial'))pModPresencial.checked=allowed.includes(normalizeText('Presencial')); if(document.getElementById('pModHibrida'))pModHibrida.checked=allowed.includes(normalizeText('Híbrida'));}
-async function sbFetch(path,options={}){
-  const headers={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json',Prefer:'return=representation',...(options.headers||{})};
-  const res=await fetch(SUPABASE_URL+'/'+path,{...options,headers});
-  const txt=await res.text();
-  let data=txt?JSON.parse(txt):null;
-  if(!res.ok) throw new Error((data&&data.message)||txt||('Error Supabase '+res.status));
-  return data;
+const SUPABASE_BASE='https://fskkoitsnmxbfvqnroid.supabase.co/rest/v1';
+const SUPABASE_KEY='sb_publishable_OF9NiY_W8Q4W5GuNrCaU6A_yBKF6Ew1';
+const LOGO='https://i.imgur.com/dk8rXBO.jpeg';
+const VAL={1:'1 - Totalmente en desacuerdo',2:'2 - En desacuerdo',3:'3 - Neutral',4:'4 - De acuerdo',5:'5 - Totalmente de acuerdo'};
+const FACES={1:'😠',2:'🙁',3:'😐',4:'🙂',5:'😄'};
+let forms=[],periods=[],indicators=[],questions=[],carreras=[],materias=[],docentes=[],asignaciones=[],records=[],details=[],admins=[],catalog=[],answers={},currentAdmin=null,formularioId=null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),3800)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+async function sb(path,opt={}){const res=await fetch(`${SUPABASE_BASE}/${path}`,{...opt,headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation',...(opt.headers||{})}});const txt=await res.text();let data;try{data=txt?JSON.parse(txt):null}catch{data=txt}if(!res.ok){throw new Error((data&&data.message)||txt||res.statusText)}return data||[]}
+async function safe(path){try{return await sb(path)}catch(e){console.error(path,e);toast('Error Supabase: '+e.message);return []}}
+function normalizeMod(v){v=String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();if(v.includes('linea')||v.includes('online')||v.includes('virtual'))return 'En línea';if(v.includes('hibr'))return 'Híbrida';if(v.includes('pres'))return 'Presencial';return v? v.charAt(0).toUpperCase()+v.slice(1):''}
+function today(){return new Date().toISOString().slice(0,10)}
+function getActivePeriod(){const t=today();return periods.find(p=>p.activo&&p.estado!==false&&(!p.fecha_inicio||p.fecha_inicio<=t)&&(!p.fecha_fin||p.fecha_fin>=t))||periods.find(p=>p.activo&&p.estado!==false)}
+function allowedMods(p){let m=p?.modalidades_habilitadas;if(!Array.isArray(m)||!m.length)m=['En línea'];return m.map(normalizeMod)}
+function rowAllowed(row,p){return !p||String(row.periodo_id)===String(p.id)&&allowedMods(p).includes(normalizeMod(row.modalidad))}
+async function loadAll(){document.getElementById('publicStatus').textContent='Cargando datos reales desde Supabase...';
+  [forms,periods,indicators,questions,carreras,materias,docentes,asignaciones,records,details,admins]=await Promise.all([
+    safe('formularios?select=*&order=id.asc'),safe('periodos?select=*&order=fecha_inicio.desc'),safe('indicadores?select=*&order=orden.asc'),safe('preguntas?select=*&order=orden.asc'),safe('carreras?select=*&order=nombre.asc'),safe('materias?select=*&order=nombre.asc'),safe('docentes?select=*&order=nombres.asc'),safe('materia_docente?select=*&order=id.asc'),safe('respuestas?select=*&order=created_at.desc'),safe('respuesta_detalle?select=*'),safe('administradores?select=*&order=created_at.desc')]);
+  formularioId=(forms.find(f=>(f.nombre||'').toLowerCase().includes('satisfacción docente'))||forms[0]||{}).id||1;
+  if(!admins.length)admins=[{id:'local',nombre:'Administrador inicial',usuario:'admin',correo:'admin@cordillera.edu.ec',clave_acceso:'1234',rol:'super_admin',estado:true}];
+  buildCatalog(); renderSurvey(); renderAdminAll(); const p=getActivePeriod(); document.getElementById('publicStatus').textContent=`Conectado a Supabase · ${catalog.length} asignaciones habilitadas para ${p?p.nombre:'sin periodo activo'}`;
 }
-async function safeSbFetch(path, fallback=[]){
-  try{ return await sbFetch(path); }
-  catch(e){ console.error('Supabase error en '+path, e); return fallback; }
-}
-async function loadSupabaseData(){
-  if(!SUPABASE_ENABLED) return false;
-  try{
-    setSyncStatus('Conectando con Supabase...');
-
-    const forms = await safeSbFetch('formularios?select=*&order=id.asc', []);
-    const inds = await safeSbFetch('indicadores?select=*&order=orden.asc', []);
-    const qs = await safeSbFetch('preguntas?select=*&order=orden.asc', []);
-    const ps = await safeSbFetch('periodos?select=*&order=fecha_inicio.desc', []);
-    const carreras = await safeSbFetch('carreras?select=*&order=nombre.asc', []);
-    const materias = await safeSbFetch('materias?select=*&order=nombre.asc', []);
-    const docentes = await safeSbFetch('docentes?select=*&order=nombres.asc', []);
-    const mds = await safeSbFetch('materia_docente?select=*&order=id.asc', []);
-    const rs = await safeSbFetch('respuestas?select=*&order=created_at.desc', []);
-    const detalles = await safeSbFetch('respuesta_detalle?select=*', []);
-    const adminsSupabase = await safeSbFetch('administradores?select=*&order=created_at.desc', []);
-
-    const form = (forms||[]).find(f => (f.nombre||'').toLowerCase().trim()==='encuesta de satisfacción docente'.toLowerCase()) || (forms||[])[0];
-    formularioId = form?.id || 1;
-
-    administrators = (adminsSupabase||[]).map(a=>({
-      id:String(a.id), nombre:a.nombre||'', usuario:a.usuario||'', correo:a.correo||'', clave:a.clave_acceso||'', rol:a.rol||'consulta', estado:a.estado!==false, created_at:a.created_at||''
-    }));
-    if(!administrators.length){
-      administrators = [{id:'demo_admin',nombre:'Administrador inicial',usuario:'admin',correo:'admin@cordillera.edu.ec',clave:'1234',rol:'super_admin',estado:true}];
-    }
-    saveAdminsLocal();
-
-    if(inds?.length && qs?.length){
-      sections = inds.filter(i=>i.estado!==false).map(i=>({
-        id:String(i.id),
-        title:i.nombre,
-        questions:qs.filter(q=>String(q.indicador_id)===String(i.id) && q.estado!==false).map(q=>({
-          id:String(q.id), type:q.tipo||'scale', active:q.estado!==false, text:q.texto
-        }))
-      })).filter(s=>s.questions.length);
-      saveQuestions();
-    }
-
-    if(ps?.length){
-      periods = ps.filter(p=>p.estado!==false).map(p=>({
-        id:String(p.id), name:p.nombre, start:p.fecha_inicio, end:p.fecha_fin, status:p.activo?'active':'inactive', modalities:Array.isArray(p.modalidades_habilitadas)?p.modalidades_habilitadas:DEFAULT_ENABLED_MODALITIES
-      }));
-      savePeriods();
-    }
-
-    const carreraMap = new Map((carreras||[]).map(c=>[String(c.id),c]));
-    const materiaMap = new Map((materias||[]).map(m=>[String(m.id),m]));
-    const docenteMap = new Map((docentes||[]).map(d=>[String(d.id),d]));
-    const periodoMap = new Map((ps||[]).map(p=>[String(p.id),p]));
-
-    academicCatalog = (mds||[]).filter(x=>x.estado!==false).map(x=>{
-      const mat = materiaMap.get(String(x.materia_id)) || {};
-      const doc = docenteMap.get(String(x.docente_id)) || {};
-      const car = carreraMap.get(String(mat.carrera_id)) || {};
-      const per = periodoMap.get(String(x.periodo_id)) || {};
-      return {
-        id:String(x.id),
-        periodId:String(per.id||x.periodo_id||''), period:per.nombre||'',
-        careerId:String(car.id||mat.carrera_id||''), career:car.nombre||'',
-        materiaId:String(mat.id||x.materia_id||''), subject:mat.nombre||'',
-        docenteId:String(doc.id||x.docente_id||''), teacher:doc.nombres||'',
-        modality:mat.modalidad||'', shift:mat.jornada||'', level:mat.nivel||'', parallel:mat.paralelo||''
-      };
-    }).filter(x=>x.subject && x.teacher);
-
-    const detalleByRespuesta = new Map();
-    (detalles||[]).forEach(d=>{
-      const key=String(d.respuesta_id);
-      if(!detalleByRespuesta.has(key)) detalleByRespuesta.set(key,[]);
-      detalleByRespuesta.get(key).push(d);
-    });
-
-    records = (rs||[]).map(r=>{
-      const mat = materiaMap.get(String(r.materia_id)) || {};
-      const doc = docenteMap.get(String(r.docente_id)) || {};
-      const car = carreraMap.get(String(r.carrera_id || mat.carrera_id)) || {};
-      const per = periodoMap.get(String(r.periodo_id)) || {};
-      const ans={};
-      (detalleByRespuesta.get(String(r.id))||[]).forEach(d=>ans[String(d.pregunta_id)] = Number(d.valoracion));
-      const meta={
-        periodId:String(per.id||r.periodo_id||''), period:per.nombre||'',
-        carreraId:String(car.id||r.carrera_id||''), career:car.nombre||'',
-        materiaId:String(mat.id||r.materia_id||''), subject:mat.nombre||'',
-        docenteId:String(doc.id||r.docente_id||''), teacher:doc.nombres||'',
-        modality:r.modalidad||mat.modalidad||'', shift:r.jornada||mat.jornada||'', level:r.nivel||mat.nivel||'', parallel:r.paralelo||mat.paralelo||''
-      };
-      const rec=calcRecord(meta,ans,r.observacion||'');
-      rec.id=r.id; rec.date=r.created_at; rec.avg=Number(r.promedio||rec.avg);
-      return rec;
-    });
-    saveRecords();
-
-    updateAcademicSelectors();
-    const counts = `carreras ${carreras.length}, materias ${materias.length}, docentes ${docentes.length}, asignaciones ${academicCatalog.length}, preguntas ${sections.reduce((a,s)=>a+s.questions.length,0)}, respuestas ${records.length}`;
-    setSyncStatus('Conectado a Supabase · '+counts);
-    if(!academicCatalog.length){
-      setSyncStatus('Conectado, pero no hay asignaciones materia-docente visibles. Ejecuta el SQL de verificación/RLS e insert de datos reales.');
-    }
-    return true;
-  }catch(e){
-    console.error('Error cargando Supabase:', e);
-    setSyncStatus('No se pudo cargar Supabase: '+e.message);
-    ['career','modality','shift','level','subject','teacher','parallel'].forEach(id=>{const el=document.getElementById(id); if(el) el.innerHTML='<option value="">No se pudieron cargar datos de Supabase</option>';});
-    return false;
-  }
-}
-async function getOrCreate(table,match,insertObj){
-  const query=Object.entries(match).map(([k,v])=>`${k}=eq.${encodeURIComponent(v)}`).join('&');
-  const found=await sbFetch(`${table}?select=id&${query}&limit=1`);
-  if(found?.[0]) return found[0].id;
-  const ins=await sbFetch(table,{method:'POST',body:JSON.stringify(insertObj||match)});
-  return ins?.[0]?.id;
-}
-async function saveRecordToSupabase(rec){
-  if(!SUPABASE_ENABLED) return null;
-  const carreraId=rec.meta.carreraId?Number(rec.meta.carreraId):await getOrCreate('carreras',{nombre:rec.meta.career},{nombre:rec.meta.career,estado:true});
-  const materiaId=rec.meta.materiaId?Number(rec.meta.materiaId):await getOrCreate('materias',{nombre:rec.meta.subject},{carrera_id:carreraId,nombre:rec.meta.subject,nivel:rec.meta.level,modalidad:rec.meta.modality,jornada:rec.meta.shift,paralelo:rec.meta.parallel,estado:true});
-  const docenteId=rec.meta.docenteId?Number(rec.meta.docenteId):await getOrCreate('docentes',{nombres:rec.meta.teacher},{nombres:rec.meta.teacher,estado:true});
-  const payload={formulario_id:formularioId,periodo_id:Number(rec.meta.periodId)||null,carrera_id:carreraId,materia_id:materiaId,docente_id:docenteId,modalidad:rec.meta.modality,jornada:rec.meta.shift,nivel:rec.meta.level,paralelo:rec.meta.parallel,promedio:rec.avg,semaforo:rec.avg<3?'Crítico':rec.avg<4?'Medio':'Alto',observacion:rec.comment||null};
-  const inserted=await sbFetch('respuestas',{method:'POST',body:JSON.stringify(payload)});
-  const respuestaId=inserted?.[0]?.id;
-  const details=activeQuestionList().filter(q=>rec.answers[q.id]).map(q=>({respuesta_id:respuestaId,pregunta_id:Number(q.id),valoracion:Number(rec.answers[q.id]),valoracion_texto:answerLabel(rec.answers[q.id])}));
-  if(details.length) await sbFetch('respuesta_detalle',{method:'POST',body:JSON.stringify(details)});
-  return respuestaId;
-}
-function todayISO(){return new Date().toISOString().slice(0,10)}
-function periodIsOpen(p){const t=todayISO(); return p.status==='active' && (!p.start||p.start<=t) && (!p.end||p.end>=t);}
-function getCurrentPeriod(){return periods.find(periodIsOpen) || periods.find(p=>p.status==='active') || null;}
-function activeSections(){return sections.map(s=>({...s,questions:s.questions.filter(q=>q.active)})).filter(s=>s.questions.length);}
-function showPanel(id,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); if(btn)btn.classList.add('active'); if(id==='reports'){fillFilters();renderReports();} if(id==='admin'&&adminLogged){renderAdminSetup();} if(id==='student'){refreshSurveyAvailability();}}
-function copyPublicUrl(){document.getElementById('publicUrl').textContent=PUBLIC_STUDENT_URL; navigator.clipboard?.writeText(PUBLIC_STUDENT_URL); alert('URL pública copiada para estudiantes. Este enlace abre solo la encuesta.');}
-function copyAdminGeneratedUrl(){const url=PUBLIC_STUDENT_URL; if(adminGeneratedUrl) adminGeneratedUrl.value=url; navigator.clipboard?.writeText(url); alert('URL pública copiada. Compártela con los estudiantes.');}
-
-function uniqRows(rows,key,labelKey){
-  const m=new Map(); rows.forEach(r=>{const label=(r[labelKey]||'').trim(); if(label&&!m.has(label))m.set(label,r);}); return [...m.values()].sort((a,b)=>(a[labelKey]||'').localeCompare(b[labelKey]||''));
-}
-function fillSelectFromRows(id, rows, labelKey, idKey){
-  const el=document.getElementById(id); if(!el)return; const old=el.value; const unique=uniqRows(rows,idKey,labelKey);
-  if(!unique.length){el.innerHTML='<option value="">Sin datos</option>'; return;}
-  el.innerHTML=unique.map(r=>`<option value="${esc(r[labelKey])}" data-id="${esc(r[idKey]||'')}">${esc(r[labelKey])}</option>`).join('');
-  if([...el.options].some(o=>o.value===old)) el.value=old;
-}
-function filterCatalogByCurrentSelections(changed){
-  const p=getCurrentPeriod(); let rows=academicCatalog.filter(r=>(!p || String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)));
-  const order=['career','modality','shift','level','subject','teacher','parallel'];
-  for(const id of order){
-    const el=document.getElementById(id); if(!el || !el.value) continue;
-    if(id===changed) break;
-    const key={career:'career',modality:'modality',shift:'shift',level:'level',subject:'subject',teacher:'teacher',parallel:'parallel'}[id];
-    rows=rows.filter(r=>String(r[key]||'')===String(el.value));
-  }
-  return rows.length?rows:academicCatalog.filter(r=>(!p || String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)));
-}
-function updateAcademicSelectors(changed){
-  if(!academicCatalog.length){return;}
-  const p=getCurrentPeriod(); const periodRows=academicCatalog.filter(r=>(!p || String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)));
-  if(!periodRows.length){return;}
-  const base=filterCatalogByCurrentSelections(changed);
-  fillSelectFromRows('career', periodRows, 'career', 'careerId');
-  const careerRows=periodRows.filter(r=>!career.value || r.career===career.value);
-  fillSelectFromRows('modality', careerRows, 'modality', 'modality');
-  const modalityRows=careerRows.filter(r=>!modality.value || r.modality===modality.value);
-  fillSelectFromRows('shift', modalityRows, 'shift', 'shift');
-  const shiftRows=modalityRows.filter(r=>!shift.value || r.shift===shift.value);
-  fillSelectFromRows('level', shiftRows, 'level', 'level');
-  const levelRows=shiftRows.filter(r=>!level.value || r.level===level.value);
-  fillSelectFromRows('subject', levelRows, 'subject', 'materiaId');
-  const subjectRows=levelRows.filter(r=>!subject.value || r.subject===subject.value);
-  fillSelectFromRows('teacher', subjectRows, 'teacher', 'docenteId');
-  const teacherRows=subjectRows.filter(r=>!teacher.value || r.teacher===teacher.value);
-  fillSelectFromRows('parallel', teacherRows, 'parallel', 'parallel');
-}
-function selectedOptionData(id,field){const el=document.getElementById(id); const opt=el?.options?.[el.selectedIndex]; return opt?.dataset?.[field]||'';}
-function currentCatalogMatch(){
-  const p=getCurrentPeriod();
-  return academicCatalog.find(r=>(!p||String(r.periodId)===String(p.id)) && (!p || modalityAllowedForPeriod(r,p)) && r.career===career.value && r.modality===modality.value && r.shift===shift.value && r.level===level.value && r.subject===subject.value && r.teacher===teacher.value && r.parallel===parallel.value) || null;
-}
-function refreshSurveyAvailability(){const p=getCurrentPeriod(); const open=p&&periodIsOpen(p); document.getElementById('surveyOpenBox').classList.toggle('hidden',!open); document.getElementById('surveyClosedBox').classList.toggle('hidden',open); if(open){document.getElementById('activePeriodLabel').textContent=p.name+' · '+p.start+' al '+p.end+' · Modalidad habilitada: '+enabledModalitiesForPeriod(p).join(', '); const sel=document.getElementById('period'); sel.innerHTML=`<option value="${p.id}">${p.name}</option>`; updateAcademicSelectors(); const available=academicCatalog.filter(r=>String(r.periodId)===String(p.id) && modalityAllowedForPeriod(r,p)); if(!available.length){['career','modality','shift','level','subject','teacher','parallel'].forEach(id=>{const el=document.getElementById(id); if(el)el.innerHTML='<option value="">Sin datos para la modalidad habilitada</option>';});} renderSurvey();} else {let reason=p?'Existe un periodo activo, pero aún está fuera del rango de fechas configurado.':'No existe un periodo activo.'; document.getElementById('closedReason').textContent=reason;}}
-function renderStepbar(){const n=activeSections().length;document.getElementById('stepbar').innerHTML=Array.from({length:n},(_,i)=>`<div class="dot ${i===currentStep?'active':i<currentStep?'done':''}">${i+1}</div>${i<n-1?'<div class="dash"></div>':''}`).join('');}
-function renderSurvey(){const secs=activeSections(); if(!secs.length){surveyContent.innerHTML='<div class="sectionTitle">Sin preguntas activas</div>'; return;} if(currentStep>=secs.length)currentStep=secs.length-1; renderStepbar(); const s=secs[currentStep]; let html=`<div class="sectionTitle">${s.title}</div>`; s.questions.forEach(q=>{ html+=`<div class="question"><div class="qtext">${q.text}</div><div class="faces">${scale.map(f=>`<button title="${f.label}" class="face ${f.cls} ${answers[q.id]===f.v?'selected':''}" onclick="setAnswer('${q.id}',${f.v})">${f.emoji}</button>`).join('')}</div></div>`; }); surveyContent.innerHTML=html; nextBtn.classList.toggle('hidden',currentStep===secs.length-1); submitBtn.classList.toggle('hidden',currentStep!==secs.length-1);}
-function setAnswer(id,v){answers[id]=v;renderSurvey();}
-function stepComplete(){return activeSections()[currentStep].questions.every(q=>answers[q.id]);}
-function nextStep(){if(!stepComplete()) return alert('Responde todas las preguntas del indicador actual para continuar.'); currentStep++; renderSurvey();}
-function prevStep(){currentStep=Math.max(0,currentStep-1);renderSurvey();}
-function meta(){const p=getCurrentPeriod(); const match=currentCatalogMatch(); return ['career','modality','shift','level','subject','teacher','parallel'].reduce((a,id)=>(a[id]=document.getElementById(id).value,a),{periodId:p.id,period:p.name,carreraId:match?.careerId||selectedOptionData('career','id'),materiaId:match?.materiaId||selectedOptionData('subject','id'),docenteId:match?.docenteId||selectedOptionData('teacher','id')})}
-function calcRecord(meta,ans,comment){let byIndicator={}, total=0,count=0; sections.forEach(s=>{let vals=s.questions.filter(q=>q.active&&ans[q.id]).map(q=>ans[q.id]); if(vals.length){let avg=vals.reduce((a,b)=>a+b,0)/vals.length; byIndicator[s.title]=Number(avg.toFixed(2)); total+=vals.reduce((a,b)=>a+b,0); count+=vals.length;} }); return {id:Date.now()+Math.floor(Math.random()*999),date:new Date().toISOString(),meta,answers:ans,byIndicator,avg:Number((total/(count||1)).toFixed(2)),comment};}
-async function submitSurvey(){const p=getCurrentPeriod(); if(!p||!periodIsOpen(p)) return alert('La encuesta no se encuentra activa.'); if(!stepComplete()) return alert('Completa todas las preguntas del indicador actual.'); const tokenKey='cordillera_done_'+p.id+'_'+document.getElementById('subject').value+'_'+document.getElementById('teacher').value; if(localStorage.getItem(tokenKey) && !confirm('Este navegador ya registra un envío para esta materia/docente en el periodo activo. ¿Deseas continuar de todos modos?')) return; const rec=calcRecord(meta(),answers,generalComment.value.trim()); try{const remoteId=await saveRecordToSupabase(rec); if(remoteId)rec.id=remoteId;}catch(e){console.error(e); alert('No se pudo guardar en Supabase. Revisa las políticas RLS y tablas. Se guardará temporalmente en este navegador.\n\nDetalle: '+e.message);} records.unshift(rec); localStorage.setItem(tokenKey,'1'); saveRecords(); alert('Encuesta enviada correctamente. Gracias por tu participación confidencial.'); answers={}; currentStep=0; generalComment.value=''; renderSurvey(); fillFilters(); renderReports(); renderAdminRecords(); renderHistory();}
-function loginAdmin(){
-  const user=(document.getElementById('adminUser')?.value||'').trim().toLowerCase();
-  const pass=(document.getElementById('adminPass')?.value||'').trim();
-  const list = administrators.length ? administrators : JSON.parse(localStorage.getItem('cordillera_admins_v1')||'[]');
-  let found = list.find(a=>a.estado!==false && (String(a.usuario||'').toLowerCase()===user || String(a.correo||'').toLowerCase()===user) && String(a.clave||a.clave_acceso||'')===pass);
-  if(!found && user==='admin' && pass==='1234') found={id:'demo_admin',nombre:'Administrador inicial',usuario:'admin',correo:'admin@cordillera.edu.ec',clave:'1234',rol:'super_admin',estado:true};
-  if(found){
-    adminLogged=true; currentAdmin=found;
-    document.body.classList.add('admin-authenticated');adminLogin.classList.add('hidden');adminArea.classList.remove('hidden');
-    if(adminGeneratedUrl) adminGeneratedUrl.value=PUBLIC_STUDENT_URL;
-    renderAdminSubtabs(); renderAdminSetup(); renderReports();
-    alert('Acceso habilitado. Rol: '+roleLabel(found.rol));
-  }else alert('Usuario o clave incorrectos.');
-}
-function renderAdminSubtabs(){
-  const box=document.getElementById('adminSubtabs'); if(!box) return;
-  const tabs=[
-    ['periods','Periodos y activación'],['questions','Preguntas'],['users','Administradores'],['records','Registros'],['history','Historial']
-  ].filter(t=>adminCan(t[0]));
-  box.innerHTML=tabs.map((t,i)=>`<button class="subtab ${i===0?'active':''}" onclick="showAdminTab('${t[0]}',this)">${t[1]}</button>`).join('');
-  const first=tabs[0]?.[0]||'history'; document.querySelectorAll('.admin-tab').forEach(x=>x.classList.add('hidden')); const el=document.getElementById('admin-'+first); if(el)el.classList.remove('hidden');
-}
-function showAdminTab(id,btn){if(!requireAdmin(id,false))return;document.querySelectorAll('.admin-tab').forEach(x=>x.classList.add('hidden'));document.getElementById('admin-'+id).classList.remove('hidden');document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active')); if(btn)btn.classList.add('active'); if(id==='history')renderHistory(); if(id==='users')renderAdminUsers();}
-function renderAdminSetup(){renderAdminSubtabs();renderPeriods(); const sel=adminSection; if(sel){sel.innerHTML=sections.map((s,i)=>`<option value="${i}">${s.title}</option>`).join(''); renderAdminQuestions();} renderAdminUsers(); renderAdminRecords(); renderHistory(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-function clearPeriodForm(){periodEditId.value='';pName.value='';pStart.value='';pEnd.value='';pStatus.value='active';setPeriodModalitiesForm(DEFAULT_ENABLED_MODALITIES);}
-async function savePeriodForm(){if(!requireAdmin('periods',true))return;if(!pName.value.trim())return alert('Ingresa el nombre del periodo.'); if(!pStart.value||!pEnd.value)return alert('Configura fecha de inicio y fin.'); if(pStart.value>pEnd.value)return alert('La fecha de inicio no puede ser mayor que la fecha fin.'); const mods=getPeriodModalitiesFromForm(); if(!mods.length)return alert('Selecciona al menos una modalidad habilitada.'); const isEdit=!!periodEditId.value; let id=periodEditId.value||('p_'+Date.now()); const obj={id,name:pName.value.trim(),start:pStart.value,end:pEnd.value,status:pStatus.value,modalities:mods}; try{if(SUPABASE_ENABLED){const payload={nombre:obj.name,fecha_inicio:obj.start,fecha_fin:obj.end,activo:obj.status==='active',estado:true,modalidades_habilitadas:mods}; if(isEdit){await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});} else {const ins=await sbFetch('periodos',{method:'POST',body:JSON.stringify(payload)}); obj.id=String(ins?.[0]?.id||id);}}}catch(e){alert('No se pudo sincronizar el periodo en Supabase: '+e.message);} const i=periods.findIndex(p=>String(p.id)===String(id)); if(i>=0)periods[i]=obj; else periods.push(obj); savePeriods(); clearPeriodForm(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-function editPeriod(id){const p=periods.find(x=>x.id===id); periodEditId.value=p.id;pName.value=p.name;pStart.value=p.start;pEnd.value=p.end;pStatus.value=p.status;setPeriodModalitiesForm(p.modalities);}
-async function togglePeriod(id){if(!requireAdmin('periods',true))return;const p=periods.find(x=>String(x.id)===String(id)); p.status=p.status==='active'?'inactive':'active'; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({activo:p.status==='active'})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-async function deletePeriod(id){if(!requireAdmin('periods',true))return;const count=records.filter(r=>String(r.meta.periodId)===String(id)).length; if(count && !confirm('Este periodo tiene registros históricos. Se inactivará para mantener el historial. ¿Continuar?')) return; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({estado:false,activo:false})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} periods=periods.filter(p=>String(p.id)!==String(id)); savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-function periodBadge(p){if(periodIsOpen(p))return '<span class="pill ok">Abierta ahora</span>'; if(p.status==='active')return '<span class="pill warn">Activa fuera de fecha</span>'; return '<span class="pill off">Inactiva</span>';}
-function renderPeriods(){if(!periodList)return; periodList.innerHTML=periods.map(p=>`<div class="periodCard ${periodIsOpen(p)?'activePeriod':''}"><b>${p.name}</b> ${periodBadge(p)}<div class="small">${p.start} al ${p.end} · Modalidades habilitadas: <b>${enabledModalitiesForPeriod(p).join(', ')}</b> · Registros: ${records.filter(r=>String(r.meta.periodId)===String(p.id)||r.meta.period===p.name).length}</div><div class="twoActions"><button class="btn secondary" onclick="editPeriod('${p.id}')">Editar</button><button class="btn ${p.status==='active'?'danger':'ok'}" onclick="togglePeriod('${p.id}')">${p.status==='active'?'Inactivar':'Activar'}</button><button class="btn danger" onclick="deletePeriod('${p.id}')">Eliminar</button></div></div>`).join('') || '<p class="small">No hay periodos configurados.</p>';}
-function renderAdminQuestions(){const idx=+adminSection.value||0; if(!adminQuestions)return; adminQuestions.innerHTML=sections[idx].questions.map((q,qi)=>`<div class="adminQuestion"><textarea onchange="editQuestion(${idx},${qi},this.value)">${q.text}</textarea><button class="btn ${q.active?'ok':'secondary'}" onclick="toggleQuestion(${idx},${qi})">${q.active?'Activa':'Inactiva'}</button><button class="btn danger" onclick="deleteQuestion(${idx},${qi})">Eliminar</button></div>`).join('');}
-async function editQuestion(si,qi,val){if(!requireAdmin('questions',true))return;sections[si].questions[qi].text=val;saveQuestions();renderSurvey();renderReports(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({texto:val})});}catch(e){console.error(e);}}
-async function toggleQuestion(si,qi){if(!requireAdmin('questions',true))return;sections[si].questions[qi].active=!sections[si].questions[qi].active;saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({estado:sections[si].questions[qi].active})});}catch(e){console.error(e);}}
-async function deleteQuestion(si,qi){if(!requireAdmin('questions',true))return;if(confirm('¿Eliminar esta pregunta?')){const q=sections[si].questions[qi]; sections[si].questions.splice(qi,1);saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(q.id),{method:'PATCH',body:JSON.stringify({estado:false})});}catch(e){console.error(e);}}}
-async function addQuestion(){if(!requireAdmin('questions',true))return;const si=+adminSection.value||0; let q={id:'custom_'+Date.now(),type:'scale',active:true,text:'Nueva pregunta del indicador'}; try{if(SUPABASE_ENABLED){const ins=await sbFetch('preguntas',{method:'POST',body:JSON.stringify({formulario_id:formularioId,indicador_id:Number(sections[si].id)||null,texto:q.text,tipo:'escala',orden:sections[si].questions.length+1,obligatoria:true,estado:true})}); q.id=String(ins?.[0]?.id||q.id);}}catch(e){alert('No se pudo crear en Supabase: '+e.message);} sections[si].questions.push(q); saveQuestions();renderAdminQuestions();renderSurvey();}
-
-function clearAdminUserForm(){['adminEditId','newAdminName','newAdminUser','newAdminEmail','newAdminPass'].forEach(id=>{const el=document.getElementById(id); if(el)el.value='';}); if(document.getElementById('newAdminRole'))newAdminRole.value='reportes';}
-function renderAdminUsers(){
-  const t=document.getElementById('adminUsersTable'); if(!t) return;
-  const rows=administrators.map(a=>`<tr><td>${a.nombre||''}</td><td>${a.usuario||''}</td><td>${a.correo||''}</td><td><span class="pill ${a.estado?'ok':'off'}">${roleLabel(a.rol)}</span></td><td>${a.estado?'Activo':'Inactivo'}</td><td><button class="btn secondary" onclick="editAdminUser('${a.id}')">Editar</button> <button class="btn ${a.estado?'danger':'ok'}" onclick="toggleAdminUser('${a.id}')">${a.estado?'Inactivar':'Activar'}</button></td></tr>`).join('');
-  t.innerHTML='<tr><th>Nombre</th><th>Usuario</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>'+rows;
-}
-function editAdminUser(id){if(!requireAdmin('users',true))return; const a=administrators.find(x=>String(x.id)===String(id)); if(!a)return; adminEditId.value=a.id; newAdminName.value=a.nombre||''; newAdminUser.value=a.usuario||''; newAdminEmail.value=a.correo||''; newAdminPass.value=a.clave||''; newAdminRole.value=a.rol||'reportes';}
-async function saveAdminUser(){
-  if(!requireAdmin('users',true))return;
-  const id=(adminEditId.value||'').trim();
-  const payload={nombre:newAdminName.value.trim(),usuario:newAdminUser.value.trim(),correo:newAdminEmail.value.trim(),clave_acceso:newAdminPass.value.trim(),rol:newAdminRole.value,estado:true};
-  if(!payload.nombre||!payload.usuario||!payload.correo||!payload.clave_acceso){alert('Completa nombre, usuario, correo y clave.');return;}
-  try{
-    if(SUPABASE_ENABLED){
-      if(id && id!=='demo_admin') await sbFetch('administradores?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});
-      else {const ins=await sbFetch('administradores',{method:'POST',body:JSON.stringify(payload)}); payload.id=String(ins?.[0]?.id||Date.now());}
-    }
-    if(id){const i=administrators.findIndex(a=>String(a.id)===String(id)); if(i>=0)administrators[i]={...administrators[i],...payload,clave:payload.clave_acceso};}
-    else administrators.unshift({id:payload.id||String(Date.now()),...payload,clave:payload.clave_acceso});
-    saveAdminsLocal(); clearAdminUserForm(); renderAdminUsers(); alert('Administrador guardado.');
-  }catch(e){alert('No se pudo guardar el administrador: '+e.message);}
-}
-async function toggleAdminUser(id){
-  if(!requireAdmin('users',true))return;
-  const a=administrators.find(x=>String(x.id)===String(id)); if(!a)return;
-  if(currentAdmin && String(currentAdmin.id)===String(id) && a.estado){alert('No puedes inactivar tu propio usuario durante la sesión.');return;}
-  a.estado=!a.estado;
-  try{if(SUPABASE_ENABLED && id!=='demo_admin')await sbFetch('administradores?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({estado:a.estado})});}catch(e){alert('No se pudo actualizar: '+e.message);}
-  saveAdminsLocal(); renderAdminUsers();
-}
-
-function renderAdminRecords(){const t=recordsAdminTable; if(!t)return; t.innerHTML='<tr><th>Fecha</th><th>Periodo</th><th>Carrera</th><th>Materia</th><th>Docente</th><th>Prom.</th><th>Acción</th></tr>'+records.map(r=>`<tr><td>${new Date(r.date).toLocaleString()}</td><td>${r.meta.period}</td><td>${r.meta.career}</td><td>${r.meta.subject}</td><td>${r.meta.teacher}</td><td>${r.avg}</td><td><button class="btn danger" onclick="deleteRecord(${r.id})">Eliminar</button></td></tr>`).join('');}
-async function deleteRecord(id){if(!requireAdmin('records',true))return;try{if(SUPABASE_ENABLED)await sbFetch('respuestas?id=eq.'+encodeURIComponent(id),{method:'DELETE'});}catch(e){alert('No se pudo eliminar en Supabase: '+e.message);} records=records.filter(r=>String(r.id)!==String(id));saveRecords();renderAdminRecords();renderReports();renderHistory();renderPeriods();}
-async function deleteAllRecords(){if(!requireAdmin('records',true))return;if(confirm('¿Eliminar todos los registros recolectados?')){try{if(SUPABASE_ENABLED)await sbFetch('respuestas?id=not.is.null',{method:'DELETE'});}catch(e){alert('No se pudo eliminar todo en Supabase: '+e.message);} records=[];saveRecords();renderAdminRecords();renderReports();renderHistory();renderPeriods();}}
-function renderHistory(){if(!historyBox)return; const allNames=[...new Set(periods.map(p=>p.name).concat(records.map(r=>r.meta.period)))]; historyBox.innerHTML=allNames.map(name=>{const data=records.filter(r=>r.meta.period===name); const av=avg(data.map(r=>r.avg)); return `<div class="periodCard"><b>${name}</b><div class="small">Encuestas históricas: ${data.length} · Promedio: ${av.toFixed(2)} · Estado actual: ${(periods.find(p=>p.name===name)?.status||'histórico no configurado')}</div></div>`}).join('')||'<p class="small">Aún no existe historial.</p>';}
-function fillFilters(){const oldP=fPeriod.value; const pvals=[...new Set(records.map(r=>r.meta.period).concat(periods.map(p=>p.name)))].filter(Boolean); fPeriod.innerHTML='<option value="">Todos</option>'+pvals.map(v=>`<option>${v}</option>`).join(''); if(pvals.includes(oldP))fPeriod.value=oldP; const map={fCareer:'career',fSubject:'subject',fTeacher:'teacher'}; for(const [fid,key] of Object.entries(map)){let sel=document.getElementById(fid); let old=sel.value; let vals=[...new Set(records.map(r=>r.meta[key]))].filter(Boolean).sort(); sel.innerHTML='<option value="">Todos</option>'+vals.map(v=>`<option>${v}</option>`).join(''); sel.value=vals.includes(old)?old:'';} let oldi=fIndicator.value; let vals=sections.map(s=>s.title); fIndicator.innerHTML='<option value="">Todos</option>'+vals.map(v=>`<option>${v}</option>`).join(''); fIndicator.value=vals.includes(oldi)?oldi:'';}
-function filteredRecords(){let fp=fPeriod.value,fc=fCareer.value,fs=fSubject.value,ft=fTeacher.value,fi=fIndicator.value,fr=fRisk.value; return records.filter(r=>(!fp||r.meta.period===fp)&&(!fc||r.meta.career===fc)&&(!fs||r.meta.subject===fs)&&(!ft||r.meta.teacher===ft)).filter(r=>{let val=fi?(r.byIndicator[fi]||0):r.avg; if(!fr)return true; if(fr==='critico')return val<3; if(fr==='medio')return val>=3&&val<4; if(fr==='alto')return val>=4;});}
-function avg(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0}
-function renderReports(){const data=filteredRecords(); kTotal.textContent=data.length; const av=avg(data.map(r=>r.avg)); kAvg.textContent=av.toFixed(2); kHigh.textContent=(data.length?data.filter(r=>r.avg>=4).length*100/data.length:0).toFixed(0)+'%'; kRisk.textContent=(data.length?data.filter(r=>r.avg<3).length*100/data.length:0).toFixed(0)+'%'; renderIndicators(data); renderDistribution(data); renderReportTable(data);}
-function renderIndicators(data){let html=''; sections.forEach(s=>{let vals=data.map(r=>r.byIndicator[s.title]).filter(Boolean); let a=avg(vals); html+=`<div class="indicator"><span>${s.title}</span><div class="progress" style="flex:1"><div class="bar" style="width:${(a/5*100).toFixed(0)}%"></div></div><b>${a.toFixed(2)}</b></div>`}); indicatorBars.innerHTML=html||'<p class="small">Sin datos.</p>';}
-function renderDistribution(data){let counts=[1,2,3,4,5].map(v=>data.filter(r=>Math.round(r.avg)===v).length); emotionDist.innerHTML=scale.map((f,i)=>`<div class="indicator"><span>${f.emoji} ${f.label}</span><div class="progress" style="flex:1"><div class="bar" style="width:${data.length?counts[i]/data.length*100:0}%"></div></div><b>${counts[i]}</b></div>`).join('');}
-function renderReportTable(data){
-  const html=matrixTableHtml(data,false,true);
-  reportTable.innerHTML=html.replace(/^<table[^>]*>|<\/table>$/g,'');
-}
-function answerLabel(v){
-  const item=scale.find(x=>x.v===Number(v));
-  return item?(`${item.v} - ${item.label}`):'';
-}
-function answerShort(v){
-  const item=scale.find(x=>x.v===Number(v));
-  return item?String(item.v):'';
-}
-function answerClass(v){
-  const n=Number(v)||0;
-  if(n>=4)return 'valHigh';
-  if(n===3)return 'valMed';
-  if(n>0)return 'valLow';
-  return '';
-}
-function activeQuestionList(){
-  let list=[];
-  sections.forEach(sec=>sec.questions.filter(q=>q.active).forEach((q,idx)=>list.push({indicator:sec.title,id:q.id,text:q.text,number:idx+1})));
-  return list;
-}
-function currentFilterSummary(){return [['Periodo',fPeriod.value||'Todos'],['Carrera',fCareer.value||'Todas'],['Materia',fSubject.value||'Todas'],['Docente',fTeacher.value||'Todos'],['Indicador',fIndicator.value||'Todos'],['Semáforo',fRisk.value||'Todos']];}
-function reportMatrixRows(data){
-  const qs=activeQuestionList();
-  const headers=['Respuesta número','Fecha','Periodo académico','Carrera','Modalidad','Jornada','Nivel / semestre','Materia evaluada','Docente evaluado','Paralelo','Promedio general','Semáforo','Comentario general']
-    .concat(qs.map((q,i)=>`P${i+1} · ${q.indicator} · ${q.text}`));
-  return [headers].concat(data.map((r,i)=>[
-    i+1,new Date(r.date).toLocaleString(),r.meta.period,r.meta.career,r.meta.modality,r.meta.shift,r.meta.level,r.meta.subject,r.meta.teacher,r.meta.parallel,r.avg,r.avg<3?'Crítico':r.avg<4?'Medio':'Alto',r.comment||''
-  ].concat(qs.map(q=>answerLabel(r.answers[q.id])))));
-}
-function indicatorSummaryRows(data){
-  let rows=[['Indicador','Promedio','Encuestas consideradas','Semáforo']];
-  sections.forEach(s=>{const vals=data.map(r=>r.byIndicator[s.title]).filter(Boolean);const a=avg(vals);rows.push([s.title,a.toFixed(2),vals.length,a<3?'Crítico':a<4?'Medio':'Alto']);});
-  return rows;
-}
-function download(name,content,type){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),300);}
-function esc(s){return String(s??'').replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m]));}
-function rowsToCsv(rows){return rows.map(r=>r.map(x=>'"'+String(x??'').replaceAll('"','""')+'"').join(',')).join('\n');}
-function rowsToTable(rows,cls=''){
-  return `<table${cls?` class="${cls}"`:''}>`+rows.map((r,i)=>'<tr>'+r.map(c=>`<${i===0?'th':'td'}>${esc(c)}</${i===0?'th':'td'}>`).join('')+'</tr>').join('')+'</table>';
-}
-function groupQuestionColspans(qs){
-  const groups=[];
-  qs.forEach(q=>{const last=groups[groups.length-1]; if(last&&last.name===q.indicator)last.count++; else groups.push({name:q.indicator,count:1});});
-  return groups;
-}
-function matrixTableHtml(data,full=true,preview=false){
-  const qs=activeQuestionList();
-  const baseHeaders=full?['#','Fecha','Periodo','Carrera','Modalidad','Jornada','Nivel','Materia evaluada','Docente evaluado','Paralelo','Prom.','Semáforo','Comentario']:['#','Periodo','Carrera','Materia evaluada','Docente evaluado','Prom.','Semáforo'];
-  const groups=groupQuestionColspans(qs);
-  let html='<table class="reportMatrixTable"><thead>';
-  html+='<tr class="groupHeader"><th colspan="'+baseHeaders.length+'" style="background:#006068;color:#FFFFFF;text-align:center;font-weight:700;">Datos académicos confidenciales</th>'+groups.map(g=>`<th colspan="${g.count}" style="background:#E47E3D;color:#FFFFFF;text-align:center;font-weight:700;">${esc(g.name)}</th>`).join('')+'</tr>';
-  html+='<tr>'+baseHeaders.map(h=>`<th style="background:#006068;color:#FFFFFF;text-align:center;font-weight:700;">${esc(h)}</th>`).join('')+qs.map((q,i)=>`<th style="background:#006068;color:#FFFFFF;text-align:center;font-weight:700;min-width:180px;">P${i+1}<br>${esc(q.text)}</th>`).join('')+'</tr></thead><tbody>';
-  const rows=preview?data.slice(0,25):data;
-  html+=rows.map((r,i)=>{
-    const base=full?[i+1,new Date(r.date).toLocaleString(),r.meta.period,r.meta.career,r.meta.modality,r.meta.shift,r.meta.level,r.meta.subject,r.meta.teacher,r.meta.parallel,r.avg,r.avg<3?'Crítico':r.avg<4?'Medio':'Alto',r.comment||'']:[i+1,r.meta.period,r.meta.career,r.meta.subject,r.meta.teacher,r.avg,r.avg<3?'Crítico':r.avg<4?'Medio':'Alto'];
-    return '<tr>'+base.map((c,ci)=>`<td${ci===7||(!full&&ci===3)?' class="subjectCell"':''}>${esc(c)}</td>`).join('')+qs.map(q=>{const v=r.answers[q.id];const n=answerShort(v);const label=answerLabel(v).replace(/^\d+ - /,'');return `<td class="${answerClass(v)}" style="text-align:center;font-weight:700;"><b>${esc(n)}</b><br><span>${esc(label)}</span></td>`}).join('')+'</tr>';
-  }).join('');
-  if(preview&&data.length>25) html+=`<tr><td colspan="${baseHeaders.length+qs.length}" class="muted">Vista previa: se muestran 25 de ${data.length} registros. Usa las exportaciones para descargar el reporte completo.</td></tr>`;
-  html+='</tbody></table>';
-  return html;
-}
-function reportHtmlDocument(data,printMode=false){
-  return `<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Encuesta de satisfacción Docente</title><style>:root{--verde-claro:#00CE7C;--verde-oscuro:#006068;--tomate:#E47E3D;--plomo:#666666;--blanco:#FFFFFF}body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#17242b;background:#fff}.brand{display:flex;align-items:center;gap:16px;border-bottom:5px solid var(--verde-oscuro);padding-bottom:12px;margin-bottom:18px}.brand img{width:96px;height:96px;object-fit:contain}.brand h1{margin:0;color:var(--verde-oscuro);font-size:26px}.subtitle{color:var(--plomo);font-weight:700}.muted{color:var(--plomo);font-size:12px}.reportNote{border-left:6px solid var(--tomate);background:rgba(228,126,61,.10);padding:10px;border-radius:10px;margin:10px 0}.matrix{overflow:auto}table{border-collapse:collapse;width:100%;font-size:11px;margin:12px 0}.reportMatrixTable{min-width:3200px}th,td{border:1px solid #cbd5e1;padding:6px;vertical-align:top}th{background:var(--verde-oscuro);color:var(--blanco);text-align:center;font-weight:700}.reportMatrixTable .groupHeader th{background:var(--tomate)!important;color:var(--blanco)!important;text-align:center}.reportMatrixTable th{min-width:120px}.reportMatrixTable th:nth-child(8),.reportMatrixTable td.subjectCell{font-weight:900;color:var(--verde-oscuro)}.valHigh{background:rgba(0,206,124,.22);color:var(--verde-oscuro);font-weight:700;text-align:center}.valMed{background:rgba(228,126,61,.20);color:#8a3b11;font-weight:700;text-align:center}.valLow{background:rgba(214,31,42,.13);color:#991b1b;font-weight:700;text-align:center}@media print{body{margin:10mm}.reportMatrixTable{font-size:8px}.noPrint{display:none}}`+(printMode?'@page{size:A4 landscape;margin:8mm}':'')+`</style></head><body><div class="brand"><img src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo Instituto Cordillera"><div><h1>Encuesta de satisfacción Docente</h1><div class="subtitle">Matriz de respuestas por pregunta</div><div class="muted">Reporte confidencial. Cada fila representa una encuesta respondida y cada columna contiene la valoración registrada por pregunta.</div></div></div><div class="reportNote"><b>Formato del reporte:</b> únicamente se muestra la matriz de respuestas por pregunta con encabezados completos y valoración sin emojis.</div><div class="matrix">${matrixTableHtml(data,true,false)}</div><p class="muted">Reporte generado: ${new Date().toLocaleString()} · La encuesta es confidencial y no contiene nombres, cédula, correo ni código estudiantil.</p></body></html>`;
-}
-function exportReport(type){const data=filteredRecords();const rows=reportMatrixRows(data);const stamp=new Date().toISOString().slice(0,10);if(type==='csv'){download(`encuesta_satisfaccion_docente_matriz_${stamp}.csv`,rowsToCsv(rows),'text/csv;charset=utf-8');}else if(type==='excel'){const html=reportHtmlDocument(data).replace('<html lang="es">','<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" lang="es">');download(`encuesta_satisfaccion_docente_matriz_${stamp}.xls`,html,'application/vnd.ms-excel;charset=utf-8');}else if(type==='html'){download(`encuesta_satisfaccion_docente_matriz_${stamp}.html`,reportHtmlDocument(data),'text/html;charset=utf-8');}else if(type==='pdf'){const w=window.open('','_blank');w.document.write(reportHtmlDocument(data,true));w.document.close();setTimeout(()=>{w.focus();w.print();},500);}}
-
-function demoData(){if(records.length)return; const periodsSeed=['Abril - Septiembre 2026','Octubre 2026 - Marzo 2027'], ids=['p_abr_sep_2026','p_oct_mar_2027'], careers=['Desarrollo de Software','Administración','Marketing Digital'], subjects=['Programación I','Base de Datos','Diseño Web'], teachers=['SALAZAR ARAUJO, EDUARDO JOSE RAFAEL','ROMERO MARTIN, GONZALO','PAREDES MORALES, ANA']; for(let i=0;i<32;i++){let ans={}; sections.forEach(s=>s.questions.forEach(q=>ans[q.id]=Math.max(1,Math.min(5,Math.round(3.45+Math.random()*1.55-(i%10===0?1.25:0)))))); records.push(calcRecord({periodId:ids[i%2],period:periodsSeed[i%2],career:careers[i%3],modality:i%2?'En línea':'Presencial',shift:i%3?'Nocturna':'Matutina',level:['Primero','Segundo','Tercero'][i%3],subject:subjects[i%3],teacher:teachers[i%3],parallel:['A','B','C'][i%3]},ans,i%7===0?'Revisar acompañamiento, claridad y retroalimentación.':''));} saveRecords();}
-(async function init(){if(document.getElementById('publicUrl'))document.getElementById('publicUrl').textContent=PUBLIC_STUDENT_URL; if(document.getElementById('adminGeneratedUrl'))document.getElementById('adminGeneratedUrl').value=PUBLIC_STUDENT_URL; const ok=await loadSupabaseData(); if(!ok){console.warn('Supabase no cargó; no se usará información demo para evitar confusión.');} refreshSurveyAvailability(); fillFilters(); renderReports(); renderAdminRecords(); renderHistory(); renderPeriods(); showPanel('student',document.querySelectorAll('.tab')[0]);})();
-
+function buildCatalog(){const cm=new Map(carreras.map(x=>[String(x.id),x])), mm=new Map(materias.map(x=>[String(x.id),x])), dm=new Map(docentes.map(x=>[String(x.id),x])), pm=new Map(periods.map(x=>[String(x.id),x]));catalog=asignaciones.filter(a=>a.estado!==false).map(a=>{const m=mm.get(String(a.materia_id))||{}, d=dm.get(String(a.docente_id))||{}, c=cm.get(String(m.carrera_id))||{}, p=pm.get(String(a.periodo_id))||{};return{asig_id:a.id,periodo_id:a.periodo_id,periodo:p.nombre||'',carrera_id:m.carrera_id,carrera:c.nombre||'',materia_id:m.id,materia:m.nombre||'',docente_id:d.id,docente:d.nombres||'',modalidad:normalizeMod(m.modalidad),jornada:m.jornada||'',nivel:m.nivel||'',paralelo:m.paralelo||''}}).filter(r=>r.materia&&r.docente)}
+function activeQuestions(){return questions.filter(q=>q.estado!==false).sort((a,b)=>(a.orden||0)-(b.orden||0))}
+function renderSurvey(){const p=getActivePeriod(); if(!p){document.getElementById('surveyBox').innerHTML='<div class="closed"><h2>Encuesta no disponible</h2><p>No existe un periodo académico activo para responder.</p></div>';return} document.getElementById('periodo').innerHTML=`<option value="${p.id}">${esc(p.nombre)}</option>`; const rows=catalog.filter(r=>rowAllowed(r,p)); fillCascade(rows); renderQuestions(); if(!rows.length){toast('No hay materias/docentes visibles para la modalidad habilitada del periodo. Revisa modalidad y RLS.')}}
+function unique(rows,key){const m=new Map();rows.forEach(r=>{const v=r[key];if(v&&!m.has(v))m.set(v,r)});return [...m.keys()].sort((a,b)=>String(a).localeCompare(String(b)))}
+function setOptions(id,vals){const el=document.getElementById(id);const old=el.value;el.innerHTML=vals.length?vals.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join(''):'<option value="">Sin datos</option>';if(vals.includes(old))el.value=old}
+function currentRows(changed){const p=getActivePeriod();let rows=catalog.filter(r=>rowAllowed(r,p));const order=['career','modality','shift','level','parallel','subject','teacher'];const map={career:'carrera',modality:'modalidad',shift:'jornada',level:'nivel',parallel:'paralelo',subject:'materia',teacher:'docente'};for(const id of order){const el=document.getElementById(id);if(!el||!el.value)continue;if(id===changed)break;rows=rows.filter(r=>String(r[map[id]])===String(el.value))}return rows}
+function fillCascade(rows){setOptions('career',unique(rows,'carrera'));cascade('career')}
+function cascade(changed){const map={career:'carrera',modality:'modalidad',shift:'jornada',level:'nivel',parallel:'paralelo',subject:'materia',teacher:'docente'};const order=['career','modality','shift','level','parallel','subject','teacher'];const start=order.indexOf(changed)+1;let rows=currentRows(changed);for(let i=start;i<order.length;i++){setOptions(order[i],unique(rows,map[order[i]]));const val=document.getElementById(order[i]).value;if(val)rows=rows.filter(r=>String(r[map[order[i]]])===String(val))}}
+function renderQuestions(){const box=document.getElementById('questionsBox');box.innerHTML='';const indMap=new Map(indicators.map(i=>[String(i.id),i.nombre]));let current='';activeQuestions().forEach(q=>{const sec=indMap.get(String(q.indicador_id))||'Preguntas generales';if(sec!==current){current=sec;box.insertAdjacentHTML('beforeend',`<div class="section-title">${esc(sec)}</div>`)}box.insertAdjacentHTML('beforeend',`<div class="question"><div>${esc(q.texto)}</div><div class="faces">${[1,2,3,4,5].map(v=>`<button class="face f${v}" onclick="setAnswer('${q.id}',${v},this)" title="${VAL[v]}">${FACES[v]}</button>`).join('')}</div></div>`)})}
+function setAnswer(qid,val,btn){answers[qid]=val;btn.parentElement.querySelectorAll('.face').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel')}
+function resetAnswers(){answers={};document.querySelectorAll('.face').forEach(b=>b.classList.remove('sel'));document.getElementById('comment').value=''}
+function selectedMeta(){const p=getActivePeriod();let rows=catalog.filter(r=>rowAllowed(r,p));const filters={career:'carrera',modality:'modalidad',shift:'jornada',level:'nivel',parallel:'paralelo',subject:'materia',teacher:'docente'};for(const [id,key] of Object.entries(filters)){const v=document.getElementById(id).value;if(v)rows=rows.filter(r=>String(r[key])===String(v))}return rows[0]||null}
+async function submitSurvey(){const qs=activeQuestions();if(qs.some(q=>!answers[q.id]))return alert('Por favor responde todas las preguntas antes de enviar.');const meta=selectedMeta();if(!meta)return alert('No se encontró la relación materia-docente seleccionada. Revisa datos de Supabase.');const vals=qs.map(q=>Number(answers[q.id]));const avg=vals.reduce((a,b)=>a+b,0)/vals.length;try{const resp=await sb('respuestas',{method:'POST',body:JSON.stringify({formulario_id:formularioId,periodo_id:Number(meta.periodo_id),carrera_id:Number(meta.carrera_id),materia_id:Number(meta.materia_id),docente_id:Number(meta.docente_id),modalidad:meta.modalidad,jornada:meta.jornada,nivel:meta.nivel,paralelo:meta.paralelo,promedio:avg.toFixed(2),semaforo:avg<3?'Crítico':avg<4?'Medio':'Alto',observacion:document.getElementById('comment').value||null})});const rid=resp?.[0]?.id;if(!rid)throw new Error('Supabase no devolvió el ID de la respuesta.');const det=qs.map(q=>({respuesta_id:rid,pregunta_id:Number(q.id),valoracion:Number(answers[q.id]),valoracion_texto:VAL[answers[q.id]]}));await sb('respuesta_detalle',{method:'POST',body:JSON.stringify(det)});alert('Encuesta guardada correctamente. Gracias por tu participación.');resetAnswers();await loadAll()}catch(e){alert('No se pudo guardar en Supabase. Detalle: '+e.message)}}
+function showPublic(){location.hash='';document.getElementById('publicApp').classList.remove('hidden');document.getElementById('loginPage').classList.add('hidden');document.getElementById('adminApp').classList.add('hidden')}
+function openAdminLogin(){location.hash='admin';document.getElementById('publicApp').classList.add('hidden');document.getElementById('loginPage').classList.remove('hidden');document.getElementById('adminApp').classList.add('hidden')}
+function loginAdmin(){const u=loginUser.value.trim().toLowerCase(), p=loginPass.value;const a=admins.find(x=>(String(x.usuario||'').toLowerCase()===u||String(x.correo||'').toLowerCase()===u)&&String(x.clave_acceso||x.clave||'')===p&&x.estado!==false);if(!a)return alert('Usuario o contraseña incorrectos, o administrador inactivo.');currentAdmin=a;sessionStorage.setItem('adminUser',JSON.stringify(a));document.getElementById('adminName').textContent=`${a.nombre||a.usuario} · ${roleName(a.rol)}`;document.getElementById('loginPage').classList.add('hidden');document.getElementById('publicApp').classList.add('hidden');document.getElementById('adminApp').classList.remove('hidden');renderAdminAll()}
+function logoutAdmin(){sessionStorage.removeItem('adminUser');currentAdmin=null;showPublic()}
+function recoverPassword(){const correo=prompt('Ingresa tu correo administrativo para solicitar recuperación:');if(correo)alert('Solicitud registrada. En producción se enviará un correo desde Supabase Auth. Por ahora solicita al Super administrador actualizar tu contraseña en el módulo Administradores.')}function roleName(r){return {super_admin:'Super administrador',admin_general:'Administrador general',gestor_encuestas:'Gestor de encuestas',reportes:'Reportes',consulta:'Consulta'}[r]||r}
+function adminPanel(id,btn){document.querySelectorAll('#adminApp .panel').forEach(p=>p.classList.remove('active'));document.getElementById('p_'+id).classList.add('active');document.querySelectorAll('.side-menu button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderAdminAll()}
+function renderAdminAll(){renderKpis();renderPeriods();renderQuestionsAdmin();renderAdmins();fillFilters();renderReports();renderPlans()}
+function renderKpis(){const total=records.length;const avg=total?records.reduce((a,r)=>a+Number(r.promedio||0),0)/total:0;const alta=total?records.filter(r=>Number(r.promedio)>=4).length/total*100:0;const crit=total?records.filter(r=>Number(r.promedio)<3).length/total*100:0;kpiTotal.textContent=total;kpiAvg.textContent=avg.toFixed(2);kpiAlta.textContent=alta.toFixed(0)+'%';kpiCrit.textContent=crit.toFixed(0)+'%';const indMap=new Map(indicators.map(i=>[String(i.id),i]));let html='';indicators.forEach(i=>{const qids=questions.filter(q=>String(q.indicador_id)===String(i.id)).map(q=>String(q.id));let vals=[];details.forEach(d=>{if(qids.includes(String(d.pregunta_id)))vals.push(Number(d.valoracion))});const a=vals.length?vals.reduce((x,y)=>x+y,0)/vals.length:0;html+=`<div style="margin:10px 0"><b>${esc(i.nombre)}</b><div style="height:10px;background:#e2e8f0;border-radius:99px;overflow:hidden"><div style="height:100%;width:${a/5*100}%;background:linear-gradient(90deg,var(--oscuro),var(--verde))"></div></div><small>${a.toFixed(2)} / 5</small></div>`});indicatorBars.innerHTML=html||'Sin datos todavía.'}
+async function savePeriod(){const mods=[modLinea,modPresencial,modHibrida].filter(x=>x.checked).map(x=>x.value);if(!perName.value||!perStart.value||!perEnd.value||!mods.length)return alert('Completa periodo, fechas y al menos una modalidad.');const payload={nombre:perName.value,fecha_inicio:perStart.value,fecha_fin:perEnd.value,activo:perActive.value==='true',estado:true,modalidades_habilitadas:mods};try{if(perId.value)await sb(`periodos?id=eq.${perId.value}`,{method:'PATCH',body:JSON.stringify(payload)});else await sb('periodos',{method:'POST',body:JSON.stringify(payload)});toast('Periodo guardado');await loadAll()}catch(e){alert('No se pudo guardar periodo: '+e.message)}}
+function clearPeriodForm(){perId.value='';perName.value='';perStart.value='';perEnd.value='';perActive.value='true';modLinea.checked=true;modPresencial.checked=false;modHibrida.checked=false}
+function editPeriod(id){const p=periods.find(x=>String(x.id)===String(id));if(!p)return;perId.value=p.id;perName.value=p.nombre;perStart.value=p.fecha_inicio;perEnd.value=p.fecha_fin;perActive.value=String(!!p.activo);const mods=allowedMods(p);modLinea.checked=mods.includes('En línea');modPresencial.checked=mods.includes('Presencial');modHibrida.checked=mods.includes('Híbrida')}
+async function togglePeriod(id,estado){await sb(`periodos?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({estado})});await loadAll()}
+function renderPeriods(){periodList.innerHTML=periods.map(p=>`<div class="admin-card-mini"><b>${esc(p.nombre)}</b> <span class="pill ${p.activo?'ok':'warn'}">${p.activo?'Activo':'Inactivo'}</span><br><small>${p.fecha_inicio} al ${p.fecha_fin} · Modalidades: ${esc(allowedMods(p).join(', '))}</small><br><button class="btn small" onclick="editPeriod('${p.id}')">Editar</button> <button class="btn small danger" onclick="togglePeriod('${p.id}',false)">Inactivar registro</button></div>`).join('')||'Sin periodos.'}
+function renderQuestionsAdmin(){const indMap=new Map(indicators.map(i=>[String(i.id),i.nombre]));questionAdmin.innerHTML=activeQuestions().map(q=>`<div class="qedit"><textarea onchange="updateQuestion('${q.id}','texto',this.value)">${esc(q.texto)}</textarea><select onchange="updateQuestion('${q.id}','estado',this.value==='true')"><option value="true" ${q.estado!==false?'selected':''}>Activa</option><option value="false" ${q.estado===false?'selected':''}>Inactiva</option></select><button class="btn small danger" onclick="deleteQuestion('${q.id}')">Eliminar</button><small>${esc(indMap.get(String(q.indicador_id))||'General')}</small></div>`).join('')||'Sin preguntas.'}
+async function updateQuestion(id,field,val){const payload={};payload[field]=val;await sb(`preguntas?id=eq.${id}`,{method:'PATCH',body:JSON.stringify(payload)});toast('Pregunta actualizada');await loadAll()}
+async function deleteQuestion(id){if(confirm('¿Eliminar/inactivar esta pregunta?')){await sb(`preguntas?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({estado:false})});await loadAll()}}
+async function addQuestion(){const ind=indicators[0];await sb('preguntas',{method:'POST',body:JSON.stringify({formulario_id:formularioId,indicador_id:ind?.id||null,texto:'Nueva pregunta de valoración docente',tipo:'escala',orden:questions.length+1,obligatoria:true,estado:true})});await loadAll()}
+function clearAdminForm(){admId.value='';admNombre.value='';admUsuario.value='';admCorreo.value='';admClave.value='';admRol.value='consulta';admEstado.value='true'}
+function editAdmin(id){const a=admins.find(x=>String(x.id)===String(id));if(!a)return;admId.value=a.id;admNombre.value=a.nombre||'';admUsuario.value=a.usuario||'';admCorreo.value=a.correo||'';admClave.value=a.clave_acceso||a.clave||'';admRol.value=a.rol||'consulta';admEstado.value=String(a.estado!==false)}
+async function saveAdmin(){if(!admNombre.value||!admUsuario.value||!admClave.value)return alert('Completa nombre, usuario y contraseña.');const payload={nombre:admNombre.value,usuario:admUsuario.value,correo:admCorreo.value,clave_acceso:admClave.value,rol:admRol.value,estado:admEstado.value==='true'};try{if(admId.value)await sb(`administradores?id=eq.${admId.value}`,{method:'PATCH',body:JSON.stringify(payload)});else await sb('administradores',{method:'POST',body:JSON.stringify(payload)});clearAdminForm();toast('Administrador guardado');await loadAll()}catch(e){alert('No se pudo guardar administrador: '+e.message)}}
+function renderAdmins(){adminList.innerHTML=admins.map(a=>`<div class="admin-card-mini"><b>${esc(a.nombre||'Sin nombre')}</b> <span class="pill ${a.estado!==false?'ok':'bad'}">${a.estado!==false?'Activo':'Inactivo'}</span><br><small>${esc(a.usuario||'')} · ${esc(a.correo||'')} · ${roleName(a.rol)}</small><br><button class="btn small" onclick="editAdmin('${a.id}')">Editar</button></div>`).join('')}
+function metaForRecord(r){const m=materias.find(x=>String(x.id)===String(r.materia_id))||{}, d=docentes.find(x=>String(x.id)===String(r.docente_id))||{}, c=carreras.find(x=>String(x.id)===String(r.carrera_id||m.carrera_id))||{}, p=periods.find(x=>String(x.id)===String(r.periodo_id))||{};return{periodo:p.nombre||'',carrera:c.nombre||'',materia:m.nombre||'',docente:d.nombres||'',modalidad:r.modalidad||m.modalidad||'',jornada:r.jornada||m.jornada||'',nivel:r.nivel||m.nivel||'',paralelo:r.paralelo||m.paralelo||''}}
+function fillSelect(id,vals,label='Todos'){const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML=`<option value="">${label}</option>`+[...new Set(vals.filter(Boolean))].sort().map(v=>`<option>${esc(v)}</option>`).join('');if([...el.options].some(o=>o.value===old))el.value=old}
+function reportRows(){return records.map(r=>({r,meta:metaForRecord(r)})).filter(x=>(!fPeriodo.value||x.meta.periodo===fPeriodo.value)&&(!fCarrera.value||x.meta.carrera===fCarrera.value)&&(!fMateria.value||x.meta.materia===fMateria.value)&&(!fDocente.value||x.meta.docente===fDocente.value))}
+function fillFilters(){const metas=records.map(metaForRecord);fillSelect('fPeriodo',metas.map(m=>m.periodo));fillSelect('fCarrera',metas.map(m=>m.carrera));fillSelect('fMateria',metas.map(m=>m.materia));fillSelect('fDocente',metas.map(m=>m.docente))}
+function renderReports(){const qs=activeQuestions();let html='<table><thead><tr><th>N°</th><th>Fecha</th><th>Periodo</th><th>Carrera</th><th>Materia</th><th>Docente</th><th>Modalidad</th><th>Promedio</th>'+qs.map(q=>`<th>${esc(q.texto)}</th>`).join('')+'</tr></thead><tbody>';const detBy=new Map();details.forEach(d=>{const key=String(d.respuesta_id);if(!detBy.has(key))detBy.set(key,{});detBy.get(key)[String(d.pregunta_id)]=d.valoracion_texto||VAL[d.valoracion]});reportRows().forEach((x,i)=>{const d=detBy.get(String(x.r.id))||{};html+=`<tr><td>${i+1}</td><td>${esc((x.r.created_at||'').slice(0,10))}</td><td>${esc(x.meta.periodo)}</td><td>${esc(x.meta.carrera)}</td><td>${esc(x.meta.materia)}</td><td>${esc(x.meta.docente)}</td><td>${esc(x.meta.modalidad)}</td><td>${Number(x.r.promedio||0).toFixed(2)}</td>${qs.map(q=>`<td>${esc(d[String(q.id)]||'')}</td>`).join('')}</tr>`});html+='</tbody></table>';reportTable.innerHTML=html}
+function matrixRows(){const qs=activeQuestions(), detBy=new Map();details.forEach(d=>{const key=String(d.respuesta_id);if(!detBy.has(key))detBy.set(key,{});detBy.get(key)[String(d.pregunta_id)]=d.valoracion_texto||VAL[d.valoracion]});return reportRows().map((x,i)=>{const d=detBy.get(String(x.r.id))||{};const obj={'N°':i+1,'Fecha':(x.r.created_at||'').slice(0,10),'Periodo':x.meta.periodo,'Carrera':x.meta.carrera,'Materia':x.meta.materia,'Docente':x.meta.docente,'Modalidad':x.meta.modalidad,'Promedio':Number(x.r.promedio||0).toFixed(2)};qs.forEach(q=>obj[q.texto]=d[String(q.id)]||'');return obj})}
+function download(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function exportCSV(){const rows=matrixRows();if(!rows.length)return alert('No hay datos para exportar.');const h=Object.keys(rows[0]);const csv=[h.join(';'),...rows.map(r=>h.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(';'))].join('\n');download('reporte_matriz_encuesta_docente.csv',csv,'text/csv;charset=utf-8')}
+function exportExcel(){const html='<html><head><meta charset="UTF-8"></head><body><h2>Encuesta de satisfacción Docente</h2>'+reportTable.innerHTML+'</body></html>';download('reporte_matriz_encuesta_docente.xls',html,'application/vnd.ms-excel')}
+function exportHTML(){download('reporte_matriz_encuesta_docente.html','<html><head><meta charset="UTF-8"></head><body><h2>Encuesta de satisfacción Docente</h2>'+reportTable.innerHTML+'</body></html>','text/html')}
+function copyStudentUrl(){navigator.clipboard?.writeText(location.origin+location.pathname);toast('URL pública copiada. Esa ruta muestra solo la encuesta del estudiante.')} 
+function renderPlans(){const rows=records.map(r=>({r,meta:metaForRecord(r)}));const low=rows.filter(x=>Number(x.r.promedio)<3.5);plansBox.innerHTML=low.length?low.slice(0,20).map(x=>`<div class="plan"><b>${esc(x.meta.docente)} · ${esc(x.meta.materia)}</b><br>Promedio: ${Number(x.r.promedio).toFixed(2)}. Acción sugerida: revisar metodología, recursos del aula virtual, retroalimentación y acompañamiento estudiantil.</div>`).join(''):'No existen alertas críticas suficientes para generar planes de mejora.'}
+window.addEventListener('hashchange',()=>{if(location.hash==='#admin')openAdminLogin();else showPublic()});
+(async()=>{await loadAll();const s=sessionStorage.getItem('adminUser');if(s){try{currentAdmin=JSON.parse(s);document.getElementById('adminName').textContent=`${currentAdmin.nombre||currentAdmin.usuario} · ${roleName(currentAdmin.rol)}`;document.getElementById('publicApp').classList.add('hidden');document.getElementById('adminApp').classList.remove('hidden');renderAdminAll();return}catch{}} if(location.hash==='#admin')openAdminLogin();})();
 </script>
-
 </body>
 </html>
