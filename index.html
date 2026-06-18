@@ -70,19 +70,20 @@
   </section>
 
   <section id="admin" class="panel">
-    <div id="adminLogin" class="card login"><div class="head"><b>Acceso administrador</b></div><div class="body"><p class="small">Ingresa para administrar periodos, preguntas, URL pública, dashboard y reportes.</p><label>Clave</label><input type="password" id="adminPass" placeholder="Ingrese clave"><br><br><button class="btn brandBtn" onclick="loginAdmin()">Ingresar</button></div></div>
+    <div id="adminLogin" class="card login"><div class="head"><b>Acceso administrador</b></div><div class="body">
+      <p class="small">Ingresa con tu usuario administrativo para gestionar periodos, preguntas, administradores, dashboard y reportes.</p>
+      <label>Usuario o correo</label><input id="adminUser" placeholder="admin@cordillera.edu.ec">
+      <label style="margin-top:10px">Clave</label><input type="password" id="adminPass" placeholder="Ingrese clave">
+      <br><br><button class="btn brandBtn" onclick="loginAdmin()">Ingresar</button>
+      <p class="small">Usuario inicial demo: <b>admin</b> · clave: <b>1234</b>. Luego crea tus administradores reales y cambia la clave.</p>
+    </div></div>
     <div id="adminArea" class="hidden">
       <div class="card" style="margin-bottom:16px"><div class="head"><b>URL pública para estudiantes</b></div><div class="body">
         <p class="small">Este es el enlace único que debes compartir. El estudiante verá solo la encuesta; no verá administración ni reportes.</p>
         <div class="formrow" style="grid-template-columns:1fr auto"><div><label>URL pública permanente</label><input id="adminGeneratedUrl" readonly></div><div style="align-self:end"><button class="btn brandBtn" onclick="copyAdminGeneratedUrl()">Copiar URL</button></div></div>
         <p class="small" id="adminSyncStatus">Estado: conectando con Supabase...</p>
       </div></div>
-      <div class="subtabs no-print">
-        <button class="subtab active" onclick="showAdminTab('periods',this)">Periodos y activación</button>
-        <button class="subtab" onclick="showAdminTab('questions',this)">Preguntas</button>
-        <button class="subtab" onclick="showAdminTab('records',this)">Registros</button>
-        <button class="subtab" onclick="showAdminTab('history',this)">Historial</button>
-      </div>
+      <div class="subtabs no-print" id="adminSubtabs"></div>
       <div id="admin-periods" class="admin-tab">
         <div class="grid">
           <div class="card col-5"><div class="head"><b>Crear / editar periodo</b></div><div class="body">
@@ -107,6 +108,28 @@
         <div class="grid">
           <div class="card col-4"><div class="head"><b>Gestión de preguntas</b></div><div class="body"><label>Indicador / sección</label><select id="adminSection" onchange="renderAdminQuestions()"></select><button class="btn secondary" onclick="addQuestion()">Agregar pregunta</button><p class="small">Modificar preguntas no altera los registros históricos ya guardados.</p></div></div>
           <div class="card col-8"><div class="head"><b>Preguntas del indicador</b></div><div class="body" id="adminQuestions"></div></div>
+        </div>
+      </div>
+      <div id="admin-users" class="admin-tab hidden">
+        <div class="grid">
+          <div class="card col-5"><div class="head"><b>Ingreso de nuevos administradores</b></div><div class="body">
+            <input type="hidden" id="adminEditId">
+            <label>Nombre completo</label><input id="newAdminName" placeholder="Nombre del administrador">
+            <label>Usuario</label><input id="newAdminUser" placeholder="usuario.admin">
+            <label>Correo institucional</label><input id="newAdminEmail" placeholder="usuario@cordillera.edu.ec">
+            <label>Clave temporal</label><input id="newAdminPass" type="password" placeholder="Clave de acceso">
+            <label>Rol</label>
+            <select id="newAdminRole">
+              <option value="super_admin">Super administrador</option>
+              <option value="admin_general">Administrador general</option>
+              <option value="gestor_encuestas">Gestor de encuestas</option>
+              <option value="reportes">Reportes</option>
+              <option value="consulta">Consulta</option>
+            </select>
+            <p class="small"><b>Roles:</b> Super administrador gestiona todo; Administrador general gestiona operación; Gestor maneja periodos y preguntas; Reportes solo consulta dashboard/exportaciones; Consulta solo visualiza reportes.</p>
+            <div class="twoActions"><button class="btn brandBtn" onclick="saveAdminUser()">Guardar administrador</button><button class="btn secondary" onclick="clearAdminUserForm()">Limpiar</button></div>
+          </div></div>
+          <div class="card col-7"><div class="head"><b>Administradores registrados</b></div><div class="body"><div class="tablewrap"><table id="adminUsersTable"></table></div></div></div>
         </div>
       </div>
       <div id="admin-records" class="admin-tab hidden"><div class="card"><div class="head"><b>Registros recolectados</b></div><div class="body"><button class="btn danger" onclick="deleteAllRecords()">Eliminar todos los registros</button><div class="tablewrap"><table id="recordsAdminTable"></table></div></div></div></div>
@@ -440,11 +463,23 @@ let records = JSON.parse(localStorage.getItem('cordillera_records_v2')||'[]');
 let periods = JSON.parse(localStorage.getItem('cordillera_periods_v2')||JSON.stringify(seedPeriods));
 let formularioId = null;
 let academicCatalog = [];
-let currentStep = 0; let answers = {}; let adminLogged=false;
+let currentStep = 0; let answers = {}; let adminLogged=false; let currentAdmin=null; let administrators=[];
 function setSyncStatus(msg){const el=document.getElementById('syncStatus'); if(el)el.textContent=msg; const ad=document.getElementById('adminSyncStatus'); if(ad)ad.textContent='Estado: '+msg;}
 function saveQuestions(){localStorage.setItem('cordillera_questions_v2',JSON.stringify(sections));}
 function saveRecords(){localStorage.setItem('cordillera_records_v2',JSON.stringify(records));}
 function savePeriods(){localStorage.setItem('cordillera_periods_v2',JSON.stringify(periods));}
+function saveAdminsLocal(){localStorage.setItem('cordillera_admins_v1',JSON.stringify(administrators));}
+const roleConfig={
+  super_admin:{label:'Super administrador',modules:['periods','questions','users','records','history','reports'],write:true},
+  admin_general:{label:'Administrador general',modules:['periods','questions','records','history','reports'],write:true},
+  gestor_encuestas:{label:'Gestor de encuestas',modules:['periods','questions','history'],write:true},
+  reportes:{label:'Reportes',modules:['reports','history'],write:false},
+  consulta:{label:'Consulta',modules:['reports','history'],write:false}
+};
+function roleLabel(role){return (roleConfig[role]||roleConfig.consulta).label;}
+function adminCan(module){return !!(currentAdmin && (roleConfig[currentAdmin.rol]||roleConfig.consulta).modules.includes(module));}
+function adminCanWrite(){return !!(currentAdmin && (roleConfig[currentAdmin.rol]||roleConfig.consulta).write);}
+function requireAdmin(module,write=false){if(!currentAdmin){alert('Primero inicia sesión como administrador.');showPanel('admin');return false;} if(module && !adminCan(module)){alert('Tu rol no tiene permiso para este módulo.');return false;} if(write && !adminCanWrite()){alert('Tu rol solo permite consulta. No puede guardar, editar ni eliminar.');return false;} return true;}
 const DEFAULT_ENABLED_MODALITIES = ['En línea'];
 function normalizeText(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
 function enabledModalitiesForPeriod(p){return (p && Array.isArray(p.modalities) && p.modalities.length) ? p.modalities : DEFAULT_ENABLED_MODALITIES;}
@@ -478,9 +513,18 @@ async function loadSupabaseData(){
     const mds = await safeSbFetch('materia_docente?select=*&order=id.asc', []);
     const rs = await safeSbFetch('respuestas?select=*&order=created_at.desc', []);
     const detalles = await safeSbFetch('respuesta_detalle?select=*', []);
+    const adminsSupabase = await safeSbFetch('administradores?select=*&order=created_at.desc', []);
 
     const form = (forms||[]).find(f => (f.nombre||'').toLowerCase().trim()==='encuesta de satisfacción docente'.toLowerCase()) || (forms||[])[0];
     formularioId = form?.id || 1;
+
+    administrators = (adminsSupabase||[]).map(a=>({
+      id:String(a.id), nombre:a.nombre||'', usuario:a.usuario||'', correo:a.correo||'', clave:a.clave_acceso||'', rol:a.rol||'consulta', estado:a.estado!==false, created_at:a.created_at||''
+    }));
+    if(!administrators.length){
+      administrators = [{id:'demo_admin',nombre:'Administrador inicial',usuario:'admin',correo:'admin@cordillera.edu.ec',clave:'1234',rol:'super_admin',estado:true}];
+    }
+    saveAdminsLocal();
 
     if(inds?.length && qs?.length){
       sections = inds.filter(i=>i.estado!==false).map(i=>({
@@ -642,24 +686,77 @@ function prevStep(){currentStep=Math.max(0,currentStep-1);renderSurvey();}
 function meta(){const p=getCurrentPeriod(); const match=currentCatalogMatch(); return ['career','modality','shift','level','subject','teacher','parallel'].reduce((a,id)=>(a[id]=document.getElementById(id).value,a),{periodId:p.id,period:p.name,carreraId:match?.careerId||selectedOptionData('career','id'),materiaId:match?.materiaId||selectedOptionData('subject','id'),docenteId:match?.docenteId||selectedOptionData('teacher','id')})}
 function calcRecord(meta,ans,comment){let byIndicator={}, total=0,count=0; sections.forEach(s=>{let vals=s.questions.filter(q=>q.active&&ans[q.id]).map(q=>ans[q.id]); if(vals.length){let avg=vals.reduce((a,b)=>a+b,0)/vals.length; byIndicator[s.title]=Number(avg.toFixed(2)); total+=vals.reduce((a,b)=>a+b,0); count+=vals.length;} }); return {id:Date.now()+Math.floor(Math.random()*999),date:new Date().toISOString(),meta,answers:ans,byIndicator,avg:Number((total/(count||1)).toFixed(2)),comment};}
 async function submitSurvey(){const p=getCurrentPeriod(); if(!p||!periodIsOpen(p)) return alert('La encuesta no se encuentra activa.'); if(!stepComplete()) return alert('Completa todas las preguntas del indicador actual.'); const tokenKey='cordillera_done_'+p.id+'_'+document.getElementById('subject').value+'_'+document.getElementById('teacher').value; if(localStorage.getItem(tokenKey) && !confirm('Este navegador ya registra un envío para esta materia/docente en el periodo activo. ¿Deseas continuar de todos modos?')) return; const rec=calcRecord(meta(),answers,generalComment.value.trim()); try{const remoteId=await saveRecordToSupabase(rec); if(remoteId)rec.id=remoteId;}catch(e){console.error(e); alert('No se pudo guardar en Supabase. Revisa las políticas RLS y tablas. Se guardará temporalmente en este navegador.\n\nDetalle: '+e.message);} records.unshift(rec); localStorage.setItem(tokenKey,'1'); saveRecords(); alert('Encuesta enviada correctamente. Gracias por tu participación confidencial.'); answers={}; currentStep=0; generalComment.value=''; renderSurvey(); fillFilters(); renderReports(); renderAdminRecords(); renderHistory();}
-function loginAdmin(){if(adminPass.value==='1234'){adminLogged=true;document.body.classList.add('admin-authenticated');adminLogin.classList.add('hidden');adminArea.classList.remove('hidden');if(adminGeneratedUrl) adminGeneratedUrl.value=PUBLIC_STUDENT_URL;renderAdminSetup();renderReports();alert('Acceso administrador habilitado.');}else alert('Clave incorrecta.')}
-function showAdminTab(id,btn){document.querySelectorAll('.admin-tab').forEach(x=>x.classList.add('hidden'));document.getElementById('admin-'+id).classList.remove('hidden');document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active')); if(btn)btn.classList.add('active'); if(id==='history')renderHistory();}
-function renderAdminSetup(){renderPeriods(); const sel=adminSection; if(sel){sel.innerHTML=sections.map((s,i)=>`<option value="${i}">${s.title}</option>`).join(''); renderAdminQuestions();} renderAdminRecords(); renderHistory(); refreshSurveyAvailability(); fillFilters(); renderReports();}
+function loginAdmin(){
+  const user=(document.getElementById('adminUser')?.value||'').trim().toLowerCase();
+  const pass=(document.getElementById('adminPass')?.value||'').trim();
+  const list = administrators.length ? administrators : JSON.parse(localStorage.getItem('cordillera_admins_v1')||'[]');
+  let found = list.find(a=>a.estado!==false && (String(a.usuario||'').toLowerCase()===user || String(a.correo||'').toLowerCase()===user) && String(a.clave||a.clave_acceso||'')===pass);
+  if(!found && user==='admin' && pass==='1234') found={id:'demo_admin',nombre:'Administrador inicial',usuario:'admin',correo:'admin@cordillera.edu.ec',clave:'1234',rol:'super_admin',estado:true};
+  if(found){
+    adminLogged=true; currentAdmin=found;
+    document.body.classList.add('admin-authenticated');adminLogin.classList.add('hidden');adminArea.classList.remove('hidden');
+    if(adminGeneratedUrl) adminGeneratedUrl.value=PUBLIC_STUDENT_URL;
+    renderAdminSubtabs(); renderAdminSetup(); renderReports();
+    alert('Acceso habilitado. Rol: '+roleLabel(found.rol));
+  }else alert('Usuario o clave incorrectos.');
+}
+function renderAdminSubtabs(){
+  const box=document.getElementById('adminSubtabs'); if(!box) return;
+  const tabs=[
+    ['periods','Periodos y activación'],['questions','Preguntas'],['users','Administradores'],['records','Registros'],['history','Historial']
+  ].filter(t=>adminCan(t[0]));
+  box.innerHTML=tabs.map((t,i)=>`<button class="subtab ${i===0?'active':''}" onclick="showAdminTab('${t[0]}',this)">${t[1]}</button>`).join('');
+  const first=tabs[0]?.[0]||'history'; document.querySelectorAll('.admin-tab').forEach(x=>x.classList.add('hidden')); const el=document.getElementById('admin-'+first); if(el)el.classList.remove('hidden');
+}
+function showAdminTab(id,btn){if(!requireAdmin(id,false))return;document.querySelectorAll('.admin-tab').forEach(x=>x.classList.add('hidden'));document.getElementById('admin-'+id).classList.remove('hidden');document.querySelectorAll('.subtab').forEach(x=>x.classList.remove('active')); if(btn)btn.classList.add('active'); if(id==='history')renderHistory(); if(id==='users')renderAdminUsers();}
+function renderAdminSetup(){renderAdminSubtabs();renderPeriods(); const sel=adminSection; if(sel){sel.innerHTML=sections.map((s,i)=>`<option value="${i}">${s.title}</option>`).join(''); renderAdminQuestions();} renderAdminUsers(); renderAdminRecords(); renderHistory(); refreshSurveyAvailability(); fillFilters(); renderReports();}
 function clearPeriodForm(){periodEditId.value='';pName.value='';pStart.value='';pEnd.value='';pStatus.value='active';setPeriodModalitiesForm(DEFAULT_ENABLED_MODALITIES);}
-async function savePeriodForm(){if(!pName.value.trim())return alert('Ingresa el nombre del periodo.'); if(!pStart.value||!pEnd.value)return alert('Configura fecha de inicio y fin.'); if(pStart.value>pEnd.value)return alert('La fecha de inicio no puede ser mayor que la fecha fin.'); const mods=getPeriodModalitiesFromForm(); if(!mods.length)return alert('Selecciona al menos una modalidad habilitada.'); const isEdit=!!periodEditId.value; let id=periodEditId.value||('p_'+Date.now()); const obj={id,name:pName.value.trim(),start:pStart.value,end:pEnd.value,status:pStatus.value,modalities:mods}; try{if(SUPABASE_ENABLED){const payload={nombre:obj.name,fecha_inicio:obj.start,fecha_fin:obj.end,activo:obj.status==='active',estado:true,modalidades_habilitadas:mods}; if(isEdit){await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});} else {const ins=await sbFetch('periodos',{method:'POST',body:JSON.stringify(payload)}); obj.id=String(ins?.[0]?.id||id);}}}catch(e){alert('No se pudo sincronizar el periodo en Supabase: '+e.message);} const i=periods.findIndex(p=>String(p.id)===String(id)); if(i>=0)periods[i]=obj; else periods.push(obj); savePeriods(); clearPeriodForm(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
+async function savePeriodForm(){if(!requireAdmin('periods',true))return;if(!pName.value.trim())return alert('Ingresa el nombre del periodo.'); if(!pStart.value||!pEnd.value)return alert('Configura fecha de inicio y fin.'); if(pStart.value>pEnd.value)return alert('La fecha de inicio no puede ser mayor que la fecha fin.'); const mods=getPeriodModalitiesFromForm(); if(!mods.length)return alert('Selecciona al menos una modalidad habilitada.'); const isEdit=!!periodEditId.value; let id=periodEditId.value||('p_'+Date.now()); const obj={id,name:pName.value.trim(),start:pStart.value,end:pEnd.value,status:pStatus.value,modalities:mods}; try{if(SUPABASE_ENABLED){const payload={nombre:obj.name,fecha_inicio:obj.start,fecha_fin:obj.end,activo:obj.status==='active',estado:true,modalidades_habilitadas:mods}; if(isEdit){await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});} else {const ins=await sbFetch('periodos',{method:'POST',body:JSON.stringify(payload)}); obj.id=String(ins?.[0]?.id||id);}}}catch(e){alert('No se pudo sincronizar el periodo en Supabase: '+e.message);} const i=periods.findIndex(p=>String(p.id)===String(id)); if(i>=0)periods[i]=obj; else periods.push(obj); savePeriods(); clearPeriodForm(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
 function editPeriod(id){const p=periods.find(x=>x.id===id); periodEditId.value=p.id;pName.value=p.name;pStart.value=p.start;pEnd.value=p.end;pStatus.value=p.status;setPeriodModalitiesForm(p.modalities);}
-async function togglePeriod(id){const p=periods.find(x=>String(x.id)===String(id)); p.status=p.status==='active'?'inactive':'active'; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({activo:p.status==='active'})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
-async function deletePeriod(id){const count=records.filter(r=>String(r.meta.periodId)===String(id)).length; if(count && !confirm('Este periodo tiene registros históricos. Se inactivará para mantener el historial. ¿Continuar?')) return; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({estado:false,activo:false})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} periods=periods.filter(p=>String(p.id)!==String(id)); savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
+async function togglePeriod(id){if(!requireAdmin('periods',true))return;const p=periods.find(x=>String(x.id)===String(id)); p.status=p.status==='active'?'inactive':'active'; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({activo:p.status==='active'})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
+async function deletePeriod(id){if(!requireAdmin('periods',true))return;const count=records.filter(r=>String(r.meta.periodId)===String(id)).length; if(count && !confirm('Este periodo tiene registros históricos. Se inactivará para mantener el historial. ¿Continuar?')) return; try{if(SUPABASE_ENABLED)await sbFetch('periodos?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({estado:false,activo:false})});}catch(e){alert('No se pudo actualizar Supabase: '+e.message);} periods=periods.filter(p=>String(p.id)!==String(id)); savePeriods(); renderPeriods(); refreshSurveyAvailability(); fillFilters(); renderReports();}
 function periodBadge(p){if(periodIsOpen(p))return '<span class="pill ok">Abierta ahora</span>'; if(p.status==='active')return '<span class="pill warn">Activa fuera de fecha</span>'; return '<span class="pill off">Inactiva</span>';}
 function renderPeriods(){if(!periodList)return; periodList.innerHTML=periods.map(p=>`<div class="periodCard ${periodIsOpen(p)?'activePeriod':''}"><b>${p.name}</b> ${periodBadge(p)}<div class="small">${p.start} al ${p.end} · Modalidades habilitadas: <b>${enabledModalitiesForPeriod(p).join(', ')}</b> · Registros: ${records.filter(r=>String(r.meta.periodId)===String(p.id)||r.meta.period===p.name).length}</div><div class="twoActions"><button class="btn secondary" onclick="editPeriod('${p.id}')">Editar</button><button class="btn ${p.status==='active'?'danger':'ok'}" onclick="togglePeriod('${p.id}')">${p.status==='active'?'Inactivar':'Activar'}</button><button class="btn danger" onclick="deletePeriod('${p.id}')">Eliminar</button></div></div>`).join('') || '<p class="small">No hay periodos configurados.</p>';}
 function renderAdminQuestions(){const idx=+adminSection.value||0; if(!adminQuestions)return; adminQuestions.innerHTML=sections[idx].questions.map((q,qi)=>`<div class="adminQuestion"><textarea onchange="editQuestion(${idx},${qi},this.value)">${q.text}</textarea><button class="btn ${q.active?'ok':'secondary'}" onclick="toggleQuestion(${idx},${qi})">${q.active?'Activa':'Inactiva'}</button><button class="btn danger" onclick="deleteQuestion(${idx},${qi})">Eliminar</button></div>`).join('');}
-async function editQuestion(si,qi,val){sections[si].questions[qi].text=val;saveQuestions();renderSurvey();renderReports(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({texto:val})});}catch(e){console.error(e);}}
-async function toggleQuestion(si,qi){sections[si].questions[qi].active=!sections[si].questions[qi].active;saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({estado:sections[si].questions[qi].active})});}catch(e){console.error(e);}}
-async function deleteQuestion(si,qi){if(confirm('¿Eliminar esta pregunta?')){const q=sections[si].questions[qi]; sections[si].questions.splice(qi,1);saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(q.id),{method:'PATCH',body:JSON.stringify({estado:false})});}catch(e){console.error(e);}}}
-async function addQuestion(){const si=+adminSection.value||0; let q={id:'custom_'+Date.now(),type:'scale',active:true,text:'Nueva pregunta del indicador'}; try{if(SUPABASE_ENABLED){const ins=await sbFetch('preguntas',{method:'POST',body:JSON.stringify({formulario_id:formularioId,indicador_id:Number(sections[si].id)||null,texto:q.text,tipo:'escala',orden:sections[si].questions.length+1,obligatoria:true,estado:true})}); q.id=String(ins?.[0]?.id||q.id);}}catch(e){alert('No se pudo crear en Supabase: '+e.message);} sections[si].questions.push(q); saveQuestions();renderAdminQuestions();renderSurvey();}
+async function editQuestion(si,qi,val){if(!requireAdmin('questions',true))return;sections[si].questions[qi].text=val;saveQuestions();renderSurvey();renderReports(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({texto:val})});}catch(e){console.error(e);}}
+async function toggleQuestion(si,qi){if(!requireAdmin('questions',true))return;sections[si].questions[qi].active=!sections[si].questions[qi].active;saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(sections[si].questions[qi].id),{method:'PATCH',body:JSON.stringify({estado:sections[si].questions[qi].active})});}catch(e){console.error(e);}}
+async function deleteQuestion(si,qi){if(!requireAdmin('questions',true))return;if(confirm('¿Eliminar esta pregunta?')){const q=sections[si].questions[qi]; sections[si].questions.splice(qi,1);saveQuestions();renderAdminQuestions();renderSurvey(); try{if(SUPABASE_ENABLED)await sbFetch('preguntas?id=eq.'+encodeURIComponent(q.id),{method:'PATCH',body:JSON.stringify({estado:false})});}catch(e){console.error(e);}}}
+async function addQuestion(){if(!requireAdmin('questions',true))return;const si=+adminSection.value||0; let q={id:'custom_'+Date.now(),type:'scale',active:true,text:'Nueva pregunta del indicador'}; try{if(SUPABASE_ENABLED){const ins=await sbFetch('preguntas',{method:'POST',body:JSON.stringify({formulario_id:formularioId,indicador_id:Number(sections[si].id)||null,texto:q.text,tipo:'escala',orden:sections[si].questions.length+1,obligatoria:true,estado:true})}); q.id=String(ins?.[0]?.id||q.id);}}catch(e){alert('No se pudo crear en Supabase: '+e.message);} sections[si].questions.push(q); saveQuestions();renderAdminQuestions();renderSurvey();}
+
+function clearAdminUserForm(){['adminEditId','newAdminName','newAdminUser','newAdminEmail','newAdminPass'].forEach(id=>{const el=document.getElementById(id); if(el)el.value='';}); if(document.getElementById('newAdminRole'))newAdminRole.value='reportes';}
+function renderAdminUsers(){
+  const t=document.getElementById('adminUsersTable'); if(!t) return;
+  const rows=administrators.map(a=>`<tr><td>${a.nombre||''}</td><td>${a.usuario||''}</td><td>${a.correo||''}</td><td><span class="pill ${a.estado?'ok':'off'}">${roleLabel(a.rol)}</span></td><td>${a.estado?'Activo':'Inactivo'}</td><td><button class="btn secondary" onclick="editAdminUser('${a.id}')">Editar</button> <button class="btn ${a.estado?'danger':'ok'}" onclick="toggleAdminUser('${a.id}')">${a.estado?'Inactivar':'Activar'}</button></td></tr>`).join('');
+  t.innerHTML='<tr><th>Nombre</th><th>Usuario</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr>'+rows;
+}
+function editAdminUser(id){if(!requireAdmin('users',true))return; const a=administrators.find(x=>String(x.id)===String(id)); if(!a)return; adminEditId.value=a.id; newAdminName.value=a.nombre||''; newAdminUser.value=a.usuario||''; newAdminEmail.value=a.correo||''; newAdminPass.value=a.clave||''; newAdminRole.value=a.rol||'reportes';}
+async function saveAdminUser(){
+  if(!requireAdmin('users',true))return;
+  const id=(adminEditId.value||'').trim();
+  const payload={nombre:newAdminName.value.trim(),usuario:newAdminUser.value.trim(),correo:newAdminEmail.value.trim(),clave_acceso:newAdminPass.value.trim(),rol:newAdminRole.value,estado:true};
+  if(!payload.nombre||!payload.usuario||!payload.correo||!payload.clave_acceso){alert('Completa nombre, usuario, correo y clave.');return;}
+  try{
+    if(SUPABASE_ENABLED){
+      if(id && id!=='demo_admin') await sbFetch('administradores?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify(payload)});
+      else {const ins=await sbFetch('administradores',{method:'POST',body:JSON.stringify(payload)}); payload.id=String(ins?.[0]?.id||Date.now());}
+    }
+    if(id){const i=administrators.findIndex(a=>String(a.id)===String(id)); if(i>=0)administrators[i]={...administrators[i],...payload,clave:payload.clave_acceso};}
+    else administrators.unshift({id:payload.id||String(Date.now()),...payload,clave:payload.clave_acceso});
+    saveAdminsLocal(); clearAdminUserForm(); renderAdminUsers(); alert('Administrador guardado.');
+  }catch(e){alert('No se pudo guardar el administrador: '+e.message);}
+}
+async function toggleAdminUser(id){
+  if(!requireAdmin('users',true))return;
+  const a=administrators.find(x=>String(x.id)===String(id)); if(!a)return;
+  if(currentAdmin && String(currentAdmin.id)===String(id) && a.estado){alert('No puedes inactivar tu propio usuario durante la sesión.');return;}
+  a.estado=!a.estado;
+  try{if(SUPABASE_ENABLED && id!=='demo_admin')await sbFetch('administradores?id=eq.'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({estado:a.estado})});}catch(e){alert('No se pudo actualizar: '+e.message);}
+  saveAdminsLocal(); renderAdminUsers();
+}
+
 function renderAdminRecords(){const t=recordsAdminTable; if(!t)return; t.innerHTML='<tr><th>Fecha</th><th>Periodo</th><th>Carrera</th><th>Materia</th><th>Docente</th><th>Prom.</th><th>Acción</th></tr>'+records.map(r=>`<tr><td>${new Date(r.date).toLocaleString()}</td><td>${r.meta.period}</td><td>${r.meta.career}</td><td>${r.meta.subject}</td><td>${r.meta.teacher}</td><td>${r.avg}</td><td><button class="btn danger" onclick="deleteRecord(${r.id})">Eliminar</button></td></tr>`).join('');}
-async function deleteRecord(id){try{if(SUPABASE_ENABLED)await sbFetch('respuestas?id=eq.'+encodeURIComponent(id),{method:'DELETE'});}catch(e){alert('No se pudo eliminar en Supabase: '+e.message);} records=records.filter(r=>String(r.id)!==String(id));saveRecords();renderAdminRecords();renderReports();renderHistory();renderPeriods();}
-async function deleteAllRecords(){if(confirm('¿Eliminar todos los registros recolectados?')){try{if(SUPABASE_ENABLED)await sbFetch('respuestas?id=not.is.null',{method:'DELETE'});}catch(e){alert('No se pudo eliminar todo en Supabase: '+e.message);} records=[];saveRecords();renderAdminRecords();renderReports();renderHistory();renderPeriods();}}
+async function deleteRecord(id){if(!requireAdmin('records',true))return;try{if(SUPABASE_ENABLED)await sbFetch('respuestas?id=eq.'+encodeURIComponent(id),{method:'DELETE'});}catch(e){alert('No se pudo eliminar en Supabase: '+e.message);} records=records.filter(r=>String(r.id)!==String(id));saveRecords();renderAdminRecords();renderReports();renderHistory();renderPeriods();}
+async function deleteAllRecords(){if(!requireAdmin('records',true))return;if(confirm('¿Eliminar todos los registros recolectados?')){try{if(SUPABASE_ENABLED)await sbFetch('respuestas?id=not.is.null',{method:'DELETE'});}catch(e){alert('No se pudo eliminar todo en Supabase: '+e.message);} records=[];saveRecords();renderAdminRecords();renderReports();renderHistory();renderPeriods();}}
 function renderHistory(){if(!historyBox)return; const allNames=[...new Set(periods.map(p=>p.name).concat(records.map(r=>r.meta.period)))]; historyBox.innerHTML=allNames.map(name=>{const data=records.filter(r=>r.meta.period===name); const av=avg(data.map(r=>r.avg)); return `<div class="periodCard"><b>${name}</b><div class="small">Encuestas históricas: ${data.length} · Promedio: ${av.toFixed(2)} · Estado actual: ${(periods.find(p=>p.name===name)?.status||'histórico no configurado')}</div></div>`}).join('')||'<p class="small">Aún no existe historial.</p>';}
 function fillFilters(){const oldP=fPeriod.value; const pvals=[...new Set(records.map(r=>r.meta.period).concat(periods.map(p=>p.name)))].filter(Boolean); fPeriod.innerHTML='<option value="">Todos</option>'+pvals.map(v=>`<option>${v}</option>`).join(''); if(pvals.includes(oldP))fPeriod.value=oldP; const map={fCareer:'career',fSubject:'subject',fTeacher:'teacher'}; for(const [fid,key] of Object.entries(map)){let sel=document.getElementById(fid); let old=sel.value; let vals=[...new Set(records.map(r=>r.meta[key]))].filter(Boolean).sort(); sel.innerHTML='<option value="">Todos</option>'+vals.map(v=>`<option>${v}</option>`).join(''); sel.value=vals.includes(old)?old:'';} let oldi=fIndicator.value; let vals=sections.map(s=>s.title); fIndicator.innerHTML='<option value="">Todos</option>'+vals.map(v=>`<option>${v}</option>`).join(''); fIndicator.value=vals.includes(oldi)?oldi:'';}
 function filteredRecords(){let fp=fPeriod.value,fc=fCareer.value,fs=fSubject.value,ft=fTeacher.value,fi=fIndicator.value,fr=fRisk.value; return records.filter(r=>(!fp||r.meta.period===fp)&&(!fc||r.meta.career===fc)&&(!fs||r.meta.subject===fs)&&(!ft||r.meta.teacher===ft)).filter(r=>{let val=fi?(r.byIndicator[fi]||0):r.avg; if(!fr)return true; if(fr==='critico')return val<3; if(fr==='medio')return val>=3&&val<4; if(fr==='alto')return val>=4;});}
