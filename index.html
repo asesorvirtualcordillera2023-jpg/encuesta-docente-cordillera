@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Encuesta de satisfacción Docente · ITU Cordillera</title>
+<link rel="stylesheet" href="assets/css/styles.css" />
+
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="brand">
+      <img class="logoMark" src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo Instituto Cordillera" />
+      <div>
+        <h1>Encuesta de satisfacción Docente</h1>
+        <p>Instituto Superior Universitario Cordillera · evaluación confidencial por materia, periodo académico y docente.</p>
+      </div>
+    </div>
+    <div class="urlBox no-print">
+      <b>URL pública permanente</b>
+      <code id="publicUrl">https://encuestas.cordillera.edu.ec/evaluacion-docente</code><div class="small" id="syncStatus" style="color:white;margin-top:6px">Conectando con Supabase...</div>
+      <div class="twoActions"><button class="btn secondary" onclick="copyPublicUrl()">Copiar URL</button><button class="btn outline" onclick="showPanel('student')">Abrir encuesta</button></div>
+    </div>
+  </header>
+  <nav class="tabs no-print">
+    <button class="tab active" onclick="showPanel('student',this)">Encuesta estudiantes</button>
+    <button class="tab" onclick="showPanel('admin',this)">Administración</button>
+    <button class="tab" onclick="showPanel('reports',this)">Dashboard y reportes</button>
+  </nav>
+
+  <section id="student" class="panel active">
+    <div class="survey-shell" id="surveyOpenBox">
+      <div class="surveyBrand"><img src="https://i.imgur.com/dk8rXBO.jpeg" alt="Logo Instituto Cordillera"><b>Encuesta de satisfacción Docente</b></div>
+      <div class="stepbar" id="stepbar"></div>
+      <div class="intro">Por favor, indica tu grado de acuerdo. La encuesta es confidencial y no solicita nombres, cédula, correo ni código estudiantil.</div>
+      <div class="body">
+        <div class="conf"><b>Periodo activo:</b> <span id="activePeriodLabel"></span><br><span class="small">Cada periodo académico inicia desde cero. Las respuestas anteriores quedan en historial y reportes históricos.</span></div>
+        <div class="formrow" id="academicForm">
+          <div><label>Periodo académico</label><select id="period" disabled></select></div>
+          <div><label>Carrera</label><select id="career"><option>Desarrollo de Software</option><option>Administración</option><option>Marketing Digital</option><option>Diseño Gráfico</option><option>Talento Humano</option></select></div>
+          <div><label>Modalidad</label><select id="modality"><option>Presencial</option><option>En línea</option><option>Híbrida</option></select></div>
+          <div><label>Jornada</label><select id="shift"><option>Matutina</option><option>Nocturna</option><option>Intensiva</option></select></div>
+          <div><label>Nivel / semestre</label><select id="level"><option>Primero</option><option>Segundo</option><option>Tercero</option><option>Cuarto</option><option>Quinto</option></select></div>
+          <div><label>Materia</label><select id="subject"><option>Programación I</option><option>Base de Datos</option><option>Redes</option><option>Diseño Web</option><option>Investigación Aplicada</option></select></div>
+          <div><label>Docente evaluado</label><select id="teacher"><option>SALAZAR ARAUJO, EDUARDO JOSE RAFAEL</option><option>ROMERO MARTIN, GONZALO</option><option>PAREDES MORALES, ANA</option><option>VILLACÍS TORRES, MARCO</option></select></div>
+          <div><label>Paralelo</label><select id="parallel"><option>A</option><option>B</option><option>C</option></select></div>
+        </div>
+      </div>
+      <div id="surveyContent"></div>
+      <div class="body"><label>Observaciones generales opcionales</label><textarea id="generalComment" placeholder="Añade observaciones sobre la experiencia académica, docente o emocional... No incluyas datos personales."></textarea></div>
+      <div class="survey-actions">
+        <button class="btn outline" onclick="prevStep()">Anterior</button>
+        <button class="btn outline" onclick="nextStep()" id="nextBtn">Siguiente</button>
+        <button class="btn ok hidden" onclick="submitSurvey()" id="submitBtn">Enviar encuesta</button>
+      </div>
+    </div>
+    <div class="survey-shell hidden" id="surveyClosedBox"><div class="closed"><h2>Encuesta no disponible</h2><p id="closedReason">No existe un periodo activo dentro de fechas.</p><p class="small">El administrador puede activar la encuesta por periodo académico desde el módulo de administración.</p></div></div>
+  </section>
+
+  <section id="admin" class="panel">
+    <div id="adminLogin" class="card login"><div class="head"><b>Acceso administrador</b></div><div class="body"><p class="small">Clave demo: <b>1234</b></p><label>Clave</label><input type="password" id="adminPass" placeholder="Ingrese clave"><br><br><button class="btn brandBtn" onclick="loginAdmin()">Ingresar</button></div></div>
+    <div id="adminArea" class="hidden">
+      <div class="subtabs no-print">
+        <button class="subtab active" onclick="showAdminTab('periods',this)">Periodos y activación</button>
+        <button class="subtab" onclick="showAdminTab('questions',this)">Preguntas</button>
+        <button class="subtab" onclick="showAdminTab('records',this)">Registros</button>
+        <button class="subtab" onclick="showAdminTab('history',this)">Historial</button>
+      </div>
+      <div id="admin-periods" class="admin-tab">
+        <div class="grid">
+          <div class="card col-5"><div class="head"><b>Crear / editar periodo</b></div><div class="body">
+            <input type="hidden" id="periodEditId">
+            <label>Nombre del periodo</label><input id="pName" placeholder="Abril - Septiembre 2026">
+            <div class="formrow" style="grid-template-columns:1fr 1fr"><div><label>Fecha inicio</label><input id="pStart" type="date"></div><div><label>Fecha fin</label><input id="pEnd" type="date"></div></div>
+            <label>Estado</label><select id="pStatus"><option value="active">Activo</option><option value="inactive">Inactivo</option></select>
+            <p class="small">La URL pública siempre es la misma; el sistema muestra automáticamente el periodo activo según fechas.</p>
+            <div class="twoActions"><button class="btn brandBtn" onclick="savePeriodForm()">Guardar periodo</button><button class="btn secondary" onclick="clearPeriodForm()">Limpiar</button></div>
+          </div></div>
+          <div class="card col-7"><div class="head"><b>Periodos configurados</b></div><div class="body" id="periodList"></div></div>
+        </div>
+      </div>
+      <div id="admin-questions" class="admin-tab hidden">
+        <div class="grid">
+          <div class="card col-4"><div class="head"><b>Gestión de preguntas</b></div><div class="body"><label>Indicador / sección</label><select id="adminSection" onchange="renderAdminQuestions()"></select><button class="btn secondary" onclick="addQuestion()">Agregar pregunta</button><p class="small">Modificar preguntas no altera los registros históricos ya guardados.</p></div></div>
+          <div class="card col-8"><div class="head"><b>Preguntas del indicador</b></div><div class="body" id="adminQuestions"></div></div>
+        </div>
+      </div>
+      <div id="admin-records" class="admin-tab hidden"><div class="card"><div class="head"><b>Registros recolectados</b></div><div class="body"><button class="btn danger" onclick="deleteAllRecords()">Eliminar todos los registros</button><div class="tablewrap"><table id="recordsAdminTable"></table></div></div></div></div>
+      <div id="admin-history" class="admin-tab hidden"><div class="card"><div class="head"><b>Historial por periodo</b></div><div class="body" id="historyBox"></div></div></div>
+    </div>
+  </section>
+
+  <section id="reports" class="panel">
+    <div class="grid">
+      <div class="card col-12"><div class="head"><b>Filtros dinámicos del reporte</b></div><div class="body"><div class="formrow">
+        <div><label>Periodo</label><select id="fPeriod" onchange="renderReports()"><option value="">Todos</option></select></div>
+        <div><label>Carrera</label><select id="fCareer" onchange="renderReports()"><option value="">Todas</option></select></div>
+        <div><label>Materia</label><select id="fSubject" onchange="renderReports()"><option value="">Todas</option></select></div>
+        <div><label>Docente</label><select id="fTeacher" onchange="renderReports()"><option value="">Todos</option></select></div>
+        <div><label>Indicador</label><select id="fIndicator" onchange="renderReports()"><option value="">Todos</option></select></div>
+        <div><label>Semáforo</label><select id="fRisk" onchange="renderReports()"><option value="">Todos</option><option value="critico">Crítico (&lt; 3)</option><option value="medio">Medio (3 a 3.9)</option><option value="alto">Alto (≥ 4)</option></select></div>
+      </div>
+      <p class="small" style="margin-top:0"><b>Reporte descargable:</b> únicamente matriz de respuestas por pregunta, con encabezados completos y valoración numérica/textual registrada por cada estudiante.</p>
+      <button class="btn brandBtn" onclick="exportReport('pdf')">Exportar PDF matriz de respuestas</button>
+      <button class="btn secondary" onclick="exportReport('csv')">Exportar CSV matriz de respuestas</button>
+      <button class="btn secondary" onclick="exportReport('excel')">Exportar Excel matriz de respuestas</button>
+      <button class="btn secondary" onclick="exportReport('html')">Exportar HTML matriz de respuestas</button>
+      </div></div>
+      <div class="card col-3"><div class="kpi"><div class="label">Encuestas</div><div class="value" id="kTotal">0</div><div class="hint">Registros filtrados</div></div></div>
+      <div class="card col-3"><div class="kpi"><div class="label">Promedio general</div><div class="value" id="kAvg">0.00</div><div class="hint">Escala 1 a 5</div></div></div>
+      <div class="card col-3"><div class="kpi"><div class="label">Satisfacción alta</div><div class="value" id="kHigh">0%</div><div class="hint">Promedio ≥ 4</div></div></div>
+      <div class="card col-3"><div class="kpi"><div class="label">Alerta crítica</div><div class="value" id="kRisk">0%</div><div class="hint">Promedio &lt; 3</div></div></div>
+      <div class="card col-6"><div class="head"><b>Promedio por indicador</b></div><div class="body" id="indicatorBars"></div></div>
+      <div class="card col-6"><div class="head"><b>Distribución emocional / satisfacción</b></div><div class="body" id="emotionDist"></div></div>
+      <div class="card col-12"><div class="head"><b>Encuesta de satisfacción Docente · matriz de respuestas por pregunta</b></div><div class="body"><p class="small">Cada fila representa una encuesta confidencial. Cada encabezado corresponde a una pregunta y cada celda muestra únicamente la valoración registrada.</p><div class="tablewrap"><table id="reportTable"></table></div></div></div>
+    </div>
+  </section>
+</div>
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>
