@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<preguntas>
+  <pregunta formulario="Encuesta de satisfacción Docente" categoria="Aula Virtual" orden="1" tipo="escala" obligatoria="SI" estado="ACTIVA">
+    <texto>El aula virtual presenta información clara y organizada de la asignatura.</texto>
+  </pregunta>
+  <pregunta formulario="Encuesta de satisfacción Docente" categoria="Aula Virtual" orden="2" tipo="escala" obligatoria="SI" estado="ACTIVA">
+    <texto>Los recursos publicados en el aula virtual aportan al aprendizaje.</texto>
+  </pregunta>
+  <pregunta formulario="Evaluación de tutorías" categoria="Seguimiento de tutoría" orden="1" tipo="escala" obligatoria="SI" estado="ACTIVA">
+    <texto>El tutor cumple con las reuniones planificadas.</texto>
+  </pregunta>
+</preguntas>

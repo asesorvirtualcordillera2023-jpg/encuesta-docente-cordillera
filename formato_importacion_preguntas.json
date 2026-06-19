@@ -1,0 +1,29 @@
+[
+  {
+    "formulario": "Encuesta de satisfacción Docente",
+    "categoria": "Aula Virtual",
+    "orden": 1,
+    "pregunta": "El aula virtual presenta información clara y organizada de la asignatura.",
+    "tipo": "escala",
+    "obligatoria": true,
+    "estado": true
+  },
+  {
+    "formulario": "Encuesta de satisfacción Docente",
+    "categoria": "Aula Virtual",
+    "orden": 2,
+    "pregunta": "Los recursos publicados en el aula virtual aportan al aprendizaje.",
+    "tipo": "escala",
+    "obligatoria": true,
+    "estado": true
+  },
+  {
+    "formulario": "Evaluación de tutorías",
+    "categoria": "Seguimiento de tutoría",
+    "orden": 1,
+    "pregunta": "El tutor cumple con las reuniones planificadas.",
+    "tipo": "escala",
+    "obligatoria": true,
+    "estado": true
+  }
+]

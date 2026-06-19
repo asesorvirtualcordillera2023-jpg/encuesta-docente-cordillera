@@ -1,0 +1,4 @@
+formulario;categoria;orden;pregunta;tipo;obligatoria;estado
+"Encuesta de satisfacción Docente";"Aula Virtual";1;"El aula virtual presenta información clara y organizada de la asignatura.";"escala";"SI";"ACTIVA"
+"Encuesta de satisfacción Docente";"Aula Virtual";2;"Los recursos publicados en el aula virtual aportan al aprendizaje.";"escala";"SI";"ACTIVA"
+"Evaluación de tutorías";"Seguimiento de tutoría";1;"El tutor cumple con las reuniones planificadas.";"escala";"SI";"ACTIVA"
