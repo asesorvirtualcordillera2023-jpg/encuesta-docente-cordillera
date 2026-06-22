@@ -114,7 +114,7 @@ const AUD_DEFAULT_BASE=[
 ];
 const AUD_DEFAULT_GML=Array.from({length:21},(_,i)=>{const n=i+1;return {codigo:'gml_w'+n,label:'Semana '+n+(n===7||n===14||n===21?' (Semana de Evaluación)':''),bimestre:n<=7?1:n<=14?2:3};});
 function auditoriaIndicadoresActivos(){let list=audIndicators.filter(i=>i.estado!==false); if(!list.length){list=[...AUD_DEFAULT_BASE.map((x,i)=>({...x,tipo:'base',orden:i+1,estado:true})),...AUD_DEFAULT_GML.map((x,i)=>({...x,tipo:'gml',orden:100+i,estado:true}))];} return list.sort((a,b)=>(a.orden||0)-(b.orden||0));}
-function auditTab(id){document.querySelectorAll('.audit-pane').forEach(p=>p.classList.add('hidden'));document.getElementById('audit_'+id)?.classList.remove('hidden');document.querySelectorAll('.audit-tabs button').forEach(b=>b.classList.remove('green'));event?.target?.classList.add('green');renderAuditoriaModule()}
+function auditTab(id){document.querySelectorAll('.audit-pane').forEach(p=>p.classList.add('hidden'));document.getElementById('audit_'+id)?.classList.remove('hidden');document.querySelectorAll('.audit-tabs button').forEach(b=>{b.classList.remove('green');b.classList.add('light')}); if(event?.target){event.target.classList.add('green');event.target.classList.remove('light')} const au=document.getElementById('audActiveUser'); if(au)au.textContent=currentAdmin?.nombre||'Administrador'; renderAuditoriaModule()}
 function renderAuditoriaModule(){renderAuditoriaSelects();renderAuditoriaChecklist();renderAuditoriaDashboard();renderAuditoriaReport();renderAuditoriaCatalog();renderAuditoriaIndicadores();}
 function auditUnique(rows,key){return [...new Set(rows.map(r=>r[key]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es'))}
 function auditSetOptions(id,arr,label='Seleccione...'){const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='<option value="">'+label+'</option>'+arr.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');if(arr.includes(old))el.value=old;}
@@ -164,27 +164,47 @@ function renderAuditoriaReport(){const el=document.getElementById('audReport'); 
 function renderAuditoriaCatalog(){const st=document.getElementById('audCatalogStatus'); if(st)st.innerHTML=`Registros activos en catálogo de auditoría: <b>${audCatalog.length}</b>`; const el=document.getElementById('audCatalogTable'); if(!el)return; let html='<table><thead><tr><th>Modalidad</th><th>Jornada</th><th>Carrera</th><th>Nivel</th><th>Paralelo</th><th>Materia</th><th>Docente</th><th>Periodo</th></tr></thead><tbody>'; audCatalog.slice(0,300).forEach(r=>html+=`<tr><td>${esc(r.modalidad)}</td><td>${esc(r.jornada)}</td><td>${esc(r.carrera)}</td><td>${esc(r.nivel)}</td><td>${esc(r.paralelo)}</td><td>${esc(r.materia)}</td><td>${esc(r.docente)}</td><td>${esc(r.periodo)}</td></tr>`); el.innerHTML=html+'</tbody></table>'+(audCatalog.length>300?`<p class="mini-muted">Mostrando 300 de ${audCatalog.length} registros.</p>`:'')}
 async function importAuditoriaCatalogo(ev){
   const file=ev.target.files?.[0]; if(!file)return;
-  const text=await readTextFileSmart(file);
-  const rows=parseCSVText(text).map(r=>({
-    modalidad:normMod(getCsvVal(r,['MODALIDAD'])),
-    jornada:getCsvVal(r,['JORNADA']),
-    carrera:getCsvVal(r,['CARRERA']),
-    nivel:getCsvVal(r,['NIVEL']),
-    paralelo:getCsvVal(r,['PAR','PARALELO']),
-    materia:getCsvVal(r,['MATERIA','ASIGNATURA']),
-    docente:getCsvVal(r,['PROFESOR','DOCENTE','PROFESOR/A','NOMBRE DOCENTE']),
-    periodo:getCsvVal(r,['PERIODO','PAO']),
-    estado:true
-  })).filter(r=>r.carrera&&r.materia&&r.docente);
-  const status=document.getElementById('audCatalogStatus');
-  if(status){status.className='audit-import-status';status.innerHTML=`Archivo leído correctamente. Filas válidas: <b>${rows.length}</b>. Se conservan tildes y ñ usando decodificación UTF-8 / Windows-1252.`;}
-  if(!rows.length)return alert('No se encontraron filas válidas. Revisa que el CSV tenga encabezados: MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO');
   try{
-    if(confirm('¿Inactivar catálogo anterior de auditoría antes de cargar?')) await sb('auditoria_catalogo_docente?id=not.is.null',{method:'PATCH',body:JSON.stringify({estado:false})});
+    const text=await readTextFileSmart(file);
+    const rows=parseCSVText(text).map(r=>({
+      modalidad:normMod(getCsvVal(r,['MODALIDAD'])),
+      jornada:getCsvVal(r,['JORNADA']),
+      carrera:getCsvVal(r,['CARRERA']),
+      nivel:getCsvVal(r,['NIVEL']),
+      paralelo:getCsvVal(r,['PAR','PARALELO']),
+      materia:getCsvVal(r,['MATERIA','ASIGNATURA']),
+      docente:getCsvVal(r,['PROFESOR','DOCENTE','PROFESOR/A','NOMBRE DOCENTE']),
+      periodo:getCsvVal(r,['PERIODO','PAO']),
+      estado:true
+    })).filter(r=>r.carrera&&r.materia&&r.docente);
+    const status=document.getElementById('audCatalogStatus');
+    if(status){status.className='audit-import-status';status.innerHTML=`Archivo leído correctamente. Filas válidas: <b>${rows.length}</b>. Se conservan tildes y ñ usando decodificación UTF-8 / Windows-1252.`;}
+    if(!rows.length)return alert('No se encontraron filas válidas. Revisa que el CSV tenga encabezados: MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO');
+    const mode=document.getElementById('audImportMode')?.value||'replace';
+    if(mode==='replace'){
+      if(!confirm(`Se reemplazará toda la base de auditoría subida anteriormente y se cargarán ${rows.length} registros nuevos. ¿Continuar?`))return;
+      await sb('auditoria_catalogo_docente?id=not.is.null',{method:'DELETE'});
+    }else{
+      if(!confirm(`Se agregarán ${rows.length} registros al catálogo existente. ¿Continuar?`))return;
+    }
     for(let i=0;i<rows.length;i+=100){await sb('auditoria_catalogo_docente',{method:'POST',body:JSON.stringify(rows.slice(i,i+100))});}
-    await loadAll(); alert('Catálogo de auditoría cargado: '+rows.length+' registros.');
-  }catch(e){alert('Error al cargar catálogo: '+e.message)}
+    await loadAll();
+    if(status){status.className='audit-import-status';status.innerHTML=mode==='replace'?`Base reemplazada correctamente. Registros cargados: <b>${rows.length}</b>.`:`Registros agregados correctamente: <b>${rows.length}</b>.`;}
+    alert(mode==='replace'?'Catálogo reemplazado correctamente.':'Registros agregados correctamente.');
+  }catch(e){alert('Error al cargar catálogo: '+e.message)} finally{ev.target.value=''}
 }
+
+async function deleteAllAuditoriaCatalogo(){
+  if(!confirm('¿Eliminar TODOS los registros del catálogo docente de auditoría? Esta acción no borra evaluaciones ya guardadas.'))return;
+  try{
+    await sb('auditoria_catalogo_docente?id=not.is.null',{method:'DELETE'});
+    await loadAll();
+    const status=document.getElementById('audCatalogStatus');
+    if(status){status.className='notice';status.innerHTML='Base de auditoría eliminada correctamente. Puedes subir un nuevo CSV cuando corresponda.';}
+    alert('Base de auditoría eliminada correctamente.');
+  }catch(e){alert('No se pudo eliminar la base subida: '+e.message)}
+}
+
 function downloadAuditoriaCatalogTemplate(){download('formato_catalogo_auditoria_moodle.csv','\uFEFFMODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO\nEN LÍNEA;NOCTURNA;DESARROLLO DE SOFTWARE;I NIVEL;A;PROGRAMACIÓN BÁSICA;JOSÉ MUÑOZ PEÑA;ABR_2026 - SEP_2026','text/csv;charset=utf-8')}
 function renderAuditoriaIndicadores(){const el=document.getElementById('audIndicadoresTable'); if(!el)return; let html='<table><thead><tr><th>Orden</th><th>Indicador</th><th>Tipo</th><th>Bimestre</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>'; auditoriaIndicadoresActivos().forEach(i=>html+=`<tr><td>${i.orden||''}</td><td>${esc(i.label||i.nombre)}</td><td>${esc(i.tipo)}</td><td>${esc(i.bimestre||'')}</td><td>${boolBadge(i.estado!==false)}</td><td>${i.id?`<button class="btn small dark" onclick="editAuditoriaIndicador(${i.id})">Editar</button> <button class="btn small danger" onclick="deleteAuditoriaIndicador(${i.id})">Eliminar</button>`:'Base local'}</td></tr>`); el.innerHTML=html+'</tbody></table>'}
 function clearAuditoriaIndicador(){['audIndId','audIndLabel'].forEach(id=>document.getElementById(id).value=''); audIndTipo.value='base'; audIndBimestre.value=''; audIndOrden.value='1'; audIndEstado.value='true'}
@@ -220,6 +240,35 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 .audit-switch input:checked + .toggle:after{left:29px}
 .audit-section-heading{background:linear-gradient(135deg,var(--oscuro),var(--claro));color:#fff;padding:14px 18px;border-radius:16px 16px 0 0;font-size:16px;font-weight:900;margin-top:18px}
 .audit-import-status{margin-top:12px;background:#f1faf6;border:1px solid var(--line);border-radius:14px;padding:12px;color:#203044}
+
+/* V26 - Auditoría Moodle organizada como submódulo profesional */
+.audit-workspace{display:grid;grid-template-columns:240px minmax(0,1fr);gap:22px;align-items:start;margin-top:16px}
+.audit-tabs{position:sticky;top:12px;display:flex;flex-direction:column;gap:10px;background:var(--oscuro);border:0;border-radius:18px;padding:18px;min-height:620px;box-shadow:0 14px 34px rgba(0,96,104,.18)}
+.audit-tabs .audit-menu-title{color:#bcefe1;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:900;margin:0 0 4px 4px}
+.audit-tabs .btn{width:100%;justify-content:flex-start;text-align:left;border-radius:10px;background:transparent;color:#fff;border:1px solid rgba(255,255,255,.13);padding:12px 14px;font-size:13px;box-shadow:none}
+.audit-tabs .btn.green{background:var(--claro)!important;color:#fff;border-color:var(--claro);box-shadow:0 8px 16px rgba(0,206,124,.22)}
+.audit-tabs .btn.light{background:rgba(255,255,255,.06)!important;color:#fff}
+.audit-tabs .btn.light:hover{background:rgba(0,206,124,.22)!important;border-color:rgba(0,206,124,.35)}
+.audit-user-box{margin-top:auto;border-top:1px solid rgba(255,255,255,.14);padding-top:14px;color:#fff;font-size:12px}
+.audit-user-box b{display:block;color:#00CE7C;text-transform:uppercase;font-size:11px;letter-spacing:.08em}
+.audit-user-box span{display:block;margin-top:4px;font-weight:900}
+.audit-content{min-width:0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 12px 28px rgba(0,96,104,.08)}
+.audit-content .audit-pane{padding:0;background:#fff}
+.audit-pane>h4{padding:18px 22px;margin:0!important;border-bottom:1px solid var(--line);background:#f9fffc;color:var(--oscuro)!important}
+.audit-block{border:0!important;border-radius:0!important;box-shadow:none!important;margin:0!important;padding:22px!important;border-bottom:1px solid var(--line)!important;background:#fff!important}
+.audit-block:nth-of-type(odd){background:#f4fbf8!important}
+.audit-block-title{font-size:14px!important;text-transform:uppercase;letter-spacing:.03em;border-bottom:2px solid var(--claro)!important;width:max-content;max-width:100%;padding-bottom:8px!important}
+.audit-selection-grid{grid-template-columns:repeat(4,minmax(170px,1fr))!important;gap:14px!important}
+.audit-selection-grid select,.audit-selection-grid input{height:42px!important;font-size:13px!important}
+.audit-summary{grid-template-columns:repeat(3,1fr);padding-top:4px}
+.audit-checklist .audit-block{background:#fff!important}
+.audit-section-heading{border-radius:14px;margin:18px 0 0;background:linear-gradient(135deg,var(--oscuro),var(--claro))}
+.audit-table th{font-size:12px}.audit-table td{font-size:13px;padding:10px 12px}.audit-table .check-cell{width:130px}.audit-switch .toggle{width:46px;height:24px}.audit-switch .toggle:after{width:18px;height:18px}.audit-switch input:checked + .toggle:after{left:25px}
+.catalog-actions{display:grid;grid-template-columns:minmax(260px,1fr) auto auto auto;gap:12px;align-items:end;background:#f4fbf8;border:1px solid var(--line);border-radius:16px;padding:14px;margin:12px 0 18px}.catalog-actions label{margin-bottom:6px}.catalog-actions select{height:42px}
+.btn.danger{background:#d7193f;color:#fff;border-color:#d7193f}.btn.danger:hover{filter:brightness(.95)}
+@media(max-width:1200px){.audit-workspace{grid-template-columns:1fr}.audit-tabs{position:relative;top:0;min-height:auto;display:grid;grid-template-columns:repeat(2,1fr)}.audit-user-box{display:none}.audit-selection-grid{grid-template-columns:repeat(2,1fr)!important}.catalog-actions{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){.audit-tabs{grid-template-columns:1fr}.audit-selection-grid{grid-template-columns:1fr!important}.audit-summary{grid-template-columns:1fr}.catalog-actions{grid-template-columns:1fr}.catalog-actions .btn{width:100%}}
+
 @media(max-width:1100px){.audit-selection-grid{grid-template-columns:repeat(2,1fr)}.audit-summary{grid-template-columns:1fr}}
 @media(max-width:760px){.audit-selection-grid{grid-template-columns:1fr}.audit-table th:nth-child(1),.audit-table td:nth-child(1){display:none}.audit-table .check-cell{width:110px}.audit-tabs .btn{width:100%}}
 
@@ -272,12 +321,13 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 <section id="p_tutorias" class="panel"><div class="admin-card"><h3>Tutorías y seguimientos académicos</h3><div class="inside"><div class="module-help">Vincula estudiantes con docentes tutores y formularios específicos. Primero selecciona carrera y nivel/cohorte para cargar solo los estudiantes correspondientes.</div><div class="dynamic-grid"><div><label>Formulario asociado</label><select id="tuForm"></select></div><div><label>Periodo</label><select id="tuPeriod"></select></div><div><label>Carrera del estudiante</label><select id="tuCareer" onchange="refreshTutoriaLevels();refreshTutoriaStudents()"></select></div><div><label>Nivel / cohorte</label><select id="tuLevel" onchange="refreshTutoriaStudents()"></select></div><div><label>Estudiante</label><select id="tuStudent"></select><div class="mini-muted">Primero selecciona carrera y nivel para mostrar solo los estudiantes correspondientes.</div></div><div><label>Docente tutor</label><select id="tuTeacher"></select></div><div><label>Tipo de proceso</label><select id="tuType"><option>Tutoría de titulación</option><option>Proyecto integrador</option><option>Prácticas preprofesionales</option><option>Vinculación</option><option>Seguimiento académico</option></select></div><div><label>Estado del proceso</label><select id="tuState"><option>En curso</option><option>Observado</option><option>Finalizado</option><option>Retirado</option><option>Inactivo</option></select></div><div><label>Fecha inicio</label><input id="tuStart" type="date"></div><div><label>Fecha fin</label><input id="tuEnd" type="date"></div><div style="grid-column:span 2"><label>Observación</label><input id="tuObs" placeholder="Detalle o nota interna"></div></div><input type="hidden" id="tuId"><div class="toolbar"><button class="btn green" onclick="saveTutoria()">Guardar seguimiento</button><button class="btn light" onclick="clearTutoriaForm()">Nuevo</button></div><div id="tutoriaList" class="table-wrap"></div></div></div></section>
 
 <section id="p_auditoria" class="panel"><div class="admin-card"><h3>Auditoría académica Moodle</h3><div class="inside"><div class="module-help"><b>Objetivo:</b> integrar el seguimiento de aulas Moodle/GML dentro del sistema institucional. Permite cargar catálogo docente, evaluar estructura del aula virtual, controlar semanas GML, generar dashboard y reportes.</div>
-<div class="audit-tabs"><button class="btn small green" onclick="auditTab('eval')">Registro de evaluación</button><button class="btn small light" onclick="auditTab('dash')">Dashboard</button><button class="btn small light" onclick="auditTab('rep')">Reportes</button><button class="btn small light" onclick="auditTab('cat')">Catálogo docente</button><button class="btn small light" onclick="auditTab('ind')">Indicadores</button></div>
+<div class="audit-workspace"><aside class="audit-tabs"><div class="audit-menu-title">Auditoría</div><button class="btn small green" onclick="auditTab('eval')">☑ Registro formulario</button><button class="btn small light" onclick="auditTab('dash')">◷ Dashboard y analítica</button><button class="btn small light" onclick="auditTab('rep')">▤ Reportes almacenados</button><button class="btn small light" onclick="auditTab('cat')">◎ Catálogo docentes</button><button class="btn small light" onclick="auditTab('ind')">⚙ Configuración global</button><div class="audit-user-box"><b>Auditor activo</b><span id="audActiveUser">Administrador</span></div></aside><div class="audit-content">
 <div id="audit_eval" class="audit-pane"><h4>Registro de evaluación académica</h4><div class="audit-block"><div class="audit-block-title">1. Selección académica</div><div class="audit-selection-grid"><div><label>Modalidad</label><select id="audModalidad" onchange="audCascade('modalidad')"></select></div><div><label>Jornada</label><select id="audJornada" onchange="audCascade('jornada')"></select></div><div><label>Carrera</label><select id="audCarrera" onchange="audCascade('carrera')"></select></div><div><label>Nivel</label><select id="audNivel" onchange="audCascade('nivel')"></select></div><div><label>Paralelo</label><select id="audParalelo" onchange="audCascade('paralelo')"></select></div><div><label>Materia</label><select id="audMateria" onchange="audCascade('materia')"></select></div><div><label>Docente asignado</label><input id="audDocente" readonly placeholder="Se carga automáticamente"></div><div><label>Periodo / PAO</label><input id="audPeriodo" readonly></div><div><label>Bimestre evaluado</label><select id="audBimestre" onchange="renderAuditoriaChecklist()"><option value="1">Bimestre 1</option><option value="2">Bimestre 2</option><option value="3">Bimestre 3</option><option value="Todos">Todos los bimestres</option></select></div></div><div class="audit-summary"><div class="summary-item"><span>Docente</span><b id="audSummaryTeacher">Se carga al seleccionar materia</b></div><div class="summary-item"><span>Periodo</span><b id="audSummaryPeriod">Pendiente</b></div><div class="summary-item"><span>Evaluación</span><b>Estructura Moodle / GML</b></div></div></div><div id="audChecklist" class="audit-checklist"></div><div class="audit-block"><div class="audit-block-title">3. Observaciones y recomendaciones</div><textarea id="audObs" placeholder="Hallazgos, evidencias faltantes o recomendaciones"></textarea><input type="hidden" id="audEvalId"><div class="toolbar"><button class="btn green" onclick="saveAuditoriaEval()">Guardar evaluación</button><button class="btn light" onclick="clearAuditoriaEval()">Nueva</button></div></div></div>
 <div id="audit_dash" class="audit-pane hidden"><h4>Dashboard de auditoría</h4><div class="dynamic-grid"><div><label>Periodo</label><select id="audDashPeriodo" onchange="renderAuditoriaDashboard()"></select></div><div><label>Carrera</label><select id="audDashCarrera" onchange="renderAuditoriaDashboard()"></select></div><div><label>Docente</label><select id="audDashDocente" onchange="renderAuditoriaDashboard()"></select></div><div><label>Bimestre</label><select id="audDashBimestre" onchange="renderAuditoriaDashboard()"><option value="">Todos</option><option value="1">Bimestre 1</option><option value="2">Bimestre 2</option><option value="3">Bimestre 3</option><option value="Todos">Todos</option></select></div></div><div id="audKpis" class="kpis dashboard"></div><div class="dashboard-charts"><div class="dash-chart"><h4>Cumplimiento por estado</h4><div id="audChartEstado"></div></div><div class="dash-chart"><h4>Cumplimiento por indicador</h4><div id="audChartIndicador"></div></div></div></div>
 <div id="audit_rep" class="audit-pane hidden"><h4>Reportes de auditoría</h4><div class="toolbar"><button class="btn green" onclick="exportAuditoriaCSV()">Exportar CSV</button><button class="btn light" onclick="exportAuditoriaHTML()">Exportar HTML</button><button class="btn light" onclick="window.print()">Imprimir / PDF</button></div><div id="audReport" class="table-wrap"></div></div>
-<div id="audit_cat" class="audit-pane hidden"><h4>Catálogo docente para auditoría</h4><div class="module-help">Formato CSV: <b>MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO</b></div><div class="toolbar"><button class="btn tomate" onclick="document.getElementById('audCsvFile').click()">Subir CSV</button><input id="audCsvFile" type="file" accept=".csv,text/csv" class="hidden" onchange="importAuditoriaCatalogo(event)"><button class="btn light" onclick="downloadAuditoriaCatalogTemplate()">Descargar formato CSV</button></div><div id="audCatalogStatus" class="notice"></div><div id="audCatalogTable" class="table-wrap"></div></div>
+<div id="audit_cat" class="audit-pane hidden"><h4>Catálogo docente para auditoría</h4><div class="module-help"><b>Formato CSV:</b> MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO<br>Al subir una nueva base puedes reemplazar completamente los registros anteriores o agregarlos al catálogo existente.</div><div class="catalog-actions"><div><label>Modo de carga</label><select id="audImportMode"><option value="replace" selected>Reemplazar base subida anterior</option><option value="append">Agregar sin borrar registros existentes</option></select></div><button class="btn tomate" onclick="document.getElementById('audCsvFile').click()">Subir CSV</button><input id="audCsvFile" type="file" accept=".csv,text/csv" class="hidden" onchange="importAuditoriaCatalogo(event)"><button class="btn light" onclick="downloadAuditoriaCatalogTemplate()">Descargar formato CSV</button><button class="btn danger" onclick="deleteAllAuditoriaCatalogo()">Eliminar toda la base subida</button></div><div id="audCatalogStatus" class="notice"></div><div id="audCatalogTable" class="table-wrap"></div></div>
 <div id="audit_ind" class="audit-pane hidden"><h4>Indicadores de auditoría</h4><div class="dynamic-grid"><div><label>Nombre del indicador</label><input id="audIndLabel" placeholder="Ej. PEA actualizado"></div><div><label>Tipo</label><select id="audIndTipo"><option value="base">Base</option><option value="gml">GML / semanal</option></select></div><div><label>Bimestre</label><select id="audIndBimestre"><option value="">No aplica</option><option value="1">Bimestre 1</option><option value="2">Bimestre 2</option><option value="3">Bimestre 3</option></select></div><div><label>Orden</label><input id="audIndOrden" type="number" value="1"></div><div><label>Estado</label><select id="audIndEstado"><option value="true">Activo</option><option value="false">Inactivo</option></select></div></div><input type="hidden" id="audIndId"><div class="toolbar"><button class="btn green" onclick="saveAuditoriaIndicador()">Guardar indicador</button><button class="btn light" onclick="clearAuditoriaIndicador()">Nuevo</button><button class="btn tomate" onclick="seedAuditoriaIndicadores()">Cargar indicadores base</button></div><div id="audIndicadoresTable" class="table-wrap"></div></div>
+</div></div>
 </div></div></section>
 <section id="p_reportes_generales" class="panel"><div class="admin-card"><h3>Reportes generales por formulario y seguimiento</h3><div class="inside"><div class="dynamic-grid"><div><label>Formulario</label><select id="rgForm" onchange="renderGeneralReports()"></select></div><div><label>Periodo</label><select id="rgPeriod" onchange="renderGeneralReports()"></select></div><div><label>Tipo de seguimiento</label><select id="rgType" onchange="renderGeneralReports()"><option value="">Todos</option><option>Tutoría de titulación</option><option>Proyecto integrador</option><option>Prácticas preprofesionales</option><option>Vinculación</option><option>Seguimiento académico</option></select></div></div><div class="toolbar"><button class="btn green" onclick="exportGeneralReportHTML()">Exportar HTML</button><button class="btn light" onclick="window.print()">Imprimir / PDF</button></div><div id="generalReportKpis" class="report-grid"></div><br><div id="generalReportTable" class="table-wrap"></div></div></div></section>
 <section id="p_reportes" class="panel"><div class="admin-card"><h3>Reporte matriz de respuestas por pregunta</h3><div class="inside"><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><button class="btn green" onclick="exportCSV()">Exportar CSV</button><button class="btn light" onclick="exportHTML()">Exportar HTML</button><button class="btn light" onclick="window.print()">Imprimir / PDF</button></div><div id="reportTable" class="table-wrap"></div></div></div></section>
@@ -893,7 +943,7 @@ const AUD_DEFAULT_BASE=[
 ];
 const AUD_DEFAULT_GML=Array.from({length:21},(_,i)=>{const n=i+1;return {codigo:'gml_w'+n,label:'Semana '+n+(n===7||n===14||n===21?' (Semana de Evaluación)':''),bimestre:n<=7?1:n<=14?2:3};});
 function auditoriaIndicadoresActivos(){let list=audIndicators.filter(i=>i.estado!==false); if(!list.length){list=[...AUD_DEFAULT_BASE.map((x,i)=>({...x,tipo:'base',orden:i+1,estado:true})),...AUD_DEFAULT_GML.map((x,i)=>({...x,tipo:'gml',orden:100+i,estado:true}))];} return list.sort((a,b)=>(a.orden||0)-(b.orden||0));}
-function auditTab(id){document.querySelectorAll('.audit-pane').forEach(p=>p.classList.add('hidden'));document.getElementById('audit_'+id)?.classList.remove('hidden');document.querySelectorAll('.audit-tabs button').forEach(b=>b.classList.remove('green'));event?.target?.classList.add('green');renderAuditoriaModule()}
+function auditTab(id){document.querySelectorAll('.audit-pane').forEach(p=>p.classList.add('hidden'));document.getElementById('audit_'+id)?.classList.remove('hidden');document.querySelectorAll('.audit-tabs button').forEach(b=>{b.classList.remove('green');b.classList.add('light')}); if(event?.target){event.target.classList.add('green');event.target.classList.remove('light')} const au=document.getElementById('audActiveUser'); if(au)au.textContent=currentAdmin?.nombre||'Administrador'; renderAuditoriaModule()}
 function renderAuditoriaModule(){renderAuditoriaSelects();renderAuditoriaChecklist();renderAuditoriaDashboard();renderAuditoriaReport();renderAuditoriaCatalog();renderAuditoriaIndicadores();}
 function auditUnique(rows,key){return [...new Set(rows.map(r=>r[key]).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b),'es'))}
 function auditSetOptions(id,arr,label='Seleccione...'){const el=document.getElementById(id);if(!el)return;const old=el.value;el.innerHTML='<option value="">'+label+'</option>'+arr.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');if(arr.includes(old))el.value=old;}
@@ -943,27 +993,47 @@ function renderAuditoriaReport(){const el=document.getElementById('audReport'); 
 function renderAuditoriaCatalog(){const st=document.getElementById('audCatalogStatus'); if(st)st.innerHTML=`Registros activos en catálogo de auditoría: <b>${audCatalog.length}</b>`; const el=document.getElementById('audCatalogTable'); if(!el)return; let html='<table><thead><tr><th>Modalidad</th><th>Jornada</th><th>Carrera</th><th>Nivel</th><th>Paralelo</th><th>Materia</th><th>Docente</th><th>Periodo</th></tr></thead><tbody>'; audCatalog.slice(0,300).forEach(r=>html+=`<tr><td>${esc(r.modalidad)}</td><td>${esc(r.jornada)}</td><td>${esc(r.carrera)}</td><td>${esc(r.nivel)}</td><td>${esc(r.paralelo)}</td><td>${esc(r.materia)}</td><td>${esc(r.docente)}</td><td>${esc(r.periodo)}</td></tr>`); el.innerHTML=html+'</tbody></table>'+(audCatalog.length>300?`<p class="mini-muted">Mostrando 300 de ${audCatalog.length} registros.</p>`:'')}
 async function importAuditoriaCatalogo(ev){
   const file=ev.target.files?.[0]; if(!file)return;
-  const text=await readTextFileSmart(file);
-  const rows=parseCSVText(text).map(r=>({
-    modalidad:normMod(getCsvVal(r,['MODALIDAD'])),
-    jornada:getCsvVal(r,['JORNADA']),
-    carrera:getCsvVal(r,['CARRERA']),
-    nivel:getCsvVal(r,['NIVEL']),
-    paralelo:getCsvVal(r,['PAR','PARALELO']),
-    materia:getCsvVal(r,['MATERIA','ASIGNATURA']),
-    docente:getCsvVal(r,['PROFESOR','DOCENTE','PROFESOR/A','NOMBRE DOCENTE']),
-    periodo:getCsvVal(r,['PERIODO','PAO']),
-    estado:true
-  })).filter(r=>r.carrera&&r.materia&&r.docente);
-  const status=document.getElementById('audCatalogStatus');
-  if(status){status.className='audit-import-status';status.innerHTML=`Archivo leído correctamente. Filas válidas: <b>${rows.length}</b>. Se conservan tildes y ñ usando decodificación UTF-8 / Windows-1252.`;}
-  if(!rows.length)return alert('No se encontraron filas válidas. Revisa que el CSV tenga encabezados: MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO');
   try{
-    if(confirm('¿Inactivar catálogo anterior de auditoría antes de cargar?')) await sb('auditoria_catalogo_docente?id=not.is.null',{method:'PATCH',body:JSON.stringify({estado:false})});
+    const text=await readTextFileSmart(file);
+    const rows=parseCSVText(text).map(r=>({
+      modalidad:normMod(getCsvVal(r,['MODALIDAD'])),
+      jornada:getCsvVal(r,['JORNADA']),
+      carrera:getCsvVal(r,['CARRERA']),
+      nivel:getCsvVal(r,['NIVEL']),
+      paralelo:getCsvVal(r,['PAR','PARALELO']),
+      materia:getCsvVal(r,['MATERIA','ASIGNATURA']),
+      docente:getCsvVal(r,['PROFESOR','DOCENTE','PROFESOR/A','NOMBRE DOCENTE']),
+      periodo:getCsvVal(r,['PERIODO','PAO']),
+      estado:true
+    })).filter(r=>r.carrera&&r.materia&&r.docente);
+    const status=document.getElementById('audCatalogStatus');
+    if(status){status.className='audit-import-status';status.innerHTML=`Archivo leído correctamente. Filas válidas: <b>${rows.length}</b>. Se conservan tildes y ñ usando decodificación UTF-8 / Windows-1252.`;}
+    if(!rows.length)return alert('No se encontraron filas válidas. Revisa que el CSV tenga encabezados: MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO');
+    const mode=document.getElementById('audImportMode')?.value||'replace';
+    if(mode==='replace'){
+      if(!confirm(`Se reemplazará toda la base de auditoría subida anteriormente y se cargarán ${rows.length} registros nuevos. ¿Continuar?`))return;
+      await sb('auditoria_catalogo_docente?id=not.is.null',{method:'DELETE'});
+    }else{
+      if(!confirm(`Se agregarán ${rows.length} registros al catálogo existente. ¿Continuar?`))return;
+    }
     for(let i=0;i<rows.length;i+=100){await sb('auditoria_catalogo_docente',{method:'POST',body:JSON.stringify(rows.slice(i,i+100))});}
-    await loadAll(); alert('Catálogo de auditoría cargado: '+rows.length+' registros.');
-  }catch(e){alert('Error al cargar catálogo: '+e.message)}
+    await loadAll();
+    if(status){status.className='audit-import-status';status.innerHTML=mode==='replace'?`Base reemplazada correctamente. Registros cargados: <b>${rows.length}</b>.`:`Registros agregados correctamente: <b>${rows.length}</b>.`;}
+    alert(mode==='replace'?'Catálogo reemplazado correctamente.':'Registros agregados correctamente.');
+  }catch(e){alert('Error al cargar catálogo: '+e.message)} finally{ev.target.value=''}
 }
+
+async function deleteAllAuditoriaCatalogo(){
+  if(!confirm('¿Eliminar TODOS los registros del catálogo docente de auditoría? Esta acción no borra evaluaciones ya guardadas.'))return;
+  try{
+    await sb('auditoria_catalogo_docente?id=not.is.null',{method:'DELETE'});
+    await loadAll();
+    const status=document.getElementById('audCatalogStatus');
+    if(status){status.className='notice';status.innerHTML='Base de auditoría eliminada correctamente. Puedes subir un nuevo CSV cuando corresponda.';}
+    alert('Base de auditoría eliminada correctamente.');
+  }catch(e){alert('No se pudo eliminar la base subida: '+e.message)}
+}
+
 function downloadAuditoriaCatalogTemplate(){download('formato_catalogo_auditoria_moodle.csv','\uFEFFMODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO\nEN LÍNEA;NOCTURNA;DESARROLLO DE SOFTWARE;I NIVEL;A;PROGRAMACIÓN BÁSICA;JOSÉ MUÑOZ PEÑA;ABR_2026 - SEP_2026','text/csv;charset=utf-8')}
 function renderAuditoriaIndicadores(){const el=document.getElementById('audIndicadoresTable'); if(!el)return; let html='<table><thead><tr><th>Orden</th><th>Indicador</th><th>Tipo</th><th>Bimestre</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>'; auditoriaIndicadoresActivos().forEach(i=>html+=`<tr><td>${i.orden||''}</td><td>${esc(i.label||i.nombre)}</td><td>${esc(i.tipo)}</td><td>${esc(i.bimestre||'')}</td><td>${boolBadge(i.estado!==false)}</td><td>${i.id?`<button class="btn small dark" onclick="editAuditoriaIndicador(${i.id})">Editar</button> <button class="btn small danger" onclick="deleteAuditoriaIndicador(${i.id})">Eliminar</button>`:'Base local'}</td></tr>`); el.innerHTML=html+'</tbody></table>'}
 function clearAuditoriaIndicador(){['audIndId','audIndLabel'].forEach(id=>document.getElementById(id).value=''); audIndTipo.value='base'; audIndBimestre.value=''; audIndOrden.value='1'; audIndEstado.value='true'}
