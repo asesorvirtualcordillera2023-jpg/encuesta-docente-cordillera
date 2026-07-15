@@ -318,6 +318,39 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 .nav-group-label{margin:18px 8px 8px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;opacity:.72;font-weight:900}.flow-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.nav .hidden{display:none!important}
 .student-template-box{background:#f8fffc;border:1px dashed #00CE7C;border-radius:18px;padding:16px;margin:0 0 20px}.student-template-box h4{margin:0 0 8px;color:#006068}.student-template-box code{display:block;background:#ffffff;border:1px solid #d7e8e4;border-radius:12px;padding:12px;font-weight:800;color:#006068;white-space:normal;margin:8px 0}.student-template-box .template-buttons{justify-content:flex-start}.student-template-box table th{background:#006068;color:#fff}.student-template-box table td,.student-template-box table th{font-size:13px}
 </style>
+<style>
+
+/* ===================== V33 - Vista compacta, scroll horizontal y estudiantes filtrados ===================== */
+.admin .main{min-width:0;max-width:100%;overflow:auto;height:100vh;padding:22px;background:#f6faf9}
+.main-top{margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #d8e7e2}
+.panel,.admin-card,.admin-card .inside{min-width:0;max-width:100%}
+.admin-card{border-radius:16px;box-shadow:0 8px 24px rgba(0,96,104,.09)}
+.admin-card h3{padding:14px 18px;font-size:20px}
+.admin-card .inside,.compact-module .inside{padding:14px 18px!important}
+.module-help,.compact-help{padding:10px 12px!important;margin-bottom:12px!important;font-size:13px!important;line-height:1.35}
+.form-row,.dynamic-grid,.compact-grid,.compact-grid-2,.compact-grid-3,.upload-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important;gap:10px 12px!important;align-items:end!important}
+.dynamic-grid [style*="grid-column"],.compact-grid .span-2{grid-column:auto!important}
+label{font-size:13px!important;margin-bottom:5px!important;line-height:1.2}
+select,input,textarea{font-size:14px!important;padding:9px 11px!important;border-radius:12px!important;min-height:40px}
+textarea{min-height:86px!important}.compact-textarea{min-height:74px!important}
+.btn{padding:10px 16px!important;font-size:14px!important;border-radius:12px!important}.btn.small{padding:7px 10px!important;font-size:12px!important}
+.toolbar,.wide-actions,.flow-actions{gap:8px!important;margin:10px 0!important}
+.table-wrap,.psico-table-wrap,.import-preview,.compact-table{width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;border-radius:14px!important}
+.table-wrap table,.psico-table-wrap table,.import-preview table,.compact-table table{min-width:900px;width:max-content!important;max-width:none!important}
+th,td{padding:8px 9px!important;font-size:13px!important;vertical-align:top}.record-actions{white-space:nowrap!important}
+.psico-compact-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:14px!important;align-items:start!important}
+@media(min-width:1320px){.psico-compact-layout{grid-template-columns:minmax(560px,1fr) minmax(420px,.72fr)!important}}
+.psico-head.compact-head{padding:12px 16px!important}.psico-head.compact-head h4{font-size:18px!important}.psico-body.compact-body{padding:14px 16px!important}
+.compact-section{padding:12px!important;margin-bottom:12px!important;border-radius:14px!important}.compact-section-title{font-size:13px!important;margin-bottom:10px!important;padding-bottom:6px!important}
+.compact-question-grid{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))!important;gap:8px!important}
+.psico-question.compact-q{padding:9px!important;border-radius:12px!important}.psico-question.compact-q label{font-size:12px!important;min-height:30px!important}
+.student-mini-summary{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(135px,1fr))!important;gap:8px!important;margin-top:10px!important}
+.student-mini-summary div{padding:8px!important;min-height:50px!important}.student-mini-summary span{font-size:10px!important}.student-mini-summary b{font-size:12px!important}
+.audit-workspace{min-width:0!important}.audit-content{min-width:0!important;overflow-x:auto!important}.audit-selection-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important;gap:10px!important}.audit-checklist{overflow-x:auto!important}
+.kpis.dashboard{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}.dashboard-charts{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))!important}
+@media(max-width:980px){.admin{grid-template-columns:1fr!important}.sidebar{position:relative!important;height:auto!important}.admin .main{height:auto!important;overflow:visible!important}.psico-compact-layout{grid-template-columns:1fr!important}.table-wrap table,.psico-table-wrap table{min-width:760px}}
+
+</style>
 </head>
 <body>
 <div id="studentApp">
@@ -1595,6 +1628,97 @@ async function importStudentsCSVBase(){
     alert('Error al importar estudiantes: '+e.message)
   }
 }
+
+
+
+/* ===================== V33 - Filtrar SOLO estudiantes reales en formularios ===================== */
+function v33Norm(v){return String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toUpperCase()}
+function v33CleanCareer(v){
+  let s=String(v||'').trim();
+  // Oculta códigos de malla/carrera para que el selector muestre solo la carrera.
+  s=s.replace(/\s*-\s*\d{3,}.*$/,'').replace(/-\d{3,}.*$/,'').trim();
+  return s || String(v||'').trim();
+}
+function v33CleanLevel(v){return String(v||'').trim()}
+function v33LooksLikeStudentLevel(v){
+  const n=v33Norm(v);
+  return /(^|\s)(I|II|III|IV|V|VI|VII|VIII|IX|X|XI|XII|[0-9]+)\s*(NIVEL|SEMESTRE)?($|\s)/.test(n) || n.includes('NIVEL') || n.includes('SEMESTRE');
+}
+function v33IsStudentRow(s){
+  if(!s || s.estado===false) return false;
+  const tipo=v33Norm(s.tipo);
+  const mail=v33Norm(s.correo_institucional||s.correo||s.correo_personal);
+  const nivel=v33Norm(s.nivel);
+  if(tipo && !(tipo.includes('ESTUDIANTE') || tipo.includes('ALUMNO'))) return false;
+  return (tipo.includes('ESTUDIANTE') || tipo.includes('ALUMNO') || mail.includes('ESTUDIANTES') || v33LooksLikeStudentLevel(nivel));
+}
+function v33StudentRows(){return (students||[]).filter(v33IsStudentRow)}
+function v33FillSelect(id, values, placeholder){
+  const el=document.getElementById(id); if(!el)return;
+  const old=el.value;
+  el.innerHTML=`<option value="">${placeholder||'Seleccione...'}</option>`+values.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');
+  if(values.includes(old)) el.value=old;
+}
+function v33CareerValues(rows){return uniqueClean(rows.map(s=>v33CleanCareer(s.carrera)).filter(Boolean))}
+function v33LevelValues(rows){return uniqueClean(rows.map(s=>v33CleanLevel(s.nivel)).filter(v=>v && v33LooksLikeStudentLevel(v)))}
+function v33FilterStudentsBy(career,level,jornada){
+  return v33StudentRows().filter(s=>
+    (!career || v33CleanCareer(s.carrera)===career) &&
+    (!level || v33CleanLevel(s.nivel)===level) &&
+    (!jornada || !s.jornada || s.jornada===jornada)
+  );
+}
+function refreshTutoriaCareers(){v33FillSelect('tuCareer',v33CareerValues(v33StudentRows()),'Seleccione carrera')}
+function refreshTutoriaLevels(){
+  const career=document.getElementById('tuCareer')?.value||'';
+  v33FillSelect('tuLevel',v33LevelValues(v33FilterStudentsBy(career,'','')),'Seleccione nivel / cohorte');
+}
+function refreshTutoriaStudents(){
+  const career=document.getElementById('tuCareer')?.value||'', level=document.getElementById('tuLevel')?.value||'';
+  const filtered=v33FilterStudentsBy(career,level,'');
+  fillSelectFromArray('tuStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');
+}
+function psRefreshCareers(){v33FillSelect('psCareer',v33CareerValues(v33StudentRows()),'Seleccione carrera')}
+function psRefreshJornadas(){
+  const el=document.getElementById('psJornada'); if(!el)return; const old=el.value;
+  const career=document.getElementById('psCareer')?.value||'';
+  let jornadas=uniqueClean(v33FilterStudentsBy(career,'','').map(s=>s.jornada).filter(Boolean));
+  if(!jornadas.length) jornadas=['Matutina','Nocturna','En línea','Fin de semana'];
+  el.innerHTML='<option value="">Todas / sin jornada</option>'+jornadas.map(j=>`<option>${esc(j)}</option>`).join('');
+  if(jornadas.includes(old)) el.value=old;
+}
+function psRefreshLevels(){
+  const career=document.getElementById('psCareer')?.value||'';
+  const jornada=document.getElementById('psJornada')?.value||'';
+  v33FillSelect('psLevel',v33LevelValues(v33FilterStudentsBy(career,'',jornada)),'Seleccione nivel / cohorte');
+}
+function psRefreshStudents(){
+  const career=document.getElementById('psCareer')?.value||'', level=document.getElementById('psLevel')?.value||'', jornada=document.getElementById('psJornada')?.value||'';
+  const filtered=v33FilterStudentsBy(career,level,jornada);
+  fillSelectFromArray('psStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');
+  const cnt=document.getElementById('psCompactCount'); if(cnt)cnt.textContent=`${filtered.length} estudiante(s) visibles`;
+}
+function psAutofillStudent(){
+  const s=(students||[]).find(x=>String(x.id)===String(document.getElementById('psStudent')?.value)); if(!s)return;
+  psIdent.value=s.identificacion||''; psNombre.value=s.nombres||'';
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val||'-'};
+  set('psIdentView',s.identificacion); set('psNombreView',s.nombres); set('psEmailView',s.correo_institucional||s.correo||s.correo_personal); set('psPhoneView',s.whatsapp||s.celular||s.telefono); set('psStudentPeriodView',s.periodo_ingreso);
+  if(s.carrera&&!psCareer.value){psCareer.value=v33CleanCareer(s.carrera); psRefreshJornadas(); psRefreshLevels()}
+  if(s.nivel&&!psLevel.value){psLevel.value=v33CleanLevel(s.nivel)}
+}
+async function savePsicoSeguimiento(){
+  const st=(students||[]).find(x=>String(x.id)===String(psStudent?.value)); if(!st)return alert('Selecciona carrera, nivel y estudiante.');
+  const body={periodo_id:psPeriod.value?Number(psPeriod.value):null,periodo_nombre:getPeriodName(psPeriod.value),estudiante_id:Number(psStudent.value),identificacion:psIdent.value||st.identificacion||'',nombres:psNombre.value||st.nombres||'',carrera:psCareer.value||v33CleanCareer(st.carrera)||'',jornada:psJornada.value||'',nivel:psLevel.value||st.nivel||'',clases:psClases.value,trato_docente:psTrato.value,observacion_profesor:psObsProfesor.value||null,ayuda_academica:psAyudaAcademica.value,ayuda_tecnologica:psAyudaTecnologica.value,refuerzo_contenidos:psRefuerzo.value,feliz_instituto:psFeliz.value,apoyo_emocional:psApoyoEmocional.value,observacion_extra:psObsExtra.value||null,estado_seguimiento:psEstado.value,responsable:psResponsable.value||currentAdmin?.nombre||null,alerta_academica:psIsYes(psAyudaAcademica.value)||psIsYes(psRefuerzo.value),alerta_tecnologica:psIsYes(psAyudaTecnologica.value),alerta_emocional:psIsYes(psApoyoEmocional.value)||norm(psFeliz.value)==='NO',estado:true};
+  try{if(psId.value)await sb(`psico_seguimientos?id=eq.${psId.value}`,{method:'PATCH',body:JSON.stringify(body)});else await sb('psico_seguimientos',{method:'POST',body:JSON.stringify(body)});clearPsicoForm();await loadAll();alert('Seguimiento psicopedagógico guardado.')}catch(e){alert('No se pudo guardar el seguimiento: '+e.message+'\n\nEjecuta el SQL V28 si aún no creaste la tabla psico_seguimientos.')}
+}
+function editPsico(id){
+  const r=psicoSeguimientos.find(x=>String(x.id)===String(id)); if(!r)return;
+  psId.value=r.id; psPeriod.value=r.periodo_id||''; psCareer.value=v33CleanCareer(r.carrera)||''; psRefreshJornadas(); psJornada.value=r.jornada||''; psRefreshLevels(); psLevel.value=r.nivel||''; psRefreshStudents(); psStudent.value=r.estudiante_id||'';
+  psIdent.value=r.identificacion||''; psNombre.value=r.nombres||''; psAutofillStudent(); psClases.value=r.clases||'Buenas'; psTrato.value=r.trato_docente||'Bueno'; psAyudaAcademica.value=r.ayuda_academica||'No'; psAyudaTecnologica.value=r.ayuda_tecnologica||'No'; psRefuerzo.value=r.refuerzo_contenidos||'No'; psFeliz.value=r.feliz_instituto||'Sí'; psApoyoEmocional.value=r.apoyo_emocional||'No'; psObsProfesor.value=r.observacion_profesor||''; psObsExtra.value=r.observacion_extra||''; psEstado.value=r.estado_seguimiento||'Abierto'; psResponsable.value=r.responsable||''; adminPanel('psicopedagogico',document.querySelector('[data-module=psicopedagogico]'))
+}
+// Evita que carreras administrativas o niveles no académicos se mezclen en los formularios.
+function v33RefreshStudentDependentModules(){try{refreshTutoriaCareers();refreshTutoriaLevels();refreshTutoriaStudents();psRefreshCareers();psRefreshJornadas();psRefreshLevels();psRefreshStudents();}catch(e){console.warn('V33 refresh estudiantes:',e)}}
+document.addEventListener('DOMContentLoaded',()=>setTimeout(v33RefreshStudentDependentModules,900));
 
 </script>
 </body>
