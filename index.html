@@ -650,16 +650,19 @@ async function deleteStudent(id){if(!confirm('¿Eliminar estudiante?'))return;tr
 async function importStudentsCSV(ev){
   const f=ev.target.files[0];if(!f)return;
   const txt=await readTextFileSmart(f);csvStudentRows=parseCSVText(txt);
-  const rows=mappedStudentCsvRows();
-  if(!rows.length)return alert('No se detectaron estudiantes válidos.');
-  if(!confirm(`Se importarán ${rows.length} estudiantes desde Base de estudiantes. ¿Continuar?`))return;
+  const rawRows=mappedStudentCsvRows();
+  if(!rawRows.length)return alert('No se detectaron estudiantes válidos.');
+  const {withIdent,noIdent,duplicated}=dedupeStudentRowsForImport(rawRows);
+  if(!withIdent.length)return alert('No hay estudiantes con identificación válida para importar.');
+  if(!confirm(`Se importarán/actualizarán ${withIdent.length} estudiantes únicos. Duplicados consolidados: ${duplicated}. Filas sin identificación omitidas: ${noIdent.length}. ¿Continuar?`))return;
   try{
-    const existentes=await safe('estudiantes?select=id,identificacion');
-    const byId=new Map(existentes.filter(x=>x.identificacion).map(x=>[norm(x.identificacion),x.id]));
-    const nuevos=[];let actualizados=0;
-    for(const r of rows){const key=norm(r.identificacion||''); if(key&&byId.has(key)){await sb(`estudiantes?id=eq.${byId.get(key)}`,{method:'PATCH',body:JSON.stringify(r)});actualizados++;}else nuevos.push(r);}
-    for(let i=0;i<nuevos.length;i+=500){await sb('estudiantes',{method:'POST',body:JSON.stringify(nuevos.slice(i,i+500))});}
-    await loadAll();alert(`Estudiantes importados correctamente. Actualizados: ${actualizados}. Nuevos: ${nuevos.length}.`);
+    let done=0;
+    for(let i=0;i<withIdent.length;i+=400){
+      const chunk=withIdent.slice(i,i+400);
+      await upsertStudentsChunk(chunk);
+      done+=chunk.length;
+    }
+    await loadAll();alert(`Estudiantes importados correctamente. Procesados: ${done}. Duplicados consolidados: ${duplicated}.`);
   }catch(e){alert('No se pudo importar: '+e.message)}
 }
 
@@ -922,40 +925,38 @@ function setStudentProgress(pct,msg){
 }
 async function importStudentsCSVBase(){
   if(!csvStudentRows.length) await previewStudentsCSVBase();
-  const rows=mappedStudentCsvRows(); if(!rows.length)return alert('No hay estudiantes válidos para importar.');
+  const rawRows=mappedStudentCsvRows();
+  if(!rawRows.length)return alert('No hay estudiantes válidos para importar.');
   const mode=document.getElementById('csvStudentMode')?.value||'replace';
-  if(!confirm(`Se importarán ${rows.length} estudiantes. Modo: ${mode==='replace'?'reescribir/actualizar base anterior':'agregar'}. ¿Continuar?`))return;
+  const {withIdent,noIdent,duplicated}=dedupeStudentRowsForImport(rawRows);
+  if(!withIdent.length)return alert('La base no tiene cédulas/identificaciones válidas. Revisa la columna CEDULA o IDENTIFICACION.');
+  const msg=`Se procesarán ${withIdent.length} estudiantes únicos por cédula.${duplicated?`\nDuplicados dentro del CSV detectados y consolidados: ${duplicated}.`:''}${noIdent.length?`\nFilas sin identificación omitidas: ${noIdent.length}.`:''}\nModo: ${mode==='replace'?'reescribir/actualizar base anterior':'agregar/actualizar'}. ¿Continuar?`;
+  if(!confirm(msg))return;
   const st=document.getElementById('csvStudentStatus'); st.className='notice'; st.innerHTML='Importando estudiantes por lotes, por favor espera...';
   try{
     setStudentProgress(5,'Preparando base de estudiantes...');
     if(mode==='replace' && document.getElementById('csvStudentDeactivateOld')?.checked){
       await sb('estudiantes?id=not.is.null',{method:'PATCH',body:JSON.stringify({estado:false})});
     }
-    const existentes=await safe('estudiantes?select=id,identificacion');
-    const byId=new Map(existentes.filter(x=>x.identificacion).map(x=>[norm(x.identificacion),x.id]));
-    const toInsert=[]; let updated=0;
-    for(let i=0;i<rows.length;i++){
-      const r=rows[i]; const key=norm(r.identificacion||'');
-      if(key && byId.has(key)){
-        await sb(`estudiantes?id=eq.${byId.get(key)}`,{method:'PATCH',body:JSON.stringify(r)});
-        updated++;
-      }else{
-        toInsert.push(r);
-      }
-      if(i%50===0)setStudentProgress(10+Math.round((i/rows.length)*45),`Actualizando existentes: ${i} de ${rows.length}`);
-    }
-    let inserted=0;
-    for(let i=0;i<toInsert.length;i+=500){
-      const chunk=toInsert.slice(i,i+500);
-      await sb('estudiantes',{method:'POST',body:JSON.stringify(chunk)});
-      inserted+=chunk.length;
-      setStudentProgress(60+Math.round((inserted/Math.max(1,toInsert.length))*35),`Insertando nuevos: ${inserted} de ${toInsert.length}`);
+    let processed=0;
+    const batchSize=400;
+    for(let i=0;i<withIdent.length;i+=batchSize){
+      const chunk=withIdent.slice(i,i+batchSize);
+      await upsertStudentsChunk(chunk);
+      processed+=chunk.length;
+      setStudentProgress(10+Math.round((processed/withIdent.length)*85),`Guardando estudiantes: ${processed} de ${withIdent.length}`);
+      await new Promise(r=>setTimeout(r,20));
     }
     setStudentProgress(100,'Carga finalizada. Actualizando pantalla...');
     await loadAll();
-    st.className='notice import-ok'; st.innerHTML=`<b>Base de estudiantes actualizada correctamente.</b><br>Actualizados: ${updated}. Nuevos: ${inserted}. Total procesado: ${rows.length}.`;
-    document.getElementById('csvStudentFile').value=''; csvStudentRows=[];
-  }catch(e){st.className='notice import-bad'; st.innerHTML='<b>No se pudo completar la importación de estudiantes.</b><br>'+esc(e.message)+'<br><small>Verifica permisos RLS sobre la tabla estudiantes.</small>'; alert('Error al importar estudiantes: '+e.message)}
+    st.className='notice import-ok';
+    st.innerHTML=`<b>Base de estudiantes actualizada correctamente.</b><br>Procesados únicos: ${withIdent.length}. Duplicados consolidados: ${duplicated}. Filas sin identificación omitidas: ${noIdent.length}.`;
+    const file=document.getElementById('csvStudentFile'); if(file)file.value=''; csvStudentRows=[];
+  }catch(e){
+    st.className='notice import-bad';
+    st.innerHTML='<b>No se pudo completar la importación de estudiantes.</b><br>'+esc(e.message)+'<br><small>Ejecuta el SQL V31 de permisos/upsert y verifica que la columna identificación tenga valores únicos.</small>';
+    alert('Error al importar estudiantes: '+e.message)
+  }
 }
 async function deleteAllStudentsBase(){
   if(!confirm('¿Eliminar TODOS los estudiantes cargados? Esto no elimina respuestas históricas, pero puede dejar seguimientos anteriores sin estudiante asociado.'))return;
@@ -1319,13 +1320,37 @@ function exportAuditoriaHTML(){
 }
 
 
-/* ===================== V30 - Compactación visual y base estudiantes institucional ===================== */
+/* ===================== V31 - Importación estudiantes con upsert y deduplicación por cédula ===================== */
 (function(){
   const css = `
   .compact-module .inside{padding:16px 18px}.compact-help{padding:12px 14px;margin-bottom:14px;font-size:14px}.compact-card{box-shadow:0 8px 20px rgba(0,96,104,.07)}.compact-head{padding:13px 18px;border-bottom:3px solid var(--claro);display:flex;justify-content:space-between;align-items:center;gap:12px}.compact-head h4{font-size:19px}.compact-pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:#e9f8f2;color:var(--oscuro);font-weight:900;font-size:12px}.compact-body{padding:16px 18px}.compact-section{border:1px solid var(--line);border-radius:16px;background:#fbfffd;margin-bottom:14px;padding:14px}.compact-section-title{font-size:14px;font-weight:900;color:var(--oscuro);text-transform:uppercase;border-bottom:2px solid var(--claro);padding-bottom:7px;margin-bottom:12px}.compact-grid{display:grid;gap:12px}.compact-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.compact-grid .span-2{grid-column:span 2}.compact-grid label,.compact-question-grid label{font-size:13px;margin-bottom:5px;color:#10233f;font-weight:900}.compact-grid select,.compact-grid input,.compact-grid textarea,.compact-question-grid select,.compact-question-grid input{padding:10px 12px;border-radius:12px;font-size:15px}.compact-textarea{min-height:88px!important}.compact-question-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.compact-q{padding:10px;border-radius:14px}.compact-q label{font-size:12.5px;line-height:1.25;min-height:32px}.student-mini-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:12px}.student-mini-summary div{background:#fff;border:1px solid #dce9e6;border-radius:12px;padding:10px;min-height:58px}.student-mini-summary span{display:block;color:#607081;font-size:11px;font-weight:900;text-transform:uppercase}.student-mini-summary b{display:block;color:#006068;font-size:13px;line-height:1.25;word-break:break-word}.compact-actions{margin-top:12px}.compact-upload-grid{grid-template-columns:1fr 1fr}.compact-upload h4{margin:0 0 8px;color:var(--oscuro)}.compact-template{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.compact-table{max-height:360px;overflow:auto}.psico-compact-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);gap:18px}.psico-table-wrap.compact-table table{font-size:13px}@media(max-width:1280px){.compact-question-grid{grid-template-columns:repeat(3,1fr)}.student-mini-summary{grid-template-columns:repeat(3,1fr)}.psico-compact-layout{grid-template-columns:1fr}}@media(max-width:900px){.compact-grid-3,.compact-grid-2,.compact-question-grid,.compact-upload-grid{grid-template-columns:1fr}.compact-grid .span-2{grid-column:auto}.student-mini-summary{grid-template-columns:1fr 1fr}.compact-template{grid-template-columns:1fr}}`;
   const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
 })();
 function csvEstadoToBool(v){const n=norm(v); if(!n)return true; return !['INACTIVO','INACTIVA','NO','0','FALSE','RETIRADO','RETIRADA'].includes(n)}
+function cleanStudentId(v){return String(v||'').trim().replace(/[^0-9A-Za-zÁÉÍÓÚÜÑáéíóúüñ\-]/g,'').toUpperCase()}
+function mergeStudentRow(a,b){
+  const out={...(a||{})};
+  Object.keys(b||{}).forEach(k=>{if(b[k]!==null&&b[k]!==undefined&&String(b[k]).trim()!=='')out[k]=b[k]});
+  return out;
+}
+function dedupeStudentRowsForImport(rows){
+  const byIdent=new Map(); const noIdent=[]; let duplicated=0;
+  rows.forEach(r=>{
+    const key=cleanStudentId(r.identificacion);
+    const row={...r,identificacion:key||null};
+    if(key){
+      if(byIdent.has(key)) duplicated++;
+      byIdent.set(key,mergeStudentRow(byIdent.get(key),row));
+    }else{
+      noIdent.push(row);
+    }
+  });
+  return {withIdent:[...byIdent.values()],noIdent,duplicated};
+}
+async function upsertStudentsChunk(chunk){
+  if(!chunk.length)return [];
+  return await sb('estudiantes?on_conflict=identificacion',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=representation'},body:JSON.stringify(chunk)});
+}
 function mappedStudentCsvRows(){
   return csvStudentRows.map(r=>{
     const correoInst=getCsvVal(r,['CORREO_INSTITUCIONAL','CORREO INSTITUCIONAL','EMAIL_INSTITUCIONAL','EMAIL INSTITUCIONAL']);
