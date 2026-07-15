@@ -1425,6 +1425,177 @@ function psAutofillStudent(){
 }
 function clearPsicoForm(){['psId','psIdent','psNombre','psObsProfesor','psObsExtra','psResponsable'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psCareer','psLevel','psStudent','psJornada'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psIdentView','psEmailView','psPhoneView','psStudentPeriodView'].forEach(id=>{const e=document.getElementById(id); if(e)e.textContent='-'}); const nv=document.getElementById('psNombreView'); if(nv)nv.textContent='Seleccione estudiante'; if(psClases)psClases.value='Muy buenas'; if(psTrato)psTrato.value='Muy bueno'; if(psAyudaAcademica)psAyudaAcademica.value='No'; if(psAyudaTecnologica)psAyudaTecnologica.value='No'; if(psRefuerzo)psRefuerzo.value='No'; if(psFeliz)psFeliz.value='Sí'; if(psApoyoEmocional)psApoyoEmocional.value='No'; if(psEstado)psEstado.value='Abierto'; psRefreshJornadas(); psRefreshLevels(); psRefreshStudents();}
 
+
+
+/* ===================== V32 - Corrección definitiva: objetos uniformes para Supabase upsert estudiantes ===================== */
+const STUDENT_IMPORT_KEYS = [
+  'identificacion','nombres','correo','correo_institucional','correo_personal',
+  'telefono','celular','whatsapp','carrera','nivel','jornada','tipo','periodo_ingreso','estado'
+];
+function studentText(v){
+  if(v===undefined || v===null) return null;
+  const s=String(v).replace(/^\uFEFF/,'').trim();
+  return s==='' ? null : s;
+}
+function cleanStudentId(v){
+  const s=studentText(v);
+  if(!s) return '';
+  return s.replace(/[^0-9A-Za-zÁÉÍÓÚÜÑáéíóúüñ\-]/g,'').toUpperCase();
+}
+function normalizeStudentImportRow(row){
+  const base={};
+  STUDENT_IMPORT_KEYS.forEach(k=>base[k]=null);
+  base.identificacion = cleanStudentId(row?.identificacion) || null;
+  base.nombres = studentText(row?.nombres);
+  base.correo = studentText(row?.correo || row?.correo_institucional || row?.correo_personal);
+  base.correo_institucional = studentText(row?.correo_institucional);
+  base.correo_personal = studentText(row?.correo_personal);
+  base.telefono = studentText(row?.telefono || row?.celular);
+  base.celular = studentText(row?.celular || row?.telefono);
+  base.whatsapp = studentText(row?.whatsapp);
+  base.carrera = studentText(row?.carrera);
+  base.nivel = studentText(row?.nivel);
+  base.jornada = studentText(row?.jornada);
+  base.tipo = studentText(row?.tipo);
+  base.periodo_ingreso = studentText(row?.periodo_ingreso);
+  base.estado = row?.estado === false ? false : true;
+  return base;
+}
+function mergeStudentRow(a,b){
+  const oldRow=normalizeStudentImportRow(a||{});
+  const newRow=normalizeStudentImportRow(b||{});
+  const out={};
+  STUDENT_IMPORT_KEYS.forEach(k=>{
+    if(k==='estado') out[k]=newRow[k] !== undefined ? newRow[k] : oldRow[k];
+    else out[k]=newRow[k]!==null && newRow[k]!=='' ? newRow[k] : oldRow[k];
+  });
+  return normalizeStudentImportRow(out);
+}
+function dedupeStudentRowsForImport(rows){
+  const byIdent=new Map(); const noIdent=[]; let duplicated=0;
+  (rows||[]).forEach(r=>{
+    const row=normalizeStudentImportRow(r);
+    const key=row.identificacion;
+    if(key){
+      if(byIdent.has(key)) duplicated++;
+      byIdent.set(key,mergeStudentRow(byIdent.get(key),row));
+    }else{
+      noIdent.push(row);
+    }
+  });
+  const withIdent=[...byIdent.values()].map(normalizeStudentImportRow);
+  return {withIdent,noIdent,duplicated};
+}
+function mappedStudentCsvRows(){
+  return (csvStudentRows||[]).map(r=>{
+    const correoInst=getCsvVal(r,['CORREO_INSTITUCIONAL','CORREO INSTITUCIONAL','EMAIL_INSTITUCIONAL','EMAIL INSTITUCIONAL']);
+    const correoPers=getCsvVal(r,['CORREO_PERSONAL','CORREO PERSONAL','EMAIL_PERSONAL','EMAIL PERSONAL']);
+    const celular=getCsvVal(r,['CELULAR','TELEFONO','TELÉFONO','TELEFONO_MOVIL','TELÉFONO MÓVIL']);
+    const whatsapp=getCsvVal(r,['WHATSAPP','WSP','WA']);
+    const periodo=getCsvVal(r,['PERIODO','PAO','PERIODO_ACADEMICO','PERIODO ACADÉMICO']);
+    return normalizeStudentImportRow({
+      identificacion:getCsvVal(r,['CEDULA','CÉDULA','IDENTIFICACION','IDENTIFICACIÓN','DOCUMENTO','CODIGO','CÓDIGO']),
+      nombres:getCsvVal(r,['NOMBRE','NOMBRES','APELLIDOS Y NOMBRES','APELLIDOS_NOMBRES','ESTUDIANTE','NOMBRE DEL ESTUDIANTE']),
+      correo:correoInst||correoPers||getCsvVal(r,['CORREO','EMAIL']),
+      correo_institucional:correoInst,
+      correo_personal:correoPers,
+      telefono:celular,
+      celular:celular,
+      whatsapp:whatsapp,
+      carrera:getCsvVal(r,['CARRERA','PROGRAMA']),
+      nivel:getCsvVal(r,['NIVEL','SEMESTRE','COHORTE']),
+      jornada:getCsvVal(r,['JORNADA']),
+      tipo:getCsvVal(r,['TIPO','TIPO_ESTUDIANTE','TIPO ESTUDIANTE']),
+      periodo_ingreso:periodo,
+      estado:csvEstadoToBool(getCsvVal(r,['ESTADO']))
+    });
+  }).filter(r=>r.nombres&&r.carrera);
+}
+async function upsertStudentsChunk(chunk){
+  const clean=(chunk||[]).map(normalizeStudentImportRow).filter(r=>r.identificacion&&r.nombres&&r.carrera);
+  if(!clean.length)return [];
+  // Todos los objetos se reconstruyen con las mismas llaves y en el mismo orden para evitar: All object keys must match.
+  const uniform=clean.map(r=>{
+    const o={}; STUDENT_IMPORT_KEYS.forEach(k=>o[k]=r[k]); return o;
+  });
+  return await sb('estudiantes?on_conflict=identificacion',{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:JSON.stringify(uniform)});
+}
+async function saveStudent(){
+  if(!sName.value.trim())return alert('Escribe el nombre del estudiante.');
+  const body=normalizeStudentImportRow({identificacion:sIdent.value,nombres:sName.value,correo:sMail.value,carrera:sCareer.value,nivel:sLevel.value,estado:sState.value==='true'});
+  try{
+    if(sId.value){
+      await sb(`estudiantes?id=eq.${sId.value}`,{method:'PATCH',body:JSON.stringify(body)});
+    }else if(body.identificacion){
+      await upsertStudentsChunk([body]);
+    }else{
+      await sb('estudiantes',{method:'POST',body:JSON.stringify(body)});
+    }
+    clearStudentForm();await loadAll();alert('Estudiante guardado.');
+  }catch(e){alert('No se pudo guardar estudiante: '+e.message)}
+}
+async function importStudentsCSV(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const txt=await readTextFileSmart(f);csvStudentRows=parseCSVText(txt);
+  const rawRows=mappedStudentCsvRows();
+  if(!rawRows.length)return alert('No se detectaron estudiantes válidos.');
+  const {withIdent,noIdent,duplicated}=dedupeStudentRowsForImport(rawRows);
+  if(!withIdent.length)return alert('No hay estudiantes con identificación válida para importar.');
+  if(!confirm(`Se importarán/actualizarán ${withIdent.length} estudiantes únicos. Duplicados consolidados: ${duplicated}. Filas sin identificación omitidas: ${noIdent.length}. ¿Continuar?`))return;
+  try{
+    let done=0; const batchSize=250;
+    for(let i=0;i<withIdent.length;i+=batchSize){
+      const chunk=withIdent.slice(i,i+batchSize);
+      await upsertStudentsChunk(chunk);
+      done+=chunk.length;
+      await new Promise(r=>setTimeout(r,20));
+    }
+    await loadAll();alert(`Estudiantes importados correctamente. Procesados: ${done}. Duplicados consolidados: ${duplicated}.`);
+  }catch(e){alert('No se pudo importar: '+e.message)}
+}
+async function previewStudentsCSVBase(){
+  const file=document.getElementById('csvStudentFile')?.files?.[0]; if(!file)return alert('Selecciona un archivo CSV de estudiantes.');
+  const text=await readTextFileSmart(file); csvStudentRows=parseCSVText(text); const rows=mappedStudentCsvRows();
+  const {withIdent,noIdent,duplicated}=dedupeStudentRowsForImport(rows);
+  const carreras=new Set(withIdent.map(r=>r.carrera)), niveles=new Set(withIdent.map(r=>r.nivel).filter(Boolean)), periodos=new Set(withIdent.map(r=>r.periodo_ingreso).filter(Boolean));
+  const st=document.getElementById('csvStudentStatus'); st.className='notice import-ok'; st.innerHTML=`<b>Previsualización lista.</b><br>Filas válidas: ${rows.length}. Estudiantes únicos con cédula: ${withIdent.length}. Duplicados: ${duplicated}. Sin cédula omitidos: ${noIdent.length}. Carreras: ${carreras.size}. Niveles: ${niveles.size}. Periodos detectados: ${periodos.size}.`;
+  document.getElementById('csvStudentPreview').innerHTML='<table><thead><tr><th>#</th><th>Cédula</th><th>Estudiante</th><th>Correo institucional</th><th>Correo personal</th><th>Celular</th><th>WhatsApp</th><th>Carrera</th><th>Nivel</th><th>Tipo</th><th>Periodo</th><th>Estado</th></tr></thead><tbody>'+withIdent.slice(0,40).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.identificacion||'')}</td><td>${esc(r.nombres)}</td><td>${esc(r.correo_institucional||'')}</td><td>${esc(r.correo_personal||'')}</td><td>${esc(r.celular||'')}</td><td>${esc(r.whatsapp||'')}</td><td>${esc(r.carrera)}</td><td>${esc(r.nivel||'')}</td><td>${esc(r.tipo||'')}</td><td>${esc(r.periodo_ingreso||'')}</td><td>${r.estado?'Activo':'Inactivo'}</td></tr>`).join('')+'</tbody></table>'+(withIdent.length>40?`<p class="mini-muted">Mostrando 40 de ${withIdent.length} estudiantes únicos.</p>`:'');
+}
+async function importStudentsCSVBase(){
+  if(!csvStudentRows.length) await previewStudentsCSVBase();
+  const rawRows=mappedStudentCsvRows();
+  if(!rawRows.length)return alert('No hay estudiantes válidos para importar.');
+  const mode=document.getElementById('csvStudentMode')?.value||'replace';
+  const {withIdent,noIdent,duplicated}=dedupeStudentRowsForImport(rawRows);
+  if(!withIdent.length)return alert('La base no tiene cédulas/identificaciones válidas. Revisa la columna CEDULA o IDENTIFICACION.');
+  const msg=`Se procesarán ${withIdent.length} estudiantes únicos por cédula.${duplicated?`\nDuplicados dentro del CSV detectados y consolidados: ${duplicated}.`:''}${noIdent.length?`\nFilas sin identificación omitidas: ${noIdent.length}.`:''}\nModo: ${mode==='replace'?'reescribir/actualizar base anterior':'agregar/actualizar'}. ¿Continuar?`;
+  if(!confirm(msg))return;
+  const st=document.getElementById('csvStudentStatus'); st.className='notice'; st.innerHTML='Importando estudiantes por lotes, por favor espera...';
+  try{
+    setStudentProgress(5,'Preparando base de estudiantes...');
+    if(mode==='replace' && document.getElementById('csvStudentDeactivateOld')?.checked){
+      await sb('estudiantes?id=not.is.null',{method:'PATCH',body:JSON.stringify({estado:false})});
+    }
+    let processed=0; const batchSize=250;
+    for(let i=0;i<withIdent.length;i+=batchSize){
+      const chunk=withIdent.slice(i,i+batchSize);
+      await upsertStudentsChunk(chunk);
+      processed+=chunk.length;
+      setStudentProgress(10+Math.round((processed/withIdent.length)*85),`Guardando estudiantes: ${processed} de ${withIdent.length}`);
+      await new Promise(r=>setTimeout(r,20));
+    }
+    setStudentProgress(100,'Carga finalizada. Actualizando pantalla...');
+    await loadAll();
+    st.className='notice import-ok';
+    st.innerHTML=`<b>Base de estudiantes actualizada correctamente.</b><br>Procesados únicos: ${withIdent.length}. Duplicados consolidados: ${duplicated}. Filas sin identificación omitidas: ${noIdent.length}.`;
+    const file=document.getElementById('csvStudentFile'); if(file)file.value=''; csvStudentRows=[];
+  }catch(e){
+    st.className='notice import-bad';
+    st.innerHTML='<b>No se pudo completar la importación de estudiantes.</b><br>'+esc(e.message)+'<br><small>Ejecuta el SQL V32 y vuelve a intentar. Esta versión envía todas las filas con las mismas columnas.</small>';
+    alert('Error al importar estudiantes: '+e.message)
+  }
+}
+
 </script>
 </body>
 </html>
