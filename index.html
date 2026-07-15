@@ -289,6 +289,13 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 .psico-shell{display:grid;grid-template-columns:1fr;gap:18px}.psico-form-card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 25px rgba(0,96,104,.08);overflow:hidden}.psico-head{background:linear-gradient(90deg,rgba(0,96,104,.10),rgba(0,206,124,.08));border-bottom:4px solid var(--claro);padding:18px 22px}.psico-head h4{margin:0;color:var(--oscuro);font-size:22px}.psico-body{padding:22px}.psico-section-title{display:inline-flex;gap:8px;align-items:center;color:var(--oscuro);font-size:15px;font-weight:900;text-transform:uppercase;border-bottom:3px solid var(--claro);padding-bottom:8px;margin:0 0 16px}.psico-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.psico-grid.two{grid-template-columns:repeat(2,1fr)}.psico-grid.full{grid-template-columns:1fr}.psico-grid label{font-weight:900;color:#10233f;margin-bottom:6px;display:block}.psico-question{border:1px solid #dce9e6;border-radius:16px;padding:14px;background:#fbfffd}.psico-question label{font-size:14px;color:var(--oscuro);font-weight:900}.psico-alert-table tr.crit td{background:#fff4f1}.psico-alert-table tr.warn td{background:#fff9e8}.psico-badge{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:900}.psico-badge.crit{background:#ffe3e3;color:#b80021}.psico-badge.warn{background:#fff2df;color:#b75c00}.psico-badge.ok{background:#e4fbef;color:#006068}.psico-quick-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.psico-report-card{border:1px solid var(--line);border-radius:18px;background:#fff;padding:18px;box-shadow:0 8px 20px rgba(0,96,104,.08)}.psico-report-card h4{text-align:center;color:var(--oscuro);margin:0 0 12px}.psico-table-wrap{overflow:auto;max-height:420px;border:1px solid var(--line);border-radius:16px}.psico-table-wrap table{margin:0}.psico-note{background:#f1fffa;border:1px solid #cdeee3;border-radius:16px;padding:14px;color:#405060;line-height:1.45}
 @media(max-width:1050px){.psico-grid{grid-template-columns:1fr 1fr}}@media(max-width:720px){.psico-grid,.psico-grid.two{grid-template-columns:1fr}}
 
+
+/* V29 - Carga institucional docentes + estudiantes */
+.dual-upload-grid{display:grid;grid-template-columns:1fr;gap:22px}
+.upload-card{background:#fbfffd;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 24px rgba(0,96,104,.06)}
+.upload-card h4{margin:0 0 8px;color:var(--oscuro);font-size:18px;font-weight:900}
+.upload-card .toolbar{margin-top:14px}
+@media(min-width:1100px){.dual-upload-grid{grid-template-columns:1fr 1fr}}
 </style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Reporte de Auditoría Académica Moodle</h2></div>${document.getElementById('audReport').innerHTML}<footer>© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</footer></body></html>`;download('reporte_auditoria_moodle.html',html,'text/html')}
 
 </script>
@@ -330,11 +337,14 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 <section id="p_preguntas" class="panel"><div class="admin-card"><h3>Gestión de preguntas</h3><div class="inside"><div class="module-help"><b>Flujo recomendado:</b> 1) crea el <b>formulario</b>, 2) crea sus <b>categorías</b>, 3) crea o importa las <b>preguntas</b>. <br><div class="flow-actions"><button class="btn small dark" onclick="adminPanel('formularios',document.querySelector('[data-module=formularios]'))">Ir a Formularios</button><button class="btn small tomate" onclick="adminPanel('categorias',document.querySelector('[data-module=categorias]'))">Ir a Categorías</button></div></div><div class="question-admin-layout"><div class="soft-section"><h3 style="margin-top:0;color:var(--oscuro)">Crear / editar pregunta individual</h3><div class="form-row"><div><label>Formulario</label><select id="qForm" onchange="renderQuestionCategoryOptions()"></select></div><div><label>Indicador / categoría</label><select id="qInd"></select></div><div><label>Orden</label><input id="qOrder" type="number" value="1"></div><div><label>Estado</label><select id="qState"><option value="true">Activa</option><option value="false">Inactiva</option></select></div></div><br><label>Pregunta</label><textarea id="qText" style="min-height:90px"></textarea><input type="hidden" id="qId"><br><button class="btn green" onclick="saveQuestion()">Guardar pregunta</button> <button class="btn light" onclick="clearQuestionForm()">Nueva</button></div><div class="question-import-box"><h4>Importar preguntas por archivo</h4><div class="dynamic-grid"><div><label>Formulario destino</label><select id="qImportForm"></select></div><div><label>Archivo</label><input id="qImportFile" type="file" accept=".csv,.txt,.json,.xml,.xlsx,.xls" onchange="previewQuestionFile(event)"></div><div><label>Acción previa</label><select id="qImportMode"><option value="append">Agregar sin afectar preguntas actuales</option><option value="replace">Inactivar preguntas actuales del formulario e importar nuevas</option></select></div></div><div class="file-help"><b>Columnas recomendadas:</b> formulario, categoria, orden, pregunta, tipo, obligatoria, estado. Para XML Moodle Feedback se detectan las etiquetas de sección y las preguntas automáticamente.</div><div class="template-buttons"><button class="btn small light" onclick="downloadQuestionTemplate('csv')">Formato CSV</button><button class="btn small light" onclick="downloadQuestionTemplate('json')">Formato JSON</button><button class="btn small light" onclick="downloadQuestionTemplate('xml')">Formato XML</button><button class="btn small light" onclick="downloadQuestionTemplate('xlsx')">Formato Excel</button><button class="btn small green" onclick="importPreviewedQuestions()">Importar preguntas previsualizadas</button></div><div id="qImportStatus" class="notice hidden"></div><div id="qImportPreview" class="import-preview hidden"></div></div><div id="questionList" style="margin-top:18px"></div></div></div></div></section>
 <section id="p_admins" class="panel"><div class="admin-card"><h3>Ingreso de nuevos administradores con roles</h3><div class="inside"><div class="form-row"><div><label>Nombre</label><input id="aName"></div><div><label>Usuario</label><input id="aUser"></div><div><label>Correo</label><input id="aMail"></div><div><label>Contraseña</label><input id="aPass" type="password"></div><div><label>Rol</label><select id="aRole" onchange="applyRolePreset()"><option>Super administrador</option><option>Administrador general</option><option>Gestor de encuestas</option><option>Reportes</option><option>Consulta</option></select></div><div><label>Estado</label><select id="aState"><option value="true">Activo</option><option value="false">Inactivo</option></select></div><div><label>Foto de perfil</label><input id="aPhotoFile" type="file" accept="image/*" onchange="readAdminPhoto(event)"><div class="photo-preview"><img id="aPhotoPreview" src="https://i.imgur.com/dk8rXBO.jpeg" alt="Foto"><span class="mini-muted">JPG/PNG hasta 2 MB. Se guarda como URL/base64.</span></div></div></div><div style="margin-top:16px"><label>Módulos permitidos para este usuario</label><div id="moduleChecks" class="perm-grid"></div><p class="muted-small">Puedes ajustar los módulos de forma manual aunque el rol sugiera una configuración inicial.</p></div><input type="hidden" id="aId"><input type="hidden" id="aPhoto"><br><button class="btn green" onclick="saveAdmin()">Guardar administrador</button> <button class="btn light" onclick="clearAdminForm()">Nuevo</button><div id="adminList" style="margin-top:18px"></div></div></div></section>
 <section id="p_registros" class="panel"><div class="admin-card"><h3>Registros de encuestas recibidas</h3><div class="inside"><p style="margin-top:0;color:#405060">Este módulo es independiente de reportes. Permite revisar y eliminar respuestas llenadas, por ejemplo registros de prueba o duplicados.</p><div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"><button class="btn light" onclick="loadAll()">Actualizar registros</button><button class="btn danger" onclick="deleteAllRecords()">Eliminar todos los registros</button></div><div id="recordsTable" class="table-wrap"></div></div></div></section>
-<section id="p_carga" class="panel"><div class="admin-card"><h3>Subida de base de docentes en CSV</h3><div class="inside"><p style="margin-top:0;color:#405060">Carga la base de docentes de cada semestre. El archivo debe incluir columnas como: <b>MODALIDAD, JORNADA, CARRERA, NIVEL, PAR, MATERIA, PROFESOR, PERIODO</b>. La carga actualiza catálogos y relaciones materia-docente-periodo sin borrar respuestas históricas.</p><div class="upload-grid"><div><label>Periodo destino</label><select id="csvPeriod"></select></div><div><label>Archivo CSV</label><input id="csvFile" type="file" accept=".csv,text/csv"></div><div class="check-upload"><label class="check-option"><input type="checkbox" id="csvDeactivateOld" checked> Inactivar asignaciones actuales del periodo antes de cargar</label></div></div><div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0"><button class="btn light" onclick="previewCSV()">Previsualizar CSV</button><button class="btn green" onclick="importCSVBase()">Importar base</button></div><div id="csvStatus" class="notice hidden"></div><div id="csvPreview" class="table-wrap"></div></div></div></section>
-
-<section id="p_estudiantes" class="panel"><div class="admin-card"><h3>Base de estudiantes</h3><div class="inside"><div class="module-help">Registra estudiantes para formularios o procesos que sí requieren seguimiento individual, como tutorías de titulación, prácticas, vinculación o acompañamiento académico.</div>
-<div class="student-template-box"><div><h4>Formato CSV para carga de estudiantes</h4><p>Antes de subir la base, usa este formato para evitar errores. La primera fila debe contener exactamente estos encabezados:</p><code>identificacion,nombres,correo,carrera,nivel,estado</code><p class="file-help"><b>Notas:</b> usa <b>Activo</b> o <b>Inactivo</b> en la columna estado. El campo <b>nivel</b> debe coincidir con el nivel/cohorte usado en tutorías para poder filtrar estudiantes correctamente.</p></div><div class="template-buttons"><button class="btn green" onclick="downloadStudentTemplateCSV()">Descargar formato CSV</button><button class="btn light" onclick="showStudentTemplateExample()">Ver ejemplo</button></div><div id="studentTemplateExample" class="table-wrap hidden"></div></div>
-<div class="dynamic-grid"><div><label>Identificación</label><input id="sIdent" placeholder="Cédula / código"></div><div><label>Nombres</label><input id="sName" placeholder="Apellidos y nombres"></div><div><label>Correo</label><input id="sMail" type="email"></div><div><label>Carrera</label><input id="sCareer" placeholder="Carrera"></div><div><label>Nivel / cohorte</label><input id="sLevel" placeholder="Ej. IV Nivel / Cohorte 2026"></div><div><label>Estado</label><select id="sState"><option value="true">Activo</option><option value="false">Inactivo</option></select></div></div><input type="hidden" id="sId"><div class="toolbar"><button class="btn green" onclick="saveStudent()">Guardar estudiante</button><button class="btn light" onclick="clearStudentForm()">Nuevo</button><button class="btn tomate" onclick="document.getElementById('studentCsv').click()">Subir CSV estudiantes</button><input id="studentCsv" type="file" accept=".csv,text/csv" class="hidden" onchange="importStudentsCSV(event)"></div><div id="studentList" class="table-wrap"></div></div></div></section>
+<section id="p_carga" class="panel"><div class="admin-card compact-module"><h3>Carga base CSV institucional</h3><div class="inside"><div class="module-help compact-help"><b>Objetivo:</b> actualizar bases académicas por periodo. Puedes cargar docentes/materias y estudiantes desde el mismo módulo. Para estudiantes se admite el formato institucional que enviaste: <b>CEDULA;NOMBRE;CORREO_INSTITUCIONAL;CORREO_PERSONAL;CELULAR;WHATSAPP;CARRERA;NIVEL;TIPO;PERIODO</b>.</div>
+<div class="dual-upload-grid compact-upload-grid">
+  <div class="upload-card compact-upload"><h4>1. Base de docentes / materias</h4><p class="mini-muted">Formato esperado: <b>MODALIDAD;JORNADA;CARRERA;NIVEL;PAR;MATERIA;PROFESOR;PERIODO</b>.</p><div class="upload-grid compact-grid compact-grid-2"><div><label>Periodo destino</label><select id="csvPeriod"></select></div><div><label>Archivo CSV docentes</label><input id="csvFile" type="file" accept=".csv,text/csv"></div><div class="check-upload span-2"><label class="check-option"><input type="checkbox" id="csvDeactivateOld" checked> Inactivar asignaciones actuales del periodo antes de cargar</label></div></div><div class="toolbar"><button class="btn light" onclick="previewCSV()">Previsualizar docentes</button><button class="btn green" onclick="importCSVBase()">Importar docentes</button></div><div id="csvStatus" class="notice hidden"></div><div id="csvPreview" class="table-wrap"></div></div>
+  <div class="upload-card compact-upload"><h4>2. Base de estudiantes</h4><p class="mini-muted">Formato compatible: <b>CEDULA;NOMBRE;CORREO_INSTITUCIONAL;CORREO_PERSONAL;CELULAR;WHATSAPP;CARRERA;NIVEL;TIPO;PERIODO</b>. También acepta el formato simple anterior.</p><div class="upload-grid compact-grid compact-grid-2"><div><label>Archivo CSV estudiantes</label><input id="csvStudentFile" type="file" accept=".csv,text/csv"></div><div><label>Modo de carga</label><select id="csvStudentMode"><option value="replace" selected>Reescribir / actualizar base anterior</option><option value="append">Agregar sin inactivar estudiantes actuales</option></select></div><div class="check-upload span-2"><label class="check-option"><input type="checkbox" id="csvStudentDeactivateOld" checked> Inactivar estudiantes actuales antes de cargar</label></div></div><div class="toolbar"><button class="btn light" onclick="downloadStudentTemplateCSV()">Descargar formato estudiantes</button><button class="btn light" onclick="previewStudentsCSVBase()">Previsualizar estudiantes</button><button class="btn green" onclick="importStudentsCSVBase()">Importar estudiantes</button><button class="btn danger" onclick="deleteAllStudentsBase()">Eliminar base estudiantes</button></div><div id="csvStudentStatus" class="notice hidden"></div><div id="csvStudentProgress" class="audit-progress-wrap hidden"><div class="audit-progress"><i id="csvStudentBar"></i></div><div id="csvStudentProgressText" class="audit-progress-text">Preparando carga...</div></div><div id="csvStudentPreview" class="table-wrap"></div></div>
+</div></div></div></section>
+<section id="p_estudiantes" class="panel"><div class="admin-card compact-module"><h3>Base de estudiantes</h3><div class="inside"><div class="module-help compact-help">Registra o importa estudiantes para tutorías, seguimiento psicopedagógico y formularios institucionales que requieren identificación del estudiante.</div>
+<div class="student-template-box compact-template"><div><h4>Formato CSV institucional de estudiantes</h4><p>El sistema acepta el archivo con estos encabezados:</p><code>CEDULA;NOMBRE;CORREO_INSTITUCIONAL;CORREO_PERSONAL;CELULAR;WHATSAPP;CARRERA;NIVEL;TIPO;PERIODO</code><p class="file-help"><b>Notas:</b> se respeta UTF-8, tildes y ñ. La columna <b>NIVEL</b> permite filtrar el estudiante en tutorías y psicopedagógico.</p></div><div class="template-buttons"><button class="btn green" onclick="downloadStudentTemplateCSV()">Descargar formato CSV</button><button class="btn light" onclick="showStudentTemplateExample()">Ver ejemplo</button></div><div id="studentTemplateExample" class="table-wrap hidden"></div></div>
+<div class="compact-grid compact-grid-3"><div><label>Identificación</label><input id="sIdent" placeholder="Cédula / código"></div><div><label>Nombres</label><input id="sName" placeholder="Apellidos y nombres"></div><div><label>Correo institucional</label><input id="sMail" type="email"></div><div><label>Carrera</label><input id="sCareer" placeholder="Carrera"></div><div><label>Nivel / cohorte</label><input id="sLevel" placeholder="Ej. IV NIVEL"></div><div><label>Estado</label><select id="sState"><option value="true">Activo</option><option value="false">Inactivo</option></select></div></div><input type="hidden" id="sId"><div class="toolbar compact-actions"><button class="btn green" onclick="saveStudent()">Guardar estudiante</button><button class="btn light" onclick="clearStudentForm()">Nuevo</button><button class="btn tomate" onclick="document.getElementById('studentCsv').click()">Subir CSV estudiantes</button><input id="studentCsv" type="file" accept=".csv,text/csv" class="hidden" onchange="importStudentsCSV(event)"></div><div id="studentList" class="table-wrap compact-table"></div></div></div></section>
 <section id="p_tutorias" class="panel"><div class="admin-card"><h3>Tutorías y seguimientos académicos</h3><div class="inside"><div class="module-help">Vincula estudiantes con docentes tutores y formularios específicos. Primero selecciona carrera y nivel/cohorte para cargar solo los estudiantes correspondientes.</div><div class="dynamic-grid"><div><label>Formulario asociado</label><select id="tuForm"></select></div><div><label>Periodo</label><select id="tuPeriod"></select></div><div><label>Carrera del estudiante</label><select id="tuCareer" onchange="refreshTutoriaLevels();refreshTutoriaStudents()"></select></div><div><label>Nivel / cohorte</label><select id="tuLevel" onchange="refreshTutoriaStudents()"></select></div><div><label>Estudiante</label><select id="tuStudent"></select><div class="mini-muted">Primero selecciona carrera y nivel para mostrar solo los estudiantes correspondientes.</div></div><div><label>Docente tutor</label><select id="tuTeacher"></select></div><div><label>Tipo de proceso</label><select id="tuType"><option>Tutoría de titulación</option><option>Proyecto integrador</option><option>Prácticas preprofesionales</option><option>Vinculación</option><option>Seguimiento académico</option></select></div><div><label>Estado del proceso</label><select id="tuState"><option>En curso</option><option>Observado</option><option>Finalizado</option><option>Retirado</option><option>Inactivo</option></select></div><div><label>Fecha inicio</label><input id="tuStart" type="date"></div><div><label>Fecha fin</label><input id="tuEnd" type="date"></div><div style="grid-column:span 2"><label>Observación</label><input id="tuObs" placeholder="Detalle o nota interna"></div></div><input type="hidden" id="tuId"><div class="toolbar"><button class="btn green" onclick="saveTutoria()">Guardar seguimiento</button><button class="btn light" onclick="clearTutoriaForm()">Nuevo</button></div><div id="tutoriaList" class="table-wrap"></div></div></div></section>
 
 <section id="p_auditoria" class="panel"><div class="admin-card"><h3>Auditoría académica Moodle</h3><div class="inside"><div class="module-help"><b>Objetivo:</b> integrar el seguimiento de aulas Moodle/GML dentro del sistema institucional. Permite cargar catálogo docente, evaluar estructura del aula virtual, controlar semanas GML, generar dashboard y reportes.</div>
@@ -347,8 +357,57 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 </div></div>
 </div></div></section>
 
-<section id="p_psicopedagogico" class="panel"><div class="admin-card"><h3>Seguimiento psicopedagógico estudiantil</h3><div class="inside"><div class="psico-note"><b>Objetivo:</b> registrar el acompañamiento psicopedagógico usando la base de estudiantes de Supabase. Primero selecciona carrera, jornada y nivel; luego el estudiante. El sistema genera alertas académicas, tecnológicas y emocionales para toma de decisiones.</div><br>
-<div class="psico-shell"><div class="psico-form-card"><div class="psico-head"><h4>Formulario de seguimiento</h4></div><div class="psico-body"><input type="hidden" id="psId"><h5 class="psico-section-title">1. Datos del estudiante</h5><div class="psico-grid"><div><label>Periodo</label><select id="psPeriod"></select></div><div><label>Carrera</label><select id="psCareer" onchange="psRefreshJornadas();psRefreshLevels();psRefreshStudents()"></select></div><div><label>Jornada</label><select id="psJornada" onchange="psRefreshStudents()"><option value="">Seleccione...</option><option>Matutina</option><option>Nocturna</option><option>En línea</option><option>Fin de semana</option></select></div><div><label>Nivel / cohorte</label><select id="psLevel" onchange="psRefreshStudents()"></select></div><div><label>Estudiante</label><select id="psStudent" onchange="psAutofillStudent()"></select></div><div><label>Estado del seguimiento</label><select id="psEstado"><option>Abierto</option><option>En seguimiento</option><option>Derivado a Bienestar</option><option>Derivado a Coordinación</option><option>Cerrado</option></select></div></div><br><div class="psico-grid two"><div><label>Cédula / identificación</label><input id="psIdent" readonly></div><div><label>Apellidos y nombres</label><input id="psNombre" readonly></div></div><br><h5 class="psico-section-title">2. Cuestionario psicopedagógico</h5><div class="psico-grid two"><div class="psico-question"><label>¿Qué tal te parecen las clases?</label><select id="psClases"><option>Muy buenas</option><option>Buenas</option><option>Ni buenas ni malas</option><option>Malas</option><option>Muy malas</option><option>Otras</option></select></div><div class="psico-question"><label>¿Qué te parece en general el trato de los docentes?</label><select id="psTrato"><option>Muy bueno</option><option>Bueno</option><option>Ni bueno ni malo</option><option>Malo</option><option>Muy malo</option><option>Otras</option></select></div><div class="psico-question"><label>¿Necesitas ayuda académica para las clases?</label><select id="psAyudaAcademica"><option>No</option><option>Sí</option><option>Otras</option></select></div><div class="psico-question"><label>¿Necesitas ayuda tecnológica para las clases?</label><select id="psAyudaTecnologica"><option>No</option><option>Sí</option><option>Otras</option></select></div><div class="psico-question"><label>¿Necesitas refuerzo sobre contenidos de alguna materia?</label><select id="psRefuerzo"><option>No</option><option>Sí</option><option>Otras</option></select></div><div class="psico-question"><label>¿Te sientes feliz en el Instituto?</label><select id="psFeliz"><option>Sí</option><option>No</option><option>Otras</option></select></div><div class="psico-question"><label>¿Necesitas apoyo psicológico o emocional?</label><select id="psApoyoEmocional"><option>No</option><option>Sí</option><option>Otras</option></select></div><div class="psico-question"><label>Responsable / área de seguimiento</label><input id="psResponsable" placeholder="Bienestar Estudiantil / Coordinación / Tutor"></div></div><br><h5 class="psico-section-title">3. Observaciones</h5><div class="psico-grid full"><div><label>Observación de algún profesor en particular en positivo o negativo</label><textarea id="psObsProfesor" placeholder="Registra la observación del estudiante"></textarea></div><div><label>Cualquier observación extra que indique el estudiante</label><textarea id="psObsExtra" placeholder="Observaciones generales del seguimiento"></textarea></div></div><div class="psico-quick-actions"><button class="btn green" onclick="savePsicoSeguimiento()">Guardar seguimiento</button><button class="btn light" onclick="clearPsicoForm()">Nuevo</button></div></div></div><div class="psico-form-card"><div class="psico-head"><h4>Registros psicopedagógicos</h4></div><div class="psico-body"><div class="toolbar"><button class="btn light" onclick="exportPsicoCSV()">Exportar CSV</button><button class="btn light" onclick="exportPsicoHTML()">Exportar HTML</button></div><div id="psicoList" class="psico-table-wrap"></div></div></div></div></div></div></section>
+<section id="p_psicopedagogico" class="panel"><div class="admin-card compact-module"><h3>Seguimiento psicopedagógico estudiantil</h3><div class="inside">
+<div class="module-help compact-help"><b>Objetivo:</b> registrar acompañamiento psicopedagógico con selección compacta de estudiante desde la base institucional. Primero filtra por carrera y nivel/cohorte; si la base contiene jornada también podrás filtrarla.</div>
+<div class="psico-compact-layout">
+  <div class="psico-form-card compact-card">
+    <div class="psico-head compact-head"><h4>Registro de seguimiento</h4><span id="psCompactCount" class="compact-pill">Base estudiantes</span></div>
+    <div class="psico-body compact-body">
+      <input type="hidden" id="psId">
+      <div class="compact-section"><div class="compact-section-title">1. Datos del estudiante</div>
+        <div class="compact-grid compact-grid-3">
+          <div><label>Periodo</label><select id="psPeriod"></select></div>
+          <div><label>Carrera</label><select id="psCareer" onchange="psRefreshJornadas();psRefreshLevels();psRefreshStudents()"></select></div>
+          <div><label>Nivel / cohorte</label><select id="psLevel" onchange="psRefreshStudents()"></select></div>
+          <div><label>Jornada <small>(opcional)</small></label><select id="psJornada" onchange="psRefreshStudents()"></select></div>
+          <div class="span-2"><label>Estudiante</label><select id="psStudent" onchange="psAutofillStudent()"></select></div>
+          <div><label>Estado</label><select id="psEstado"><option>Abierto</option><option>En seguimiento</option><option>Derivado a Bienestar</option><option>Derivado a Coordinación</option><option>Cerrado</option></select></div>
+          <div><label>Responsable</label><input id="psResponsable" placeholder="Bienestar / Coordinación / Tutor"></div>
+        </div>
+        <div class="student-mini-summary">
+          <div><span>Cédula</span><b id="psIdentView">-</b><input id="psIdent" type="hidden"></div>
+          <div><span>Estudiante</span><b id="psNombreView">Seleccione estudiante</b><input id="psNombre" type="hidden"></div>
+          <div><span>Correo</span><b id="psEmailView">-</b></div>
+          <div><span>Contacto</span><b id="psPhoneView">-</b></div>
+          <div><span>Periodo base</span><b id="psStudentPeriodView">-</b></div>
+        </div>
+      </div>
+      <div class="compact-section"><div class="compact-section-title">2. Cuestionario psicopedagógico</div>
+        <div class="compact-question-grid">
+          <div class="psico-question compact-q"><label>¿Qué tal te parecen las clases?</label><select id="psClases"><option>Muy buenas</option><option>Buenas</option><option>Ni buenas ni malas</option><option>Malas</option><option>Muy malas</option><option>Otras</option></select></div>
+          <div class="psico-question compact-q"><label>¿Qué te parece el trato de los docentes?</label><select id="psTrato"><option>Muy bueno</option><option>Bueno</option><option>Ni bueno ni malo</option><option>Malo</option><option>Muy malo</option><option>Otras</option></select></div>
+          <div class="psico-question compact-q"><label>¿Necesitas ayuda académica?</label><select id="psAyudaAcademica"><option>No</option><option>Sí</option><option>Otras</option></select></div>
+          <div class="psico-question compact-q"><label>¿Necesitas ayuda tecnológica?</label><select id="psAyudaTecnologica"><option>No</option><option>Sí</option><option>Otras</option></select></div>
+          <div class="psico-question compact-q"><label>¿Necesitas refuerzo de contenidos?</label><select id="psRefuerzo"><option>No</option><option>Sí</option><option>Otras</option></select></div>
+          <div class="psico-question compact-q"><label>¿Te sientes feliz en el Instituto?</label><select id="psFeliz"><option>Sí</option><option>No</option><option>Otras</option></select></div>
+          <div class="psico-question compact-q"><label>¿Necesitas apoyo psicológico/emocional?</label><select id="psApoyoEmocional"><option>No</option><option>Sí</option><option>Otras</option></select></div>
+        </div>
+      </div>
+      <div class="compact-section"><div class="compact-section-title">3. Observaciones</div>
+        <div class="compact-grid compact-grid-2">
+          <div><label>Observación sobre algún profesor</label><textarea id="psObsProfesor" class="compact-textarea" placeholder="Observación positiva o negativa del estudiante"></textarea></div>
+          <div><label>Observación extra del estudiante</label><textarea id="psObsExtra" class="compact-textarea" placeholder="Observaciones generales del seguimiento"></textarea></div>
+        </div>
+      </div>
+      <div class="psico-quick-actions compact-actions"><button class="btn green" onclick="savePsicoSeguimiento()">Guardar seguimiento</button><button class="btn light" onclick="clearPsicoForm()">Nuevo</button></div>
+    </div>
+  </div>
+  <div class="psico-form-card compact-card">
+    <div class="psico-head compact-head"><h4>Registros psicopedagógicos</h4></div>
+    <div class="psico-body compact-body"><div class="toolbar"><button class="btn light" onclick="exportPsicoCSV()">Exportar CSV</button><button class="btn light" onclick="exportPsicoHTML()">Exportar HTML</button></div><div id="psicoList" class="psico-table-wrap compact-table"></div></div>
+  </div>
+</div>
+</div></div></section>
 <section id="p_psico_kpi" class="panel"><div class="admin-card"><h3>Dashboard psicopedagógico</h3><div class="inside"><div class="kpi-toolbar"><div><b>Filtros dinámicos</b><small>KPIs calculados desde los seguimientos psicopedagógicos reales.</small></div><div class="kpi-export"><button class="btn html" onclick="exportPsicoDashboardHTML()">HTML</button><button class="btn pdf" onclick="window.print()">PDF</button></div></div><div class="form-row"><div><label>Periodo</label><select id="psDashPeriod" onchange="renderPsicoDashboard()"></select></div><div><label>Carrera</label><select id="psDashCareer" onchange="renderPsicoDashboard()"></select></div><div><label>Jornada</label><select id="psDashJornada" onchange="renderPsicoDashboard()"></select></div><div><label>Tipo de alerta</label><select id="psDashAlerta" onchange="renderPsicoDashboard()"><option value="">Todas</option><option value="academica">Académica</option><option value="tecnologica">Tecnológica</option><option value="emocional">Psicológica / emocional</option></select></div><div><label>Estado</label><select id="psDashEstado" onchange="renderPsicoDashboard()"></select></div></div><div id="psicoKpis" class="kpis dashboard"></div><div class="dashboard-charts"><div class="dash-chart"><h4>Tipo de apoyo requerido</h4><div id="psChartApoyos"></div></div><div class="dash-chart"><h4>Alertas por carrera</h4><div id="psChartCarrera"></div></div><div class="dash-chart"><h4>Percepción de clases</h4><div id="psChartClases"></div></div><div class="dash-chart"><h4>Estado de seguimiento</h4><div id="psChartEstado"></div></div></div><br><div class="psico-report-card"><h4>Casos para toma de decisiones</h4><div id="psicoDecisionTable" class="psico-table-wrap"></div></div></div></div></section>
 
 <section id="p_reportes_generales" class="panel"><div class="admin-card"><h3>Reportes generales por formulario y seguimiento</h3><div class="inside"><div class="dynamic-grid"><div><label>Formulario</label><select id="rgForm" onchange="renderGeneralReports()"></select></div><div><label>Periodo</label><select id="rgPeriod" onchange="renderGeneralReports()"></select></div><div><label>Tipo de seguimiento</label><select id="rgType" onchange="renderGeneralReports()"><option value="">Todos</option><option>Tutoría de titulación</option><option>Proyecto integrador</option><option>Prácticas preprofesionales</option><option>Vinculación</option><option>Seguimiento académico</option></select></div></div><div class="toolbar"><button class="btn green" onclick="exportGeneralReportHTML()">Exportar HTML</button><button class="btn light" onclick="window.print()">Imprimir / PDF</button></div><div id="generalReportKpis" class="report-grid"></div><br><div id="generalReportTable" class="table-wrap"></div></div></div></section>
@@ -588,7 +647,21 @@ function editStudent(id){const s=students.find(x=>x.id==id);if(!s)return;sId.val
 async function saveStudent(){if(!sName.value.trim())return alert('Escribe el nombre del estudiante.');const body={identificacion:sIdent.value.trim()||null,nombres:sName.value.trim(),correo:sMail.value.trim()||null,carrera:sCareer.value.trim()||null,nivel:sLevel.value.trim()||null,estado:sState.value==='true'};try{if(sId.value)await sb(`estudiantes?id=eq.${sId.value}`,{method:'PATCH',body:JSON.stringify(body)});else await sb('estudiantes',{method:'POST',body:JSON.stringify(body)});clearStudentForm();await loadAll();alert('Estudiante guardado.')}catch(e){alert('No se pudo guardar estudiante: '+e.message)}}
 async function toggleStudent(id,state){try{await sb(`estudiantes?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({estado:state==='true'})});await loadAll()}catch(e){alert(e.message)}}
 async function deleteStudent(id){if(!confirm('¿Eliminar estudiante?'))return;try{await sb(`estudiantes?id=eq.${id}`,{method:'DELETE'});await loadAll()}catch(e){alert('No se pudo eliminar: '+e.message)}}
-async function importStudentsCSV(ev){const f=ev.target.files[0];if(!f)return;const txt=await readTextFileSmart(f);const sep=txt.includes(';')?';':',';const lines=txt.split(/\r?\n/).filter(Boolean);const head=lines.shift().split(sep).map(h=>norm(h));const idx=n=>head.findIndex(h=>h.includes(norm(n)));const rows=lines.map(l=>{const c=l.split(sep).map(x=>x.trim());return {identificacion:c[idx('IDENT')]||c[idx('CEDULA')]||c[idx('CODIGO')]||null,nombres:c[idx('NOMBRE')]||c[idx('ESTUDIANTE')]||'',correo:c[idx('CORREO')]||'',carrera:c[idx('CARRERA')]||'',nivel:c[idx('NIVEL')]||c[idx('COHORTE')]||'',estado:true}}).filter(r=>r.nombres);if(!rows.length)return alert('No se detectaron estudiantes válidos.');try{await sb('estudiantes',{method:'POST',body:JSON.stringify(rows)});await loadAll();alert('Estudiantes importados: '+rows.length)}catch(e){alert('No se pudo importar: '+e.message)}}
+async function importStudentsCSV(ev){
+  const f=ev.target.files[0];if(!f)return;
+  const txt=await readTextFileSmart(f);csvStudentRows=parseCSVText(txt);
+  const rows=mappedStudentCsvRows();
+  if(!rows.length)return alert('No se detectaron estudiantes válidos.');
+  if(!confirm(`Se importarán ${rows.length} estudiantes desde Base de estudiantes. ¿Continuar?`))return;
+  try{
+    const existentes=await safe('estudiantes?select=id,identificacion');
+    const byId=new Map(existentes.filter(x=>x.identificacion).map(x=>[norm(x.identificacion),x.id]));
+    const nuevos=[];let actualizados=0;
+    for(const r of rows){const key=norm(r.identificacion||''); if(key&&byId.has(key)){await sb(`estudiantes?id=eq.${byId.get(key)}`,{method:'PATCH',body:JSON.stringify(r)});actualizados++;}else nuevos.push(r);}
+    for(let i=0;i<nuevos.length;i+=500){await sb('estudiantes',{method:'POST',body:JSON.stringify(nuevos.slice(i,i+500))});}
+    await loadAll();alert(`Estudiantes importados correctamente. Actualizados: ${actualizados}. Nuevos: ${nuevos.length}.`);
+  }catch(e){alert('No se pudo importar: '+e.message)}
+}
 
 function uniqueClean(arr){return [...new Set(arr.map(x=>(x||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));}
 function refreshTutoriaCareers(){fillSelectSimple('tuCareer',uniqueClean(students.filter(s=>s.estado!==false).map(s=>s.carrera)),'Seleccione carrera');}
@@ -757,6 +830,7 @@ function renderImportModule(){
   if(old) el.value=old; else {const p=getActivePeriod(); if(p) el.value=p.id;}
 }
 let csvRows=[];
+let csvStudentRows=[];
 function splitCSVLine(line,sep){
   const out=[]; let cur='', q=false;
   for(let i=0;i<line.length;i++){const ch=line[i]; if(ch==='"'){if(q&&line[i+1]==='"'){cur+='"';i++;}else q=!q;} else if(ch===sep&&!q){out.push(cur);cur='';} else cur+=ch;}
@@ -822,6 +896,75 @@ async function importCSVBase(){
     status.className='notice import-ok'; status.innerHTML=`<b>Carga finalizada.</b><br>Filas procesadas: ${ok}. Actualizando datos...`;
     await loadAll(); status.innerHTML=`<b>Carga finalizada correctamente.</b><br>Filas procesadas: ${ok}. Asignaciones visibles: ${catalog.length}.`;
   }catch(e){status.className='notice import-bad';status.innerHTML='<b>No se pudo completar la importación.</b><br>'+esc(e.message)+'<br><small>Verifica permisos RLS de carreras, docentes, materias y materia_docente.</small>';}
+}
+
+function mappedStudentCsvRows(){
+  return csvStudentRows.map(r=>({
+    identificacion:getCsvVal(r,['IDENTIFICACION','IDENTIFICACIÓN','CEDULA','CÉDULA','CODIGO','CÓDIGO','DOCUMENTO'])||null,
+    nombres:getCsvVal(r,['NOMBRES','APELLIDOS Y NOMBRES','APELLIDOS_NOMBRES','ESTUDIANTE','NOMBRE DEL ESTUDIANTE']),
+    correo:getCsvVal(r,['CORREO','EMAIL','CORREO INSTITUCIONAL','CORREO_PERSONAL'])||null,
+    carrera:getCsvVal(r,['CARRERA','PROGRAMA']),
+    nivel:getCsvVal(r,['NIVEL','SEMESTRE','COHORTE']),
+    jornada:getCsvVal(r,['JORNADA'])||null,
+    estado:!['INACTIVO','INACTIVA','NO','0','FALSE'].includes(norm(getCsvVal(r,['ESTADO'])))
+  })).filter(r=>r.nombres&&r.carrera);
+}
+async function previewStudentsCSVBase(){
+  const file=document.getElementById('csvStudentFile')?.files?.[0]; if(!file)return alert('Selecciona un archivo CSV de estudiantes.');
+  const text=await readTextFileSmart(file); csvStudentRows=parseCSVText(text); const rows=mappedStudentCsvRows();
+  const carreras=new Set(rows.map(r=>r.carrera)), niveles=new Set(rows.map(r=>r.nivel).filter(Boolean));
+  const st=document.getElementById('csvStudentStatus'); st.className='notice import-ok'; st.innerHTML=`<b>Previsualización lista.</b><br>Estudiantes válidos: ${rows.length}. Carreras: ${carreras.size}. Niveles/cohortes: ${niveles.size}.`;
+  document.getElementById('csvStudentPreview').innerHTML='<table><thead><tr><th>#</th><th>Identificación</th><th>Estudiante</th><th>Correo</th><th>Carrera</th><th>Nivel</th><th>Jornada</th><th>Estado</th></tr></thead><tbody>'+rows.slice(0,40).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.identificacion||'')}</td><td>${esc(r.nombres)}</td><td>${esc(r.correo||'')}</td><td>${esc(r.carrera)}</td><td>${esc(r.nivel||'')}</td><td>${esc(r.jornada||'')}</td><td>${r.estado?'Activo':'Inactivo'}</td></tr>`).join('')+'</tbody></table>'+(rows.length>40?`<p class="mini-muted">Mostrando 40 de ${rows.length} estudiantes.</p>`:'');
+}
+function setStudentProgress(pct,msg){
+  const wrap=document.getElementById('csvStudentProgress'),bar=document.getElementById('csvStudentBar'),txt=document.getElementById('csvStudentProgressText');
+  if(wrap)wrap.classList.remove('hidden'); if(bar)bar.style.width=Math.max(0,Math.min(100,pct))+'%'; if(txt)txt.textContent=msg||'';
+}
+async function importStudentsCSVBase(){
+  if(!csvStudentRows.length) await previewStudentsCSVBase();
+  const rows=mappedStudentCsvRows(); if(!rows.length)return alert('No hay estudiantes válidos para importar.');
+  const mode=document.getElementById('csvStudentMode')?.value||'replace';
+  if(!confirm(`Se importarán ${rows.length} estudiantes. Modo: ${mode==='replace'?'reescribir/actualizar base anterior':'agregar'}. ¿Continuar?`))return;
+  const st=document.getElementById('csvStudentStatus'); st.className='notice'; st.innerHTML='Importando estudiantes por lotes, por favor espera...';
+  try{
+    setStudentProgress(5,'Preparando base de estudiantes...');
+    if(mode==='replace' && document.getElementById('csvStudentDeactivateOld')?.checked){
+      await sb('estudiantes?id=not.is.null',{method:'PATCH',body:JSON.stringify({estado:false})});
+    }
+    const existentes=await safe('estudiantes?select=id,identificacion');
+    const byId=new Map(existentes.filter(x=>x.identificacion).map(x=>[norm(x.identificacion),x.id]));
+    const toInsert=[]; let updated=0;
+    for(let i=0;i<rows.length;i++){
+      const r=rows[i]; const key=norm(r.identificacion||'');
+      if(key && byId.has(key)){
+        await sb(`estudiantes?id=eq.${byId.get(key)}`,{method:'PATCH',body:JSON.stringify(r)});
+        updated++;
+      }else{
+        toInsert.push(r);
+      }
+      if(i%50===0)setStudentProgress(10+Math.round((i/rows.length)*45),`Actualizando existentes: ${i} de ${rows.length}`);
+    }
+    let inserted=0;
+    for(let i=0;i<toInsert.length;i+=500){
+      const chunk=toInsert.slice(i,i+500);
+      await sb('estudiantes',{method:'POST',body:JSON.stringify(chunk)});
+      inserted+=chunk.length;
+      setStudentProgress(60+Math.round((inserted/Math.max(1,toInsert.length))*35),`Insertando nuevos: ${inserted} de ${toInsert.length}`);
+    }
+    setStudentProgress(100,'Carga finalizada. Actualizando pantalla...');
+    await loadAll();
+    st.className='notice import-ok'; st.innerHTML=`<b>Base de estudiantes actualizada correctamente.</b><br>Actualizados: ${updated}. Nuevos: ${inserted}. Total procesado: ${rows.length}.`;
+    document.getElementById('csvStudentFile').value=''; csvStudentRows=[];
+  }catch(e){st.className='notice import-bad'; st.innerHTML='<b>No se pudo completar la importación de estudiantes.</b><br>'+esc(e.message)+'<br><small>Verifica permisos RLS sobre la tabla estudiantes.</small>'; alert('Error al importar estudiantes: '+e.message)}
+}
+async function deleteAllStudentsBase(){
+  if(!confirm('¿Eliminar TODOS los estudiantes cargados? Esto no elimina respuestas históricas, pero puede dejar seguimientos anteriores sin estudiante asociado.'))return;
+  try{
+    await sb('estudiantes?id=not.is.null',{method:'DELETE'});
+    await loadAll();
+    const st=document.getElementById('csvStudentStatus'); if(st){st.className='notice import-ok';st.innerHTML='Base de estudiantes eliminada correctamente.';}
+    alert('Base de estudiantes eliminada correctamente.');
+  }catch(e){alert('No se pudo eliminar la base de estudiantes: '+e.message)}
 }
 
 function questionAverageTable(recs=records,categoryId=''){
@@ -1174,6 +1317,88 @@ function exportAuditoriaHTML(){
   let html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reporte Auditoría Académica Moodle</title><style>@page{size:landscape;margin:10mm}body{font-family:Arial,Helvetica,sans-serif;color:#102033;margin:20px}.head{display:flex;align-items:center;gap:16px;border-bottom:5px solid #00CE7C;padding-bottom:14px;margin-bottom:18px}.head img{height:64px}.head h1{color:#006068;margin:0;font-size:22px}.head p{margin:4px 0 0;color:#666}table{border-collapse:collapse;width:100%;font-size:10px}th{background:#006068;color:#fff;padding:8px;border:1px solid #dce7e4;vertical-align:bottom}td{padding:7px;border:1px solid #dce7e4;vertical-align:top}tr:nth-child(even){background:#f7fbfa}.foot{margin-top:18px;text-align:center;color:#666;border-top:2px solid #00CE7C;padding-top:10px}</style></head><body><div class="head"><img src="${LOGO}" alt="Cordillera"><div><h1>Reporte Oficial de Auditoría Académica Moodle</h1><p>Matriz completa con todos los indicadores de auditoría y GML</p></div></div><table><thead><tr>${th}</tr></thead><tbody>${tr||'<tr><td colspan="99">Sin registros</td></tr>'}</tbody></table><div class="foot">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div></body></html>`;
   download('reporte_auditoria_moodle.html',html,'text/html');
 }
+
+
+/* ===================== V30 - Compactación visual y base estudiantes institucional ===================== */
+(function(){
+  const css = `
+  .compact-module .inside{padding:16px 18px}.compact-help{padding:12px 14px;margin-bottom:14px;font-size:14px}.compact-card{box-shadow:0 8px 20px rgba(0,96,104,.07)}.compact-head{padding:13px 18px;border-bottom:3px solid var(--claro);display:flex;justify-content:space-between;align-items:center;gap:12px}.compact-head h4{font-size:19px}.compact-pill{display:inline-flex;padding:6px 10px;border-radius:999px;background:#e9f8f2;color:var(--oscuro);font-weight:900;font-size:12px}.compact-body{padding:16px 18px}.compact-section{border:1px solid var(--line);border-radius:16px;background:#fbfffd;margin-bottom:14px;padding:14px}.compact-section-title{font-size:14px;font-weight:900;color:var(--oscuro);text-transform:uppercase;border-bottom:2px solid var(--claro);padding-bottom:7px;margin-bottom:12px}.compact-grid{display:grid;gap:12px}.compact-grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.compact-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.compact-grid .span-2{grid-column:span 2}.compact-grid label,.compact-question-grid label{font-size:13px;margin-bottom:5px;color:#10233f;font-weight:900}.compact-grid select,.compact-grid input,.compact-grid textarea,.compact-question-grid select,.compact-question-grid input{padding:10px 12px;border-radius:12px;font-size:15px}.compact-textarea{min-height:88px!important}.compact-question-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.compact-q{padding:10px;border-radius:14px}.compact-q label{font-size:12.5px;line-height:1.25;min-height:32px}.student-mini-summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:12px}.student-mini-summary div{background:#fff;border:1px solid #dce9e6;border-radius:12px;padding:10px;min-height:58px}.student-mini-summary span{display:block;color:#607081;font-size:11px;font-weight:900;text-transform:uppercase}.student-mini-summary b{display:block;color:#006068;font-size:13px;line-height:1.25;word-break:break-word}.compact-actions{margin-top:12px}.compact-upload-grid{grid-template-columns:1fr 1fr}.compact-upload h4{margin:0 0 8px;color:var(--oscuro)}.compact-template{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center}.compact-table{max-height:360px;overflow:auto}.psico-compact-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.65fr);gap:18px}.psico-table-wrap.compact-table table{font-size:13px}@media(max-width:1280px){.compact-question-grid{grid-template-columns:repeat(3,1fr)}.student-mini-summary{grid-template-columns:repeat(3,1fr)}.psico-compact-layout{grid-template-columns:1fr}}@media(max-width:900px){.compact-grid-3,.compact-grid-2,.compact-question-grid,.compact-upload-grid{grid-template-columns:1fr}.compact-grid .span-2{grid-column:auto}.student-mini-summary{grid-template-columns:1fr 1fr}.compact-template{grid-template-columns:1fr}}`;
+  const st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
+})();
+function csvEstadoToBool(v){const n=norm(v); if(!n)return true; return !['INACTIVO','INACTIVA','NO','0','FALSE','RETIRADO','RETIRADA'].includes(n)}
+function mappedStudentCsvRows(){
+  return csvStudentRows.map(r=>{
+    const correoInst=getCsvVal(r,['CORREO_INSTITUCIONAL','CORREO INSTITUCIONAL','EMAIL_INSTITUCIONAL','EMAIL INSTITUCIONAL']);
+    const correoPers=getCsvVal(r,['CORREO_PERSONAL','CORREO PERSONAL','EMAIL_PERSONAL','EMAIL PERSONAL']);
+    const celular=getCsvVal(r,['CELULAR','TELEFONO','TELÉFONO','TELEFONO_MOVIL','TELÉFONO MÓVIL']);
+    const whatsapp=getCsvVal(r,['WHATSAPP','WSP','WA']);
+    const periodo=getCsvVal(r,['PERIODO','PAO','PERIODO_ACADEMICO','PERIODO ACADÉMICO']);
+    return {
+      identificacion:getCsvVal(r,['CEDULA','CÉDULA','IDENTIFICACION','IDENTIFICACIÓN','DOCUMENTO','CODIGO','CÓDIGO'])||null,
+      nombres:getCsvVal(r,['NOMBRE','NOMBRES','APELLIDOS Y NOMBRES','APELLIDOS_NOMBRES','ESTUDIANTE','NOMBRE DEL ESTUDIANTE']),
+      correo:correoInst||correoPers||getCsvVal(r,['CORREO','EMAIL'])||null,
+      correo_institucional:correoInst||null,
+      correo_personal:correoPers||null,
+      telefono:celular||null,
+      celular:celular||null,
+      whatsapp:whatsapp||null,
+      carrera:getCsvVal(r,['CARRERA','PROGRAMA']),
+      nivel:getCsvVal(r,['NIVEL','SEMESTRE','COHORTE']),
+      jornada:getCsvVal(r,['JORNADA'])||null,
+      tipo:getCsvVal(r,['TIPO','TIPO_ESTUDIANTE','TIPO ESTUDIANTE'])||null,
+      periodo_ingreso:periodo||null,
+      estado:csvEstadoToBool(getCsvVal(r,['ESTADO']))
+    }
+  }).filter(r=>r.nombres&&r.carrera);
+}
+function downloadStudentTemplateCSV(){
+  const csv='\uFEFFCEDULA;NOMBRE;CORREO_INSTITUCIONAL;CORREO_PERSONAL;CELULAR;WHATSAPP;CARRERA;NIVEL;TIPO;PERIODO\n1724773427;CASTRO GARZON DIEGO ALEJANDRO;diego.castro.garzon@estudiantes.cordillera.edu.ec;DIEGO.CASTROGARZON@OUTLOOK.COM;0959654651;593959654651;SISTEMAS DE INFORMACION Y CIBERSEGURIDAD - 2250-560613C01-L-1701;I NIVEL;ESTUDIANTE;ABR 2026_SEP 2026';
+  download('formato_base_estudiantes.csv',csv,'text/csv;charset=utf-8');
+}
+function showStudentTemplateExample(){
+  const el=document.getElementById('studentTemplateExample');if(!el)return; el.classList.toggle('hidden');
+  if(!el.classList.contains('hidden')) el.innerHTML='<table><thead><tr><th>CEDULA</th><th>NOMBRE</th><th>CORREO_INSTITUCIONAL</th><th>CORREO_PERSONAL</th><th>CELULAR</th><th>WHATSAPP</th><th>CARRERA</th><th>NIVEL</th><th>TIPO</th><th>PERIODO</th></tr></thead><tbody><tr><td>1724773427</td><td>CASTRO GARZON DIEGO ALEJANDRO</td><td>diego.castro.garzon@estudiantes.cordillera.edu.ec</td><td>DIEGO.CASTROGARZON@OUTLOOK.COM</td><td>0959654651</td><td>593959654651</td><td>SISTEMAS DE INFORMACION Y CIBERSEGURIDAD - 2250-560613C01-L-1701</td><td>I NIVEL</td><td>ESTUDIANTE</td><td>ABR 2026_SEP 2026</td></tr></tbody></table>';
+}
+async function previewStudentsCSVBase(){
+  const file=document.getElementById('csvStudentFile')?.files?.[0]; if(!file)return alert('Selecciona un archivo CSV de estudiantes.');
+  const text=await readTextFileSmart(file); csvStudentRows=parseCSVText(text); const rows=mappedStudentCsvRows();
+  const carreras=new Set(rows.map(r=>r.carrera)), niveles=new Set(rows.map(r=>r.nivel).filter(Boolean)), periodos=new Set(rows.map(r=>r.periodo_ingreso).filter(Boolean));
+  const st=document.getElementById('csvStudentStatus'); st.className='notice import-ok'; st.innerHTML=`<b>Previsualización lista.</b><br>Estudiantes válidos: ${rows.length}. Carreras: ${carreras.size}. Niveles: ${niveles.size}. Periodos detectados: ${periodos.size}.`;
+  document.getElementById('csvStudentPreview').innerHTML='<table><thead><tr><th>#</th><th>Cédula</th><th>Estudiante</th><th>Correo institucional</th><th>Correo personal</th><th>Celular</th><th>WhatsApp</th><th>Carrera</th><th>Nivel</th><th>Tipo</th><th>Periodo</th><th>Estado</th></tr></thead><tbody>'+rows.slice(0,40).map((r,i)=>`<tr><td>${i+1}</td><td>${esc(r.identificacion||'')}</td><td>${esc(r.nombres)}</td><td>${esc(r.correo_institucional||'')}</td><td>${esc(r.correo_personal||'')}</td><td>${esc(r.celular||'')}</td><td>${esc(r.whatsapp||'')}</td><td>${esc(r.carrera)}</td><td>${esc(r.nivel||'')}</td><td>${esc(r.tipo||'')}</td><td>${esc(r.periodo_ingreso||'')}</td><td>${r.estado?'Activo':'Inactivo'}</td></tr>`).join('')+'</tbody></table>'+(rows.length>40?`<p class="mini-muted">Mostrando 40 de ${rows.length} estudiantes.</p>`:'');
+}
+function renderStudents(){
+  const el=document.getElementById('studentList'); if(!el)return;
+  let html='<table><thead><tr><th>Identificación</th><th>Estudiante</th><th>Correo</th><th>Celular</th><th>WhatsApp</th><th>Carrera</th><th>Nivel</th><th>Periodo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>';
+  if(!students.length) html+='<tr><td colspan="10">No hay estudiantes registrados.</td></tr>';
+  students.forEach(s=>{html+=`<tr><td>${esc(s.identificacion||'')}</td><td>${esc(s.nombres||'')}</td><td>${esc(s.correo_institucional||s.correo||'')}</td><td>${esc(s.celular||s.telefono||'')}</td><td>${esc(s.whatsapp||'')}</td><td>${esc(s.carrera||'')}</td><td>${esc(s.nivel||'')}</td><td>${esc(s.periodo_ingreso||'')}</td><td>${s.estado!==false?'Activo':'Inactivo'}</td><td class="record-actions"><button class="btn small dark" onclick="editStudent(${s.id})">Editar</button> <button class="btn small tomate" onclick="toggleStudent(${s.id},${s.estado!==false?'false':'true'})">${s.estado!==false?'Inactivar':'Activar'}</button> <button class="btn small danger" onclick="deleteStudent(${s.id})">Eliminar</button></td></tr>`});
+  el.innerHTML=html+'</tbody></table>';
+  fillSelectFromArray('tuStudent',students.filter(s=>s.estado!==false),s=>`${s.nombres} · ${s.carrera||''}`);
+}
+function psRefreshJornadas(){
+  const el=document.getElementById('psJornada'); if(!el)return; const old=el.value; const career=document.getElementById('psCareer')?.value||'';
+  let jornadas=uniqueClean(students.filter(s=>s.estado!==false&&(!career||s.carrera===career)).map(s=>s.jornada));
+  if(!jornadas.length) jornadas=['Matutina','Nocturna','En línea','Fin de semana'];
+  el.innerHTML='<option value="">Todas / sin jornada</option>'+jornadas.map(j=>`<option>${esc(j)}</option>`).join(''); if(jornadas.includes(old))el.value=old;
+}
+function psRefreshLevels(){
+  const career=document.getElementById('psCareer')?.value||''; const jornada=document.getElementById('psJornada')?.value||'';
+  const filtered=students.filter(s=>s.estado!==false&&(!career||s.carrera===career)&&(!jornada||!s.jornada||s.jornada===jornada));
+  fillSelectSimple('psLevel',uniqueClean(filtered.map(s=>s.nivel)),'Seleccione nivel / cohorte');
+}
+function psRefreshStudents(){
+  const career=document.getElementById('psCareer')?.value||'', level=document.getElementById('psLevel')?.value||'', jornada=document.getElementById('psJornada')?.value||'';
+  const filtered=students.filter(s=>s.estado!==false&&(!career||s.carrera===career)&&(!level||s.nivel===level)&&(!jornada||!s.jornada||s.jornada===jornada));
+  fillSelectFromArray('psStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');
+  const cnt=document.getElementById('psCompactCount'); if(cnt)cnt.textContent=`${filtered.length} estudiante(s) visibles`;
+}
+function psAutofillStudent(){
+  const s=students.find(x=>String(x.id)===String(document.getElementById('psStudent')?.value)); if(!s)return;
+  psIdent.value=s.identificacion||''; psNombre.value=s.nombres||'';
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val||'-'};
+  set('psIdentView',s.identificacion); set('psNombreView',s.nombres); set('psEmailView',s.correo_institucional||s.correo||s.correo_personal); set('psPhoneView',s.whatsapp||s.celular||s.telefono); set('psStudentPeriodView',s.periodo_ingreso);
+  if(s.carrera&&!psCareer.value){psCareer.value=s.carrera; psRefreshJornadas(); psRefreshLevels()} if(s.nivel&&!psLevel.value){psLevel.value=s.nivel}
+}
+function clearPsicoForm(){['psId','psIdent','psNombre','psObsProfesor','psObsExtra','psResponsable'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psCareer','psLevel','psStudent','psJornada'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psIdentView','psEmailView','psPhoneView','psStudentPeriodView'].forEach(id=>{const e=document.getElementById(id); if(e)e.textContent='-'}); const nv=document.getElementById('psNombreView'); if(nv)nv.textContent='Seleccione estudiante'; if(psClases)psClases.value='Muy buenas'; if(psTrato)psTrato.value='Muy bueno'; if(psAyudaAcademica)psAyudaAcademica.value='No'; if(psAyudaTecnologica)psAyudaTecnologica.value='No'; if(psRefuerzo)psRefuerzo.value='No'; if(psFeliz)psFeliz.value='Sí'; if(psApoyoEmocional)psApoyoEmocional.value='No'; if(psEstado)psEstado.value='Abierto'; psRefreshJornadas(); psRefreshLevels(); psRefreshStudents();}
 
 </script>
 </body>
