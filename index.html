@@ -349,6 +349,17 @@ th,td{padding:8px 9px!important;font-size:13px!important;vertical-align:top}.rec
 .audit-workspace{min-width:0!important}.audit-content{min-width:0!important;overflow-x:auto!important}.audit-selection-grid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important;gap:10px!important}.audit-checklist{overflow-x:auto!important}
 .kpis.dashboard{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important}.dashboard-charts{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))!important}
 @media(max-width:980px){.admin{grid-template-columns:1fr!important}.sidebar{position:relative!important;height:auto!important}.admin .main{height:auto!important;overflow:visible!important}.psico-compact-layout{grid-template-columns:1fr!important}.table-wrap table,.psico-table-wrap table{min-width:760px}}
+/* ===================== V34 - Busqueda de estudiantes y carga completa paginada ===================== */
+.search-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.search-inline input{width:100%;min-width:220px}
+.student-count-note{font-size:12px;color:#006068;font-weight:800;margin-top:5px}
+.student-mini-summary{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))!important}
+.compact-grid .span-3{grid-column:span 3}
+.compact-grid .span-2{grid-column:span 2}
+@media(max-width:900px){.compact-grid .span-2,.compact-grid .span-3{grid-column:span 1!important}}
+select.student-select{min-width:260px}
+.table-wrap,.psico-table-wrap{max-width:100%;overflow:auto!important}
+
 
 </style>
 </head>
@@ -378,7 +389,7 @@ th,td{padding:8px 9px!important;font-size:13px!important;vertical-align:top}.rec
 <section id="p_estudiantes" class="panel"><div class="admin-card compact-module"><h3>Base de estudiantes</h3><div class="inside"><div class="module-help compact-help">Registra o importa estudiantes para tutorías, seguimiento psicopedagógico y formularios institucionales que requieren identificación del estudiante.</div>
 <div class="student-template-box compact-template"><div><h4>Formato CSV institucional de estudiantes</h4><p>El sistema acepta el archivo con estos encabezados:</p><code>CEDULA;NOMBRE;CORREO_INSTITUCIONAL;CORREO_PERSONAL;CELULAR;WHATSAPP;CARRERA;NIVEL;TIPO;PERIODO</code><p class="file-help"><b>Notas:</b> se respeta UTF-8, tildes y ñ. La columna <b>NIVEL</b> permite filtrar el estudiante en tutorías y psicopedagógico.</p></div><div class="template-buttons"><button class="btn green" onclick="downloadStudentTemplateCSV()">Descargar formato CSV</button><button class="btn light" onclick="showStudentTemplateExample()">Ver ejemplo</button></div><div id="studentTemplateExample" class="table-wrap hidden"></div></div>
 <div class="compact-grid compact-grid-3"><div><label>Identificación</label><input id="sIdent" placeholder="Cédula / código"></div><div><label>Nombres</label><input id="sName" placeholder="Apellidos y nombres"></div><div><label>Correo institucional</label><input id="sMail" type="email"></div><div><label>Carrera</label><input id="sCareer" placeholder="Carrera"></div><div><label>Nivel / cohorte</label><input id="sLevel" placeholder="Ej. IV NIVEL"></div><div><label>Estado</label><select id="sState"><option value="true">Activo</option><option value="false">Inactivo</option></select></div></div><input type="hidden" id="sId"><div class="toolbar compact-actions"><button class="btn green" onclick="saveStudent()">Guardar estudiante</button><button class="btn light" onclick="clearStudentForm()">Nuevo</button><button class="btn tomate" onclick="document.getElementById('studentCsv').click()">Subir CSV estudiantes</button><input id="studentCsv" type="file" accept=".csv,text/csv" class="hidden" onchange="importStudentsCSV(event)"></div><div id="studentList" class="table-wrap compact-table"></div></div></div></section>
-<section id="p_tutorias" class="panel"><div class="admin-card"><h3>Tutorías y seguimientos académicos</h3><div class="inside"><div class="module-help">Vincula estudiantes con docentes tutores y formularios específicos. Primero selecciona carrera y nivel/cohorte para cargar solo los estudiantes correspondientes.</div><div class="dynamic-grid"><div><label>Formulario asociado</label><select id="tuForm"></select></div><div><label>Periodo</label><select id="tuPeriod"></select></div><div><label>Carrera del estudiante</label><select id="tuCareer" onchange="refreshTutoriaLevels();refreshTutoriaStudents()"></select></div><div><label>Nivel / cohorte</label><select id="tuLevel" onchange="refreshTutoriaStudents()"></select></div><div><label>Estudiante</label><select id="tuStudent"></select><div class="mini-muted">Primero selecciona carrera y nivel para mostrar solo los estudiantes correspondientes.</div></div><div><label>Docente tutor</label><select id="tuTeacher"></select></div><div><label>Tipo de proceso</label><select id="tuType"><option>Tutoría de titulación</option><option>Proyecto integrador</option><option>Prácticas preprofesionales</option><option>Vinculación</option><option>Seguimiento académico</option></select></div><div><label>Estado del proceso</label><select id="tuState"><option>En curso</option><option>Observado</option><option>Finalizado</option><option>Retirado</option><option>Inactivo</option></select></div><div><label>Fecha inicio</label><input id="tuStart" type="date"></div><div><label>Fecha fin</label><input id="tuEnd" type="date"></div><div style="grid-column:span 2"><label>Observación</label><input id="tuObs" placeholder="Detalle o nota interna"></div></div><input type="hidden" id="tuId"><div class="toolbar"><button class="btn green" onclick="saveTutoria()">Guardar seguimiento</button><button class="btn light" onclick="clearTutoriaForm()">Nuevo</button></div><div id="tutoriaList" class="table-wrap"></div></div></div></section>
+<section id="p_tutorias" class="panel"><div class="admin-card"><h3>Tutorías y seguimientos académicos</h3><div class="inside"><div class="module-help">Vincula estudiantes con docentes tutores y formularios específicos. Primero selecciona carrera y nivel/cohorte para cargar solo los estudiantes correspondientes.</div><div class="dynamic-grid"><div><label>Formulario asociado</label><select id="tuForm"></select></div><div><label>Periodo</label><select id="tuPeriod"></select></div><div><label>Carrera del estudiante</label><select id="tuCareer" onchange="refreshTutoriaLevels();refreshTutoriaStudents()"></select></div><div><label>Nivel / cohorte</label><select id="tuLevel" onchange="refreshTutoriaStudents()"></select></div><div><label>Buscar estudiante</label><input id="tuSearch" placeholder="Cédula, nombres o apellidos" oninput="refreshTutoriaStudents()"></div><div><label>Estudiante</label><select id="tuStudent" class="student-select"></select><div id="tuStudentCount" class="mini-muted">Filtra por carrera/nivel o busca directamente.</div></div><div><label>Docente tutor</label><select id="tuTeacher"></select></div><div><label>Tipo de proceso</label><select id="tuType"><option>Tutoría de titulación</option><option>Proyecto integrador</option><option>Prácticas preprofesionales</option><option>Vinculación</option><option>Seguimiento académico</option></select></div><div><label>Estado del proceso</label><select id="tuState"><option>En curso</option><option>Observado</option><option>Finalizado</option><option>Retirado</option><option>Inactivo</option></select></div><div><label>Fecha inicio</label><input id="tuStart" type="date"></div><div><label>Fecha fin</label><input id="tuEnd" type="date"></div><div style="grid-column:span 2"><label>Observación</label><input id="tuObs" placeholder="Detalle o nota interna"></div></div><input type="hidden" id="tuId"><div class="toolbar"><button class="btn green" onclick="saveTutoria()">Guardar seguimiento</button><button class="btn light" onclick="clearTutoriaForm()">Nuevo</button></div><div id="tutoriaList" class="table-wrap"></div></div></div></section>
 
 <section id="p_auditoria" class="panel"><div class="admin-card"><h3>Auditoría académica Moodle</h3><div class="inside"><div class="module-help"><b>Objetivo:</b> integrar el seguimiento de aulas Moodle/GML dentro del sistema institucional. Permite cargar catálogo docente, evaluar estructura del aula virtual, controlar semanas GML, generar dashboard y reportes.</div>
 <div class="audit-workspace"><aside class="audit-tabs"><div class="audit-menu-title">Auditoría</div><button class="btn small green" onclick="auditTab('eval')">☑ Registro formulario</button><button class="btn small light" onclick="auditTab('dash')">◷ Dashboard y analítica</button><button class="btn small light" onclick="auditTab('rep')">▤ Reportes almacenados</button><button class="btn small light" onclick="auditTab('cat')">◎ Catálogo docentes</button><button class="btn small light" onclick="auditTab('ind')">⚙ Configuración global</button><div class="audit-user-box"><b>Auditor activo</b><span id="audActiveUser">Administrador</span></div></aside><div class="audit-content">
@@ -403,7 +414,8 @@ th,td{padding:8px 9px!important;font-size:13px!important;vertical-align:top}.rec
           <div><label>Carrera</label><select id="psCareer" onchange="psRefreshJornadas();psRefreshLevels();psRefreshStudents()"></select></div>
           <div><label>Nivel / cohorte</label><select id="psLevel" onchange="psRefreshStudents()"></select></div>
           <div><label>Jornada <small>(opcional)</small></label><select id="psJornada" onchange="psRefreshStudents()"></select></div>
-          <div class="span-2"><label>Estudiante</label><select id="psStudent" onchange="psAutofillStudent()"></select></div>
+          <div class="span-3"><label>Buscar estudiante <small>(cédula, nombres o apellidos)</small></label><input id="psSearch" placeholder="Ej. 1719115741 o HERNANDEZ BENAVIDES" oninput="psRefreshStudents()"></div>
+          <div class="span-2"><label>Estudiante</label><select id="psStudent" class="student-select" onchange="psAutofillStudent()"></select><div id="psStudentCount" class="student-count-note">Selecciona carrera y nivel o busca por cédula/nombres.</div></div>
           <div><label>Estado</label><select id="psEstado"><option>Abierto</option><option>En seguimiento</option><option>Derivado a Bienestar</option><option>Derivado a Coordinación</option><option>Cerrado</option></select></div>
           <div><label>Responsable</label><input id="psResponsable" placeholder="Bienestar / Coordinación / Tutor"></div>
         </div>
@@ -459,15 +471,29 @@ const MODULES=[{id:'kpi',label:'Dashboard KPI'},{id:'formularios',label:'Formula
 const ROLE_MODULES={'Super administrador':['kpi','formularios','urls','categorias','periodos','preguntas','estudiantes','tutorias','psicopedagogico','auditoria','admins','registros','carga','reportes','reportes_generales','psico_kpi','mejora'],'Administrador general':['kpi','formularios','urls','categorias','periodos','preguntas','estudiantes','tutorias','psicopedagogico','auditoria','registros','carga','reportes','reportes_generales','psico_kpi','mejora'],'Gestor de encuestas':['kpi','formularios','urls','categorias','periodos','preguntas','estudiantes','tutorias','psicopedagogico','auditoria','registros','carga'],'Reportes':['kpi','psico_kpi','reportes','reportes_generales','mejora'],'Consulta':['kpi','psico_kpi','reportes','reportes_generales']};
 async function sb(path,opt={}){const res=await fetch(`${SUPABASE_BASE}/${path}`,{...opt,headers:{apikey:SUPABASE_KEY,Authorization:`Bearer ${SUPABASE_KEY}`,'Content-Type':'application/json',Prefer:'return=representation',...(opt.headers||{})}});const txt=await res.text();let data;try{data=txt?JSON.parse(txt):null}catch{data=txt}if(!res.ok){throw new Error((data&&data.message)||txt||res.statusText)}return data||[]}
 let loadErrors=[];
-async function safe(path){try{return await sb(path)}catch(e){console.error(path,e);loadErrors.push(path+': '+e.message);return []}}
+async function safe(path,opt={}){try{return await sb(path,opt)}catch(e){console.error(path,e);loadErrors.push(path+': '+e.message);return []}}
+async function safeAll(path,chunk=1000){
+  const all=[];
+  for(let from=0;from<200000;from+=chunk){
+    const part=await safe(path,{headers:{Range:`${from}-${from+chunk-1}`,'Range-Unit':'items'}});
+    if(!Array.isArray(part)||!part.length)break;
+    all.push(...part);
+    if(part.length<chunk)break;
+  }
+  return all;
+}
 async function buildCatalogFallback(){
-  const [md,ms,ds,cs,ps]=await Promise.all([safe('materia_docente?select=*'),safe('materias?select=*'),safe('docentes?select=*'),safe('carreras?select=*'),safe('periodos?select=*')]);
+  const [md,ms,ds,cs,ps]=await Promise.all([safeAll('materia_docente?select=*'),safeAll('materias?select=*'),safeAll('docentes?select=*'),safeAll('carreras?select=*'),safeAll('periodos?select=*')]);
   const mat=new Map(ms.map(x=>[String(x.id),x])); const doc=new Map(ds.map(x=>[String(x.id),x])); const car=new Map(cs.map(x=>[String(x.id),x])); const per=new Map(ps.map(x=>[String(x.id),x]));
   return md.map(a=>{const m=mat.get(String(a.materia_id))||{}; const d=doc.get(String(a.docente_id))||{}; const c=car.get(String(m.carrera_id))||{}; const p=per.get(String(a.periodo_id))||{}; return {asig_id:a.id,periodo_id:a.periodo_id,periodo:p.nombre,carrera_id:c.id,carrera:c.nombre||'Sin carrera',materia_id:m.id,materia:m.nombre||'Sin materia',docente_id:d.id,docente:d.nombres||'Sin docente',modalidad:normMod(m.modalidad),jornada:m.jornada||'Sin jornada',nivel:m.nivel||'Sin nivel',paralelo:m.paralelo||'Sin paralelo'};}).filter(x=>x.materia_id&&x.docente_id);
 }
 function esc(s){return String(s??'').replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function norm(s){return String(s||'').trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase()}
 function normMod(s){const x=norm(s);if(['L','LINEA','EN LINEA','EN-LINEA','ONLINE','VIRTUAL','DISTANCIA'].includes(x))return 'En línea';if(['P','PRESENCIAL'].includes(x))return 'Presencial';if(['H','HIBRIDA','HIBRIDO','SEMIPRESENCIAL'].includes(x))return 'Híbrida';return s||''}
+function sameClean(a,b){return norm(a)===norm(b)}
+function containsClean(text,term){const t=norm(term); if(!t)return true; return norm(text).includes(t)}
+function studentLabel(s){return `${s.nombres||''} · ${s.identificacion||''}${s.carrera?' · '+s.carrera:''}${s.nivel?' · '+s.nivel:''}`.replace(/\s+/g,' ').trim()}
+function isRealStudent(s){const tipo=norm(s.tipo||''); const name=norm(s.nombres||s.nombre||''); const career=norm(s.carrera||''); if(s.estado===false)return false; if(tipo&&['DOCENTE','ADMINISTRATIVO','ADMINISTRACION','ASESOR','COORDINADOR','DIRECTOR','PERSONAL'].some(x=>tipo.includes(x)))return false; if(['ADMINISTRADOR','ASESOR','ANALISTA','DIRECTOR','COORDINADOR','DOCENTE','PROFESOR','TUTOR'].some(x=>career.startsWith(x)))return false; if(['ADMINISTRADOR','ASESOR','ANALISTA','DIRECTOR','COORDINADOR'].some(x=>name.startsWith(x+' ')))return false; return true;}
 function today(){return new Date().toISOString().slice(0,10)}
 function getActivePeriod(){const t=today();return periods.find(p=>p.activo===true&&p.estado!==false&&(!p.fecha_inicio||p.fecha_inicio<=t)&&(!p.fecha_fin||p.fecha_fin>=t))||periods.find(p=>p.activo===true&&p.estado!==false)||periods[0]}
 function allowedMods(p){let m=p?.modalidades_habilitadas;if(typeof m==='string'){try{m=JSON.parse(m)}catch{m=m.replace(/[{}]/g,'').split(',')}}if(!Array.isArray(m)||!m.length)m=['En línea'];return m.map(normMod)}
@@ -489,10 +515,10 @@ function rowsForActivePeriod(){
 }
 function rowAllowed(row,p){return p && rowsForActivePeriod().includes(row)}
 async function loadAll(){document.getElementById('conn').textContent='Conectando con Supabase...'; loadErrors=[];
-  let view=await safe('vw_asignaciones_encuesta?select=*&order=carrera.asc,materia.asc,docente.asc');
+  let view=await safeAll('vw_asignaciones_encuesta?select=*&order=carrera.asc,materia.asc,docente.asc');
   [forms,periods,indicators,questions,admins,records,details,students,tutorias,psicoSeguimientos]=await Promise.all([
-    safe('formularios?select=*&order=id.asc'), safe('periodos?select=*&order=fecha_inicio.desc'), safe('indicadores?select=*&order=orden.asc'), safe('preguntas?select=*&order=orden.asc'), safe('administradores?select=*&order=created_at.desc'), safe('respuestas?select=*&order=created_at.desc'), safe('respuesta_detalle?select=*'), safe('estudiantes?select=*&order=created_at.desc'), safe('tutorias?select=*&order=created_at.desc'), safe('psico_seguimientos?select=*&order=created_at.desc')]);
-  [audCatalog,audIndicators,audEvaluations]=await Promise.all([safe('auditoria_catalogo_docente?select=*&order=carrera.asc,materia.asc'),safe('auditoria_indicadores?select=*&order=orden.asc'),safe('auditoria_evaluaciones?select=*&order=created_at.desc')]);
+    safeAll('formularios?select=*&order=id.asc'), safeAll('periodos?select=*&order=fecha_inicio.desc'), safeAll('indicadores?select=*&order=orden.asc'), safeAll('preguntas?select=*&order=orden.asc'), safeAll('administradores?select=*&order=created_at.desc'), safeAll('respuestas?select=*&order=created_at.desc'), safeAll('respuesta_detalle?select=*'), safeAll('estudiantes?select=*&order=nombres.asc'), safeAll('tutorias?select=*&order=created_at.desc'), safeAll('psico_seguimientos?select=*&order=created_at.desc')]);
+  [audCatalog,audIndicators,audEvaluations]=await Promise.all([safeAll('auditoria_catalogo_docente?select=*&order=carrera.asc,materia.asc'),safeAll('auditoria_indicadores?select=*&order=orden.asc'),safeAll('auditoria_evaluaciones?select=*&order=created_at.desc')]);
   const requestedFormId=currentPublicFormIdFromHash();
   formularioId=(requestedFormId && forms.some(f=>String(f.id)===String(requestedFormId))) ? Number(requestedFormId) : (forms.find(f=>String(f.nombre).toLowerCase().includes('encuesta'))||forms[0]||{}).id;
   catalog=view.map(r=>({asig_id:r.asignacion_id,periodo_id:r.periodo_id,periodo:r.periodo,carrera_id:r.carrera_id,carrera:r.carrera||'Sin carrera',materia_id:r.materia_id,materia:r.materia||'Sin materia',docente_id:r.docente_id,docente:r.docente||'Sin docente',modalidad:normMod(r.modalidad),jornada:r.jornada||'Sin jornada',nivel:r.nivel||'Sin nivel',paralelo:r.paralelo||'Sin paralelo'}));
@@ -673,7 +699,7 @@ function renderStudents(){
   if(!students.length) html+='<tr><td colspan="7">No hay estudiantes registrados.</td></tr>';
   students.forEach(s=>{html+=`<tr><td>${esc(s.identificacion||'')}</td><td>${esc(s.nombres||'')}</td><td>${esc(s.correo||'')}</td><td>${esc(s.carrera||'')}</td><td>${esc(s.nivel||'')}</td><td>${s.estado!==false?'Activo':'Inactivo'}</td><td class="record-actions"><button class="btn small dark" onclick="editStudent(${s.id})">Editar</button> <button class="btn small tomate" onclick="toggleStudent(${s.id},${s.estado!==false?'false':'true'})">${s.estado!==false?'Inactivar':'Activar'}</button> <button class="btn small danger" onclick="deleteStudent(${s.id})">Eliminar</button></td></tr>`});
   el.innerHTML=html+'</tbody></table>';
-  fillSelectFromArray('tuStudent',students.filter(s=>s.estado!==false),s=>`${s.nombres} · ${s.carrera||''}`);
+  fillSelectFromArray('tuStudent',activeStudents().slice(0,800),s=>studentLabel(s));
 }
 function clearStudentForm(){sId.value='';sIdent.value='';sName.value='';sMail.value='';sCareer.value='';sLevel.value='';sState.value='true'}
 function editStudent(id){const s=students.find(x=>x.id==id);if(!s)return;sId.value=s.id;sIdent.value=s.identificacion||'';sName.value=s.nombres||'';sMail.value=s.correo||'';sCareer.value=s.carrera||'';sLevel.value=s.nivel||'';sState.value=String(s.estado!==false)}
@@ -699,10 +725,12 @@ async function importStudentsCSV(ev){
   }catch(e){alert('No se pudo importar: '+e.message)}
 }
 
-function uniqueClean(arr){return [...new Set(arr.map(x=>(x||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));}
-function refreshTutoriaCareers(){fillSelectSimple('tuCareer',uniqueClean(students.filter(s=>s.estado!==false).map(s=>s.carrera)),'Seleccione carrera');}
-function refreshTutoriaLevels(){const career=document.getElementById('tuCareer')?.value||'';const levels=uniqueClean(students.filter(s=>s.estado!==false&&(!career||s.carrera===career)).map(s=>s.nivel));fillSelectSimple('tuLevel',levels,'Seleccione nivel / cohorte');}
-function refreshTutoriaStudents(){const career=document.getElementById('tuCareer')?.value||'';const level=document.getElementById('tuLevel')?.value||'';const filtered=students.filter(s=>s.estado!==false&&(!career||s.carrera===career)&&(!level||s.nivel===level));fillSelectFromArray('tuStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');}
+function uniqueClean(arr){return [...new Map(arr.map(x=>[(norm(x||'')),(x||'').trim()]).filter(([k,v])=>k&&v)).values()].sort((a,b)=>a.localeCompare(b,'es'));}
+function activeStudents(){return students.filter(isRealStudent)}
+function refreshTutoriaCareers(){fillSelectSimple('tuCareer',uniqueClean(activeStudents().map(s=>s.carrera)),'Seleccione carrera');}
+function refreshTutoriaLevels(){const career=document.getElementById('tuCareer')?.value||'';const levels=uniqueClean(activeStudents().filter(s=>(!career||sameClean(s.carrera,career))).map(s=>s.nivel));fillSelectSimple('tuLevel',levels,'Seleccione nivel / cohorte');}
+function filterStudentsForSelect(career,level,search,jornada=''){const term=norm(search||'');return activeStudents().filter(s=>(!career||sameClean(s.carrera,career))&&(!level||sameClean(s.nivel,level))&&(!jornada||sameClean(s.jornada,jornada))&&(!term||[s.identificacion,s.nombres,s.nombre,s.apellidos,s.correo,s.correo_institucional,s.correo_personal].some(v=>containsClean(v,term))));}
+function refreshTutoriaStudents(){const career=document.getElementById('tuCareer')?.value||'',level=document.getElementById('tuLevel')?.value||'',search=document.getElementById('tuSearch')?.value||'';const filtered=filterStudentsForSelect(career,level,search);fillSelectFromArray('tuStudent',filtered.slice(0,800),s=>studentLabel(s),'Seleccione estudiante');const c=document.getElementById('tuStudentCount'); if(c)c.textContent=`${filtered.length} estudiante(s) encontrados${filtered.length>800?' · mostrando los primeros 800, usa búsqueda para precisar':''}.`;}
 function renderTutorias(){
   fillSelectFromArray('tuForm',forms.filter(f=>f.estado!==false),f=>f.nombre); fillSelectFromArray('tuPeriod',periods.filter(p=>p.estado!==false),p=>p.nombre); refreshTutoriaCareers(); refreshTutoriaLevels(); refreshTutoriaStudents(); const docs=[...new Map(catalog.map(x=>[String(x.docente_id),{id:x.docente_id,nombres:x.docente}])).values()].filter(x=>x.id); fillSelectFromArray('tuTeacher',docs,d=>d.nombres);
   const el=document.getElementById('tutoriaList'); if(!el)return;
@@ -711,8 +739,8 @@ function renderTutorias(){
   tutorias.forEach(t=>{html+=`<tr><td>${esc(getFormName(t.formulario_id))}</td><td>${esc(getPeriodName(t.periodo_id))}</td><td>${esc(getStudentName(t.estudiante_id))}</td><td>${esc(getTeacherName(t.docente_id))}</td><td>${esc(t.tipo_proceso||'')}</td><td>${esc(t.estado_proceso||'')}</td><td>${esc(t.fecha_inicio||'')} / ${esc(t.fecha_fin||'')}</td><td><button class="btn small dark" onclick="editTutoria(${t.id})">Editar</button> <button class="btn small tomate" onclick="toggleTutoria(${t.id})">Inactivar</button> <button class="btn small danger" onclick="deleteTutoria(${t.id})">Eliminar</button></td></tr>`});
   el.innerHTML=html+'</tbody></table>';
 }
-function clearTutoriaForm(){tuId.value='';tuForm.value='';tuPeriod.value='';if(document.getElementById('tuCareer'))tuCareer.value='';refreshTutoriaLevels();if(document.getElementById('tuLevel'))tuLevel.value='';refreshTutoriaStudents();tuStudent.value='';tuTeacher.value='';tuType.value='Tutoría de titulación';tuState.value='En curso';tuStart.value='';tuEnd.value='';tuObs.value=''}
-function editTutoria(id){const t=tutorias.find(x=>x.id==id);if(!t)return;const st=students.find(s=>String(s.id)===String(t.estudiante_id));tuId.value=t.id;tuForm.value=t.formulario_id||'';tuPeriod.value=t.periodo_id||'';if(st&&document.getElementById('tuCareer')){tuCareer.value=st.carrera||'';refreshTutoriaLevels();tuLevel.value=st.nivel||'';refreshTutoriaStudents();}tuStudent.value=t.estudiante_id||'';tuTeacher.value=t.docente_id||'';tuType.value=t.tipo_proceso||'Tutoría de titulación';tuState.value=t.estado_proceso||'En curso';tuStart.value=t.fecha_inicio||'';tuEnd.value=t.fecha_fin||'';tuObs.value=t.observacion||''}
+function clearTutoriaForm(){tuId.value='';tuForm.value='';tuPeriod.value='';if(document.getElementById('tuCareer'))tuCareer.value='';refreshTutoriaLevels();if(document.getElementById('tuLevel'))tuLevel.value='';if(document.getElementById('tuSearch'))tuSearch.value='';refreshTutoriaStudents();tuStudent.value='';tuTeacher.value='';tuType.value='Tutoría de titulación';tuState.value='En curso';tuStart.value='';tuEnd.value='';tuObs.value=''}
+function editTutoria(id){const t=tutorias.find(x=>x.id==id);if(!t)return;const st=students.find(s=>String(s.id)===String(t.estudiante_id));tuId.value=t.id;if(document.getElementById('tuSearch'))tuSearch.value='';tuForm.value=t.formulario_id||'';tuPeriod.value=t.periodo_id||'';if(st&&document.getElementById('tuCareer')){tuCareer.value=st.carrera||'';refreshTutoriaLevels();tuLevel.value=st.nivel||'';refreshTutoriaStudents();}tuStudent.value=t.estudiante_id||'';tuTeacher.value=t.docente_id||'';tuType.value=t.tipo_proceso||'Tutoría de titulación';tuState.value=t.estado_proceso||'En curso';tuStart.value=t.fecha_inicio||'';tuEnd.value=t.fecha_fin||'';tuObs.value=t.observacion||''}
 async function saveTutoria(){if(!tuCareer.value||!tuLevel.value||!tuStudent.value||!tuTeacher.value)return alert('Selecciona carrera, nivel, estudiante y docente tutor.');const body={formulario_id:tuForm.value?Number(tuForm.value):formularioId,periodo_id:tuPeriod.value?Number(tuPeriod.value):null,estudiante_id:Number(tuStudent.value),docente_id:Number(tuTeacher.value),tipo_proceso:tuType.value,estado_proceso:tuState.value,fecha_inicio:tuStart.value||null,fecha_fin:tuEnd.value||null,observacion:tuObs.value||null,estado:tuState.value!=='Inactivo'};try{if(tuId.value)await sb(`tutorias?id=eq.${tuId.value}`,{method:'PATCH',body:JSON.stringify(body)});else await sb('tutorias',{method:'POST',body:JSON.stringify(body)});clearTutoriaForm();await loadAll();alert('Seguimiento guardado.')}catch(e){alert('No se pudo guardar seguimiento: '+e.message)}}
 async function toggleTutoria(id){try{await sb(`tutorias?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({estado:false,estado_proceso:'Inactivo'})});await loadAll()}catch(e){alert(e.message)}}
 async function deleteTutoria(id){if(!confirm('¿Eliminar este seguimiento?'))return;try{await sb(`tutorias?id=eq.${id}`,{method:'DELETE'});await loadAll()}catch(e){alert('No se pudo eliminar: '+e.message)}}
@@ -1147,22 +1175,22 @@ function psFilteredRows(){
   const f={periodo:document.getElementById('psDashPeriod')?.value||'',carrera:document.getElementById('psDashCareer')?.value||'',jornada:document.getElementById('psDashJornada')?.value||'',alerta:document.getElementById('psDashAlerta')?.value||'',estado:document.getElementById('psDashEstado')?.value||''};
   return psicoSeguimientos.filter(r=>(!f.periodo||String(r.periodo_id)===String(f.periodo)||r.periodo_nombre===f.periodo)&&(!f.carrera||r.carrera===f.carrera)&&(!f.jornada||r.jornada===f.jornada)&&(!f.estado||r.estado_seguimiento===f.estado)&&(!f.alerta||(f.alerta==='academica'&&r.alerta_academica)||(f.alerta==='tecnologica'&&r.alerta_tecnologica)||(f.alerta==='emocional'&&r.alerta_emocional)));
 }
-function psRefreshCareers(){fillSelectSimple('psCareer',uniqueClean(students.filter(s=>s.estado!==false).map(s=>s.carrera)),'Seleccione carrera')}
-function psRefreshJornadas(){const el=document.getElementById('psJornada'); if(!el)return; const old=el.value; const jornadas=['Matutina','Nocturna','En línea','Fin de semana']; el.innerHTML='<option value="">Seleccione jornada</option>'+jornadas.map(j=>`<option>${j}</option>`).join(''); if(jornadas.includes(old))el.value=old;}
-function psRefreshLevels(){const career=psCareer?.value||'';fillSelectSimple('psLevel',uniqueClean(students.filter(s=>s.estado!==false&&(!career||s.carrera===career)).map(s=>s.nivel)),'Seleccione nivel / cohorte')}
-function psRefreshStudents(){const career=psCareer?.value||'', level=psLevel?.value||''; const filtered=students.filter(s=>s.estado!==false&&(!career||s.carrera===career)&&(!level||s.nivel===level)); fillSelectFromArray('psStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');}
-function psAutofillStudent(){const s=students.find(x=>String(x.id)===String(psStudent?.value)); if(!s)return; psIdent.value=s.identificacion||''; psNombre.value=s.nombres||''; if(s.carrera&&!psCareer.value){psCareer.value=s.carrera; psRefreshLevels()} if(s.nivel&&!psLevel.value){psLevel.value=s.nivel}}
-function clearPsicoForm(){['psId','psIdent','psNombre','psObsProfesor','psObsExtra','psResponsable'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psCareer','psLevel','psStudent'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); if(psClases)psClases.value='Muy buenas'; if(psTrato)psTrato.value='Muy bueno'; if(psAyudaAcademica)psAyudaAcademica.value='No'; if(psAyudaTecnologica)psAyudaTecnologica.value='No'; if(psRefuerzo)psRefuerzo.value='No'; if(psFeliz)psFeliz.value='Sí'; if(psApoyoEmocional)psApoyoEmocional.value='No'; if(psEstado)psEstado.value='Abierto'; psRefreshLevels(); psRefreshStudents();}
+function psRefreshCareers(){fillSelectSimple('psCareer',uniqueClean(activeStudents().map(s=>s.carrera)),'Seleccione carrera')}
+function psRefreshJornadas(){const el=document.getElementById('psJornada'); if(!el)return; const old=el.value; const career=document.getElementById('psCareer')?.value||''; const jornadas=uniqueClean(activeStudents().filter(s=>(!career||sameClean(s.carrera,career))).map(s=>s.jornada)).filter(Boolean); const list=jornadas.length?jornadas:['Matutina','Nocturna','En línea','Fin de semana']; el.innerHTML='<option value="">Todas / sin jornada</option>'+list.map(j=>`<option>${esc(j)}</option>`).join(''); if(list.some(j=>sameClean(j,old)))el.value=list.find(j=>sameClean(j,old));}
+function psRefreshLevels(){const career=document.getElementById('psCareer')?.value||'';fillSelectSimple('psLevel',uniqueClean(activeStudents().filter(s=>(!career||sameClean(s.carrera,career))).map(s=>s.nivel)),'Seleccione nivel / cohorte')}
+function psRefreshStudents(){const career=document.getElementById('psCareer')?.value||'',level=document.getElementById('psLevel')?.value||'',jornada=document.getElementById('psJornada')?.value||'',search=document.getElementById('psSearch')?.value||''; const filtered=filterStudentsForSelect(career,level,search,jornada); fillSelectFromArray('psStudent',filtered.slice(0,800),s=>studentLabel(s),'Seleccione estudiante'); const c=document.getElementById('psStudentCount'); if(c)c.textContent=`${filtered.length} estudiante(s) encontrados${filtered.length>800?' · mostrando los primeros 800, usa búsqueda para precisar':''}.`; }
+function psAutofillStudent(){const s=students.find(x=>String(x.id)===String(psStudent?.value)); if(!s)return; psIdent.value=s.identificacion||''; psNombre.value=s.nombres||s.nombre||''; if(psIdentView)psIdentView.textContent=s.identificacion||'-'; if(psNombreView)psNombreView.textContent=s.nombres||s.nombre||'Seleccione estudiante'; if(psEmailView)psEmailView.textContent=s.correo_institucional||s.correo||s.correo_personal||'-'; if(psPhoneView)psPhoneView.textContent=s.whatsapp||s.celular||'-'; if(psStudentPeriodView)psStudentPeriodView.textContent=s.periodo||'-'; if(s.carrera&&!psCareer.value){psCareer.value=s.carrera; psRefreshLevels()} if(s.nivel&&!psLevel.value){psLevel.value=s.nivel}}
+function clearPsicoForm(){['psId','psIdent','psNombre','psObsProfesor','psObsExtra','psResponsable','psSearch'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psCareer','psLevel','psStudent','psJornada'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psIdentView','psEmailView','psPhoneView','psStudentPeriodView'].forEach(id=>{const e=document.getElementById(id); if(e)e.textContent='-'}); if(psNombreView)psNombreView.textContent='Seleccione estudiante'; if(psClases)psClases.value='Muy buenas'; if(psTrato)psTrato.value='Muy bueno'; if(psAyudaAcademica)psAyudaAcademica.value='No'; if(psAyudaTecnologica)psAyudaTecnologica.value='No'; if(psRefuerzo)psRefuerzo.value='No'; if(psFeliz)psFeliz.value='Sí'; if(psApoyoEmocional)psApoyoEmocional.value='No'; if(psEstado)psEstado.value='Abierto'; psRefreshJornadas();psRefreshLevels(); psRefreshStudents();}
 function renderPsicoModule(){
   const psel=document.getElementById('psPeriod'); if(psel){const old=psel.value; psel.innerHTML=periods.map(p=>`<option value="${p.id}">${esc(p.nombre)}${p.activo?' · Activo':''}</option>`).join(''); if(old)psel.value=old; else {const p=getActivePeriod(); if(p)psel.value=p.id;}}
-  psRefreshCareers(); psRefreshJornadas(); psRefreshLevels(); psRefreshStudents(); renderPsicoList();
+  psRefreshCareers(); psRefreshJornadas(); psRefreshLevels(); psRefreshStudents(); const pc=document.getElementById('psCompactCount'); if(pc)pc.textContent=`${activeStudents().length} estudiantes activos cargados`; renderPsicoList();
 }
 async function savePsicoSeguimiento(){
   const st=students.find(x=>String(x.id)===String(psStudent?.value)); if(!st)return alert('Selecciona carrera, nivel y estudiante.');
   const body={periodo_id:psPeriod.value?Number(psPeriod.value):null,periodo_nombre:getPeriodName(psPeriod.value),estudiante_id:Number(psStudent.value),identificacion:psIdent.value||st.identificacion||'',nombres:psNombre.value||st.nombres||'',carrera:psCareer.value||st.carrera||'',jornada:psJornada.value||'',nivel:psLevel.value||st.nivel||'',clases:psClases.value,trato_docente:psTrato.value,observacion_profesor:psObsProfesor.value||null,ayuda_academica:psAyudaAcademica.value,ayuda_tecnologica:psAyudaTecnologica.value,refuerzo_contenidos:psRefuerzo.value,feliz_instituto:psFeliz.value,apoyo_emocional:psApoyoEmocional.value,observacion_extra:psObsExtra.value||null,estado_seguimiento:psEstado.value,responsable:psResponsable.value||currentAdmin?.nombre||null,alerta_academica:psIsYes(psAyudaAcademica.value)||psIsYes(psRefuerzo.value),alerta_tecnologica:psIsYes(psAyudaTecnologica.value),alerta_emocional:psIsYes(psApoyoEmocional.value)||norm(psFeliz.value)==='NO',estado:true};
   try{if(psId.value)await sb(`psico_seguimientos?id=eq.${psId.value}`,{method:'PATCH',body:JSON.stringify(body)});else await sb('psico_seguimientos',{method:'POST',body:JSON.stringify(body)});clearPsicoForm();await loadAll();alert('Seguimiento psicopedagógico guardado.')}catch(e){alert('No se pudo guardar el seguimiento: '+e.message+'\n\nEjecuta el SQL V28 si aún no creaste la tabla psico_seguimientos.')}
 }
-function editPsico(id){const r=psicoSeguimientos.find(x=>String(x.id)===String(id)); if(!r)return; psId.value=r.id; psPeriod.value=r.periodo_id||''; psCareer.value=r.carrera||''; psRefreshLevels(); psJornada.value=r.jornada||''; psLevel.value=r.nivel||''; psRefreshStudents(); psStudent.value=r.estudiante_id||''; psIdent.value=r.identificacion||''; psNombre.value=r.nombres||''; psClases.value=r.clases||'Buenas'; psTrato.value=r.trato_docente||'Bueno'; psAyudaAcademica.value=r.ayuda_academica||'No'; psAyudaTecnologica.value=r.ayuda_tecnologica||'No'; psRefuerzo.value=r.refuerzo_contenidos||'No'; psFeliz.value=r.feliz_instituto||'Sí'; psApoyoEmocional.value=r.apoyo_emocional||'No'; psObsProfesor.value=r.observacion_profesor||''; psObsExtra.value=r.observacion_extra||''; psEstado.value=r.estado_seguimiento||'Abierto'; psResponsable.value=r.responsable||''; adminPanel('psicopedagogico',document.querySelector('[data-module=psicopedagogico]'))}
+function editPsico(id){const r=psicoSeguimientos.find(x=>String(x.id)===String(id)); if(!r)return; psId.value=r.id; psPeriod.value=r.periodo_id||''; psCareer.value=r.carrera||''; psRefreshLevels(); psJornada.value=r.jornada||''; psLevel.value=r.nivel||''; psRefreshStudents(); psStudent.value=r.estudiante_id||''; psIdent.value=r.identificacion||''; psNombre.value=r.nombres||''; psAutofillStudent(); psClases.value=r.clases||'Buenas'; psTrato.value=r.trato_docente||'Bueno'; psAyudaAcademica.value=r.ayuda_academica||'No'; psAyudaTecnologica.value=r.ayuda_tecnologica||'No'; psRefuerzo.value=r.refuerzo_contenidos||'No'; psFeliz.value=r.feliz_instituto||'Sí'; psApoyoEmocional.value=r.apoyo_emocional||'No'; psObsProfesor.value=r.observacion_profesor||''; psObsExtra.value=r.observacion_extra||''; psEstado.value=r.estado_seguimiento||'Abierto'; psResponsable.value=r.responsable||''; adminPanel('psicopedagogico',document.querySelector('[data-module=psicopedagogico]'))}
 async function inactivePsico(id){if(!confirm('¿Inactivar este seguimiento?'))return; try{await sb(`psico_seguimientos?id=eq.${id}`,{method:'PATCH',body:JSON.stringify({estado:false,estado_seguimiento:'Cerrado'})}); await loadAll();}catch(e){alert(e.message)}}
 async function deletePsico(id){if(!confirm('¿Eliminar este seguimiento psicopedagógico?'))return; try{await sb(`psico_seguimientos?id=eq.${id}`,{method:'DELETE'}); await loadAll();}catch(e){alert(e.message)}}
 function renderPsicoList(){const el=document.getElementById('psicoList'); if(!el)return; let html='<table><thead><tr><th>Fecha</th><th>Estudiante</th><th>Carrera</th><th>Jornada</th><th>Nivel</th><th>Alertas</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>'; if(!psicoSeguimientos.length)html+='<tr><td colspan="8">No existen seguimientos psicopedagógicos.</td></tr>'; psicoSeguimientos.forEach(r=>{html+=`<tr class="${psSeverity(r)}"><td>${esc((r.created_at||'').slice(0,10))}</td><td><b>${esc(r.nombres)}</b><br><small>${esc(r.identificacion)}</small></td><td>${esc(r.carrera)}</td><td>${esc(r.jornada)}</td><td>${esc(r.nivel)}</td><td><span class="psico-badge ${psSeverity(r)}">${psSeverityText(r)}</span><br><small>${r.alerta_academica?'Académica ':''}${r.alerta_tecnologica?'Tecnológica ':''}${r.alerta_emocional?'Emocional':''}</small></td><td>${esc(r.estado_seguimiento||'')}</td><td><button class="btn small dark" onclick="editPsico(${r.id})">Editar</button> <button class="btn small tomate" onclick="inactivePsico(${r.id})">Inactivar</button> <button class="btn small danger" onclick="deletePsico(${r.id})">Eliminar</button></td></tr>`}); el.innerHTML=html+'</tbody></table>';}
@@ -1430,33 +1458,34 @@ function renderStudents(){
   if(!students.length) html+='<tr><td colspan="10">No hay estudiantes registrados.</td></tr>';
   students.forEach(s=>{html+=`<tr><td>${esc(s.identificacion||'')}</td><td>${esc(s.nombres||'')}</td><td>${esc(s.correo_institucional||s.correo||'')}</td><td>${esc(s.celular||s.telefono||'')}</td><td>${esc(s.whatsapp||'')}</td><td>${esc(s.carrera||'')}</td><td>${esc(s.nivel||'')}</td><td>${esc(s.periodo_ingreso||'')}</td><td>${s.estado!==false?'Activo':'Inactivo'}</td><td class="record-actions"><button class="btn small dark" onclick="editStudent(${s.id})">Editar</button> <button class="btn small tomate" onclick="toggleStudent(${s.id},${s.estado!==false?'false':'true'})">${s.estado!==false?'Inactivar':'Activar'}</button> <button class="btn small danger" onclick="deleteStudent(${s.id})">Eliminar</button></td></tr>`});
   el.innerHTML=html+'</tbody></table>';
-  fillSelectFromArray('tuStudent',students.filter(s=>s.estado!==false),s=>`${s.nombres} · ${s.carrera||''}`);
+  fillSelectFromArray('tuStudent',activeStudents().slice(0,800),s=>studentLabel(s));
 }
 function psRefreshJornadas(){
   const el=document.getElementById('psJornada'); if(!el)return; const old=el.value; const career=document.getElementById('psCareer')?.value||'';
-  let jornadas=uniqueClean(students.filter(s=>s.estado!==false&&(!career||s.carrera===career)).map(s=>s.jornada));
+  let jornadas=uniqueClean(activeStudents().filter(s=>(!career||sameClean(s.carrera,career))).map(s=>s.jornada));
   if(!jornadas.length) jornadas=['Matutina','Nocturna','En línea','Fin de semana'];
-  el.innerHTML='<option value="">Todas / sin jornada</option>'+jornadas.map(j=>`<option>${esc(j)}</option>`).join(''); if(jornadas.includes(old))el.value=old;
+  el.innerHTML='<option value="">Todas / sin jornada</option>'+jornadas.map(j=>`<option>${esc(j)}</option>`).join(''); const found=jornadas.find(j=>sameClean(j,old)); if(found)el.value=found;
 }
 function psRefreshLevels(){
-  const career=document.getElementById('psCareer')?.value||''; const jornada=document.getElementById('psJornada')?.value||'';
-  const filtered=students.filter(s=>s.estado!==false&&(!career||s.carrera===career)&&(!jornada||!s.jornada||s.jornada===jornada));
+  const career=document.getElementById('psCareer')?.value||'';
+  const filtered=activeStudents().filter(s=>(!career||sameClean(s.carrera,career)));
   fillSelectSimple('psLevel',uniqueClean(filtered.map(s=>s.nivel)),'Seleccione nivel / cohorte');
 }
 function psRefreshStudents(){
-  const career=document.getElementById('psCareer')?.value||'', level=document.getElementById('psLevel')?.value||'', jornada=document.getElementById('psJornada')?.value||'';
-  const filtered=students.filter(s=>s.estado!==false&&(!career||s.carrera===career)&&(!level||s.nivel===level)&&(!jornada||!s.jornada||s.jornada===jornada));
-  fillSelectFromArray('psStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');
-  const cnt=document.getElementById('psCompactCount'); if(cnt)cnt.textContent=`${filtered.length} estudiante(s) visibles`;
+  const career=document.getElementById('psCareer')?.value||'', level=document.getElementById('psLevel')?.value||'', jornada=document.getElementById('psJornada')?.value||'', search=document.getElementById('psSearch')?.value||'';
+  const filtered=filterStudentsForSelect(career,level,search,jornada);
+  fillSelectFromArray('psStudent',filtered.slice(0,800),s=>studentLabel(s),'Seleccione estudiante');
+  const cnt=document.getElementById('psCompactCount'); if(cnt)cnt.textContent=`${activeStudents().length} estudiantes activos cargados`;
+  const c=document.getElementById('psStudentCount'); if(c)c.textContent=`${filtered.length} estudiante(s) encontrados${filtered.length>800?' · mostrando los primeros 800, usa búsqueda para precisar':''}.`;
 }
 function psAutofillStudent(){
   const s=students.find(x=>String(x.id)===String(document.getElementById('psStudent')?.value)); if(!s)return;
-  psIdent.value=s.identificacion||''; psNombre.value=s.nombres||'';
+  psIdent.value=s.identificacion||''; psNombre.value=s.nombres||s.nombre||'';
   const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val||'-'};
-  set('psIdentView',s.identificacion); set('psNombreView',s.nombres); set('psEmailView',s.correo_institucional||s.correo||s.correo_personal); set('psPhoneView',s.whatsapp||s.celular||s.telefono); set('psStudentPeriodView',s.periodo_ingreso);
+  set('psIdentView',s.identificacion); set('psNombreView',s.nombres||s.nombre); set('psEmailView',s.correo_institucional||s.correo||s.correo_personal); set('psPhoneView',s.whatsapp||s.celular||s.telefono); set('psStudentPeriodView',s.periodo_ingreso||s.periodo);
   if(s.carrera&&!psCareer.value){psCareer.value=s.carrera; psRefreshJornadas(); psRefreshLevels()} if(s.nivel&&!psLevel.value){psLevel.value=s.nivel}
 }
-function clearPsicoForm(){['psId','psIdent','psNombre','psObsProfesor','psObsExtra','psResponsable'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psCareer','psLevel','psStudent','psJornada'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psIdentView','psEmailView','psPhoneView','psStudentPeriodView'].forEach(id=>{const e=document.getElementById(id); if(e)e.textContent='-'}); const nv=document.getElementById('psNombreView'); if(nv)nv.textContent='Seleccione estudiante'; if(psClases)psClases.value='Muy buenas'; if(psTrato)psTrato.value='Muy bueno'; if(psAyudaAcademica)psAyudaAcademica.value='No'; if(psAyudaTecnologica)psAyudaTecnologica.value='No'; if(psRefuerzo)psRefuerzo.value='No'; if(psFeliz)psFeliz.value='Sí'; if(psApoyoEmocional)psApoyoEmocional.value='No'; if(psEstado)psEstado.value='Abierto'; psRefreshJornadas(); psRefreshLevels(); psRefreshStudents();}
+function clearPsicoForm(){['psId','psIdent','psNombre','psObsProfesor','psObsExtra','psResponsable','psSearch'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psCareer','psLevel','psStudent','psJornada'].forEach(id=>{const e=document.getElementById(id); if(e)e.value=''}); ['psIdentView','psEmailView','psPhoneView','psStudentPeriodView'].forEach(id=>{const e=document.getElementById(id); if(e)e.textContent='-'}); const nv=document.getElementById('psNombreView'); if(nv)nv.textContent='Seleccione estudiante'; if(psClases)psClases.value='Muy buenas'; if(psTrato)psTrato.value='Muy bueno'; if(psAyudaAcademica)psAyudaAcademica.value='No'; if(psAyudaTecnologica)psAyudaTecnologica.value='No'; if(psRefuerzo)psRefuerzo.value='No'; if(psFeliz)psFeliz.value='Sí'; if(psApoyoEmocional)psApoyoEmocional.value='No'; if(psEstado)psEstado.value='Abierto'; psRefreshJornadas(); psRefreshLevels(); psRefreshStudents();}
 
 
 
@@ -1661,42 +1690,50 @@ function v33FillSelect(id, values, placeholder){
 }
 function v33CareerValues(rows){return uniqueClean(rows.map(s=>v33CleanCareer(s.carrera)).filter(Boolean))}
 function v33LevelValues(rows){return uniqueClean(rows.map(s=>v33CleanLevel(s.nivel)).filter(v=>v && v33LooksLikeStudentLevel(v)))}
-function v33FilterStudentsBy(career,level,jornada){
+function v33StudentMatchesSearch(s,search){
+  const term=v33Norm(search);
+  if(!term) return true;
+  return [s.identificacion,s.nombres,s.nombre,s.apellidos,s.correo,s.correo_institucional,s.correo_personal,s.celular,s.whatsapp].some(v=>v33Norm(v).includes(term));
+}
+function v33FilterStudentsBy(career,level,jornada,search=''){
   return v33StudentRows().filter(s=>
     (!career || v33CleanCareer(s.carrera)===career) &&
     (!level || v33CleanLevel(s.nivel)===level) &&
-    (!jornada || !s.jornada || s.jornada===jornada)
+    (!jornada || !s.jornada || v33Norm(s.jornada)===v33Norm(jornada)) &&
+    v33StudentMatchesSearch(s,search)
   );
 }
 function refreshTutoriaCareers(){v33FillSelect('tuCareer',v33CareerValues(v33StudentRows()),'Seleccione carrera')}
 function refreshTutoriaLevels(){
   const career=document.getElementById('tuCareer')?.value||'';
-  v33FillSelect('tuLevel',v33LevelValues(v33FilterStudentsBy(career,'','')),'Seleccione nivel / cohorte');
+  v33FillSelect('tuLevel',v33LevelValues(v33FilterStudentsBy(career,'','',document.getElementById('tuSearch')?.value||'')),'Seleccione nivel / cohorte');
 }
 function refreshTutoriaStudents(){
-  const career=document.getElementById('tuCareer')?.value||'', level=document.getElementById('tuLevel')?.value||'';
-  const filtered=v33FilterStudentsBy(career,level,'');
-  fillSelectFromArray('tuStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');
+  const career=document.getElementById('tuCareer')?.value||'', level=document.getElementById('tuLevel')?.value||'', search=document.getElementById('tuSearch')?.value||'';
+  const filtered=v33FilterStudentsBy(career,level,'',search);
+  fillSelectFromArray('tuStudent',filtered,s=>studentLabel(s),'Seleccione estudiante');
+  const c=document.getElementById('tuStudentCount'); if(c)c.textContent=`${filtered.length} estudiante(s) encontrados. Puedes buscar por cédula, nombres o apellidos.`;
 }
 function psRefreshCareers(){v33FillSelect('psCareer',v33CareerValues(v33StudentRows()),'Seleccione carrera')}
 function psRefreshJornadas(){
   const el=document.getElementById('psJornada'); if(!el)return; const old=el.value;
   const career=document.getElementById('psCareer')?.value||'';
-  let jornadas=uniqueClean(v33FilterStudentsBy(career,'','').map(s=>s.jornada).filter(Boolean));
+  let jornadas=uniqueClean(v33FilterStudentsBy(career,'','',document.getElementById('psSearch')?.value||'').map(s=>s.jornada).filter(Boolean));
   if(!jornadas.length) jornadas=['Matutina','Nocturna','En línea','Fin de semana'];
   el.innerHTML='<option value="">Todas / sin jornada</option>'+jornadas.map(j=>`<option>${esc(j)}</option>`).join('');
-  if(jornadas.includes(old)) el.value=old;
+  const found=jornadas.find(j=>v33Norm(j)===v33Norm(old)); if(found) el.value=found;
 }
 function psRefreshLevels(){
   const career=document.getElementById('psCareer')?.value||'';
   const jornada=document.getElementById('psJornada')?.value||'';
-  v33FillSelect('psLevel',v33LevelValues(v33FilterStudentsBy(career,'',jornada)),'Seleccione nivel / cohorte');
+  v33FillSelect('psLevel',v33LevelValues(v33FilterStudentsBy(career,'',jornada,document.getElementById('psSearch')?.value||'')),'Seleccione nivel / cohorte');
 }
 function psRefreshStudents(){
-  const career=document.getElementById('psCareer')?.value||'', level=document.getElementById('psLevel')?.value||'', jornada=document.getElementById('psJornada')?.value||'';
-  const filtered=v33FilterStudentsBy(career,level,jornada);
-  fillSelectFromArray('psStudent',filtered,s=>`${s.nombres} · ${s.identificacion||''}`,'Seleccione estudiante');
-  const cnt=document.getElementById('psCompactCount'); if(cnt)cnt.textContent=`${filtered.length} estudiante(s) visibles`;
+  const career=document.getElementById('psCareer')?.value||'', level=document.getElementById('psLevel')?.value||'', jornada=document.getElementById('psJornada')?.value||'', search=document.getElementById('psSearch')?.value||'';
+  const filtered=v33FilterStudentsBy(career,level,jornada,search);
+  fillSelectFromArray('psStudent',filtered,s=>studentLabel(s),'Seleccione estudiante');
+  const cnt=document.getElementById('psCompactCount'); if(cnt)cnt.textContent=`${v33StudentRows().length} estudiantes activos cargados`;
+  const c=document.getElementById('psStudentCount'); if(c)c.textContent=`${filtered.length} estudiante(s) encontrados. Puedes buscar por cédula, nombres o apellidos.`;
 }
 function psAutofillStudent(){
   const s=(students||[]).find(x=>String(x.id)===String(document.getElementById('psStudent')?.value)); if(!s)return;
