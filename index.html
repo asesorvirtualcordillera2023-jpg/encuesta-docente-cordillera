@@ -2006,6 +2006,136 @@ function editPsico(id){
 function v33RefreshStudentDependentModules(){try{refreshTutoriaCareers();refreshTutoriaLevels();refreshTutoriaStudents();psRefreshCareers();psRefreshJornadas();psRefreshLevels();psRefreshStudents();}catch(e){console.warn('V33 refresh estudiantes:',e)}}
 document.addEventListener('DOMContentLoaded',()=>setTimeout(v33RefreshStudentDependentModules,900));
 
+
+/* ===================== V41 - Compactación REAL del módulo Auditoría académica Moodle ===================== */
+(function(){
+  const css = `
+  /* V41: Auditoría compacta con prioridad absoluta */
+  #p_auditoria .inside{padding:14px!important;overflow:hidden!important;background:#f7fbfa!important;}
+  #p_auditoria .module-help{font-size:12px!important;line-height:1.35!important;padding:9px 11px!important;margin:0 0 10px!important;border-radius:12px!important;}
+  #p_auditoria .audit-workspace{display:grid!important;grid-template-columns:178px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;max-width:100%!important;}
+  #p_auditoria .audit-tabs{position:sticky!important;top:8px!important;display:flex!important;flex-direction:column!important;gap:6px!important;max-height:calc(100vh - 120px)!important;overflow:auto!important;background:#006068!important;border-radius:16px!important;border:0!important;padding:10px!important;box-shadow:0 8px 18px rgba(0,96,104,.16)!important;}
+  #p_auditoria .audit-tabs .audit-menu-title{display:block!important;color:#bff4e2!important;font-size:11px!important;letter-spacing:.07em!important;text-transform:uppercase!important;font-weight:900!important;margin:2px 6px 4px!important;}
+  #p_auditoria .audit-tabs .btn{display:flex!important;width:100%!important;min-height:0!important;height:auto!important;margin:0!important;padding:8px 9px!important;border-radius:10px!important;font-size:11px!important;line-height:1.16!important;text-align:left!important;white-space:normal!important;justify-content:flex-start!important;box-shadow:none!important;}
+  #p_auditoria .audit-tabs .btn.green{background:#00CE7C!important;color:#fff!important;border-color:#00CE7C!important;}
+  #p_auditoria .audit-tabs .btn.light{background:rgba(255,255,255,.08)!important;color:#fff!important;border:1px solid rgba(255,255,255,.16)!important;}
+  #p_auditoria .audit-user-box{padding:8px!important;margin-top:8px!important;border-radius:12px!important;background:rgba(255,255,255,.08)!important;color:#fff!important;font-size:11px!important;}
+  #p_auditoria .audit-user-box b{display:block!important;color:#00CE7C!important;font-size:10px!important;text-transform:uppercase!important;}
+  #p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid #d9ebe5!important;border-radius:16px!important;overflow:hidden!important;}
+  #p_auditoria .audit-pane{padding:0!important;background:#fff!important;}
+  #p_auditoria .audit-pane>h4{margin:0!important;padding:10px 12px!important;font-size:16px!important;color:#006068!important;background:#fbfffd!important;border-bottom:1px solid #d9ebe5!important;}
+  #p_auditoria .audit-block{margin:0 0 10px!important;padding:0!important;border:1px solid #d9ebe5!important;border-radius:14px!important;background:#fff!important;overflow:hidden!important;box-shadow:none!important;}
+  #p_auditoria .audit-block-title{display:block!important;margin:0!important;padding:8px 10px!important;background:#edf9f5!important;border-bottom:2px solid #00CE7C!important;color:#006068!important;font-size:12px!important;line-height:1.18!important;text-transform:uppercase!important;font-weight:900!important;}
+  #p_auditoria .audit-form-grid-v41{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important;padding:10px!important;align-items:end!important;}
+  #p_auditoria .audit-form-grid-v41 .wide{grid-column:span 2!important;}
+  #p_auditoria .audit-form-grid-v41 .bim{background:#fff8f3!important;border:1px solid rgba(228,126,61,.35)!important;border-radius:10px!important;padding:6px!important;}
+  #p_auditoria .audit-form-grid-v41 label{display:block!important;font-size:10.5px!important;font-weight:900!important;text-transform:uppercase!important;color:#006068!important;margin:0 0 3px!important;line-height:1.1!important;}
+  #p_auditoria .audit-form-grid-v41 select,
+  #p_auditoria .audit-form-grid-v41 input{width:100%!important;height:34px!important;min-height:34px!important;padding:5px 8px!important;border-radius:9px!important;font-size:12px!important;line-height:1!important;box-sizing:border-box!important;}
+  #p_auditoria .audit-summary-v41{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:7px!important;padding:0 10px 10px!important;}
+  #p_auditoria .audit-summary-v41 .summary-item{padding:7px 9px!important;border:1px solid #d9ebe5!important;border-radius:10px!important;background:#fbfffd!important;min-width:0!important;}
+  #p_auditoria .audit-summary-v41 span{display:block!important;font-size:9.5px!important;color:#667!important;text-transform:uppercase!important;font-weight:900!important;letter-spacing:.03em!important;}
+  #p_auditoria .audit-summary-v41 b{display:block!important;font-size:12px!important;color:#006068!important;line-height:1.18!important;word-break:break-word!important;}
+  #p_auditoria .audit-section-v41{border:1px solid #d9ebe5!important;border-radius:14px!important;margin:10px 0!important;background:#fff!important;overflow:hidden!important;}
+  #p_auditoria .audit-section-head-v41{display:flex!important;justify-content:space-between!important;align-items:center!important;gap:10px!important;background:#edf9f5!important;border-bottom:2px solid #00CE7C!important;padding:8px 10px!important;}
+  #p_auditoria .audit-section-head-v41 b{font-size:12px!important;color:#006068!important;text-transform:uppercase!important;}
+  #p_auditoria .audit-section-head-v41 span{font-size:10px!important;background:#e4fff3!important;color:#006068!important;border-radius:999px!important;padding:4px 8px!important;font-weight:900!important;white-space:nowrap!important;}
+  #p_auditoria .audit-check-grid-v41{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;padding:10px!important;}
+  #p_auditoria .audit-check-card-v41{display:grid!important;grid-template-columns:24px minmax(0,1fr) 40px!important;align-items:center!important;gap:7px!important;padding:7px 8px!important;min-height:40px!important;border:1px solid #e2ece8!important;border-radius:10px!important;background:#fff!important;cursor:pointer!important;margin:0!important;}
+  #p_auditoria .audit-check-card-v41 input{display:none!important;}
+  #p_auditoria .audit-check-card-v41 .num{font-size:11px!important;font-weight:900!important;color:#00CE7C!important;}
+  #p_auditoria .audit-check-card-v41 .txt{font-size:11.3px!important;line-height:1.15!important;font-weight:800!important;color:#102033!important;}
+  #p_auditoria .audit-check-card-v41 .txt small{display:block!important;color:#E47E3D!important;font-size:9px!important;margin-top:2px!important;}
+  #p_auditoria .audit-check-card-v41 .toggle{width:36px!important;height:20px!important;border-radius:999px!important;background:#dce5e2!important;position:relative!important;transition:.18s!important;}
+  #p_auditoria .audit-check-card-v41 .toggle:after{content:"";position:absolute!important;width:16px!important;height:16px!important;border-radius:50%!important;background:#fff!important;left:2px!important;top:2px!important;box-shadow:0 1px 3px rgba(0,0,0,.2)!important;transition:.18s!important;}
+  #p_auditoria .audit-check-card-v41 input:checked~.toggle{background:#00CE7C!important;}
+  #p_auditoria .audit-check-card-v41 input:checked~.toggle:after{transform:translateX(16px)!important;}
+  #p_auditoria .audit-gml-grid-v41{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important;gap:8px!important;padding:10px!important;}
+  #p_auditoria .audit-gml-card-v41{border:1px solid #e2ece8!important;border-radius:12px!important;background:#fff!important;overflow:hidden!important;}
+  #p_auditoria .audit-gml-card-v41 h5{margin:0!important;padding:8px 9px!important;color:#006068!important;background:#f8fffc!important;font-size:12px!important;border-bottom:1px solid #e2ece8!important;}
+  #p_auditoria textarea#audObs{width:calc(100% - 20px)!important;min-height:74px!important;margin:10px!important;border-radius:10px!important;font-size:12px!important;padding:8px!important;}
+  #p_auditoria .audit-block .toolbar{padding:0 10px 10px!important;margin:0!important;gap:8px!important;}
+  #p_auditoria .toolbar .btn{padding:8px 12px!important;font-size:12px!important;border-radius:10px!important;}
+  @media(max-width:1250px){#p_auditoria .audit-form-grid-v41{grid-template-columns:repeat(3,minmax(0,1fr))!important;}#p_auditoria .audit-form-grid-v41 .wide{grid-column:span 2!important;}#p_auditoria .audit-check-grid-v41{grid-template-columns:1fr!important;}}
+  @media(max-width:980px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important;}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;}#p_auditoria .audit-form-grid-v41{grid-template-columns:repeat(2,minmax(0,1fr))!important;}#p_auditoria .audit-summary-v41{grid-template-columns:1fr!important;}}
+  @media(max-width:650px){#p_auditoria .audit-form-grid-v41{grid-template-columns:1fr!important;}#p_auditoria .audit-form-grid-v41 .wide{grid-column:span 1!important;}}
+  `;
+  function installStyle(){
+    if(!document.getElementById('v41-auditoria-compacta-real')){
+      const s=document.createElement('style');
+      s.id='v41-auditoria-compacta-real';
+      s.textContent=css;
+      document.head.appendChild(s);
+    }
+  }
+  function indicatorCode(i){return i.codigo || ('ind_'+i.id);}
+  function indicatorName(i){return i.label || i.nombre || 'Indicador';}
+  function activeIndicators(){
+    if(typeof auditoriaIndicadoresActivos==='function') return auditoriaIndicadoresActivos();
+    return [];
+  }
+  function baseIndicators(){return activeIndicators().filter(i=>(i.tipo||'base')==='base');}
+  function gmlIndicators(bim){
+    return activeIndicators().filter(i=>(i.tipo||'base')==='gml' && (bim==='Todos' || String(i.bimestre||'')===String(bim)));
+  }
+  window.renderAuditoriaChecklist=function(){
+    installStyle();
+    const el=document.getElementById('audChecklist');
+    if(!el)return;
+    const bim=document.getElementById('audBimestre')?.value || '1';
+    const base=baseIndicators();
+    const gml=gmlIndicators(bim);
+    let html='';
+    html += '<div class="audit-section-v41"><div class="audit-section-head-v41"><b>2. Estructura y parámetros base</b><span>'+base.length+' indicadores</span></div><div class="audit-check-grid-v41">';
+    base.forEach((i,idx)=>{
+      const code=indicatorCode(i), label=indicatorName(i);
+      html += '<label class="audit-check-card-v41"><span class="num">'+(idx+1)+'.</span><span class="txt">'+esc(label)+'</span><input type="checkbox" data-audcheck="'+esc(code)+'"><span class="toggle"></span></label>';
+    });
+    html += '</div></div>';
+    if(gml.length){
+      const groups={};
+      gml.forEach(i=>{const b=i.bimestre||bim||'GML'; (groups[b]||(groups[b]=[])).push(i);});
+      html += '<div class="audit-section-v41"><div class="audit-section-head-v41"><b>3. Configuración GML por semanas</b><span>'+gml.length+' semanas</span></div><div class="audit-gml-grid-v41">';
+      Object.keys(groups).sort((a,b)=>Number(a)-Number(b)).forEach(k=>{
+        html += '<div class="audit-gml-card-v41"><h5>Bimestre '+esc(k)+'</h5><div class="audit-check-grid-v41" style="grid-template-columns:1fr!important;padding:8px!important">';
+        groups[k].forEach((i,idx)=>{
+          const code=indicatorCode(i), label=indicatorName(i), ev=/evaluaci/i.test(label);
+          html += '<label class="audit-check-card-v41"><span class="num">'+(idx+1)+'.</span><span class="txt">'+esc(label)+(ev?'<small>Semana de evaluación</small>':'')+'</span><input type="checkbox" data-audcheck="'+esc(code)+'"><span class="toggle"></span></label>';
+        });
+        html += '</div></div>';
+      });
+      html += '</div></div>';
+    }
+    el.innerHTML=html;
+  };
+  window.compactAuditoriaLayoutV41=function(){
+    installStyle();
+    const grid=document.querySelector('#p_auditoria #audit_eval .audit-selection-grid-v35, #p_auditoria #audit_eval .audit-selection-grid');
+    if(grid){
+      grid.classList.add('audit-form-grid-v41');
+      grid.style.display='grid';
+      grid.style.gridTemplateColumns='repeat(4,minmax(0,1fr))';
+      grid.style.gap='8px';
+      grid.querySelectorAll('select,input').forEach(el=>{el.style.height='34px';el.style.minHeight='34px';el.style.fontSize='12px';el.style.padding='5px 8px';});
+      grid.querySelectorAll('label').forEach(el=>{el.style.fontSize='10.5px';el.style.marginBottom='3px';});
+    }
+    const summary=document.querySelector('#p_auditoria .audit-summary-v35, #p_auditoria .audit-summary');
+    if(summary){summary.classList.add('audit-summary-v41');}
+  };
+  const oldModule=window.renderAuditoriaModule;
+  window.renderAuditoriaModule=function(){
+    if(typeof oldModule==='function') oldModule.apply(this,arguments);
+    setTimeout(()=>{try{compactAuditoriaLayoutV41();renderAuditoriaChecklist();}catch(e){console.warn('V41 auditoria compacta:',e)}},20);
+  };
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(name){
+    if(typeof oldAuditTab==='function') oldAuditTab.apply(this,arguments);
+    setTimeout(()=>{try{compactAuditoriaLayoutV41(); if(name==='eval')renderAuditoriaChecklist();}catch(e){console.warn('V41 audit tab:',e)}},20);
+  };
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(()=>{try{compactAuditoriaLayoutV41();renderAuditoriaChecklist();}catch(e){}},1000));
+})();
+
+
 </script>
 </body>
 </html>
