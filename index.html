@@ -415,7 +415,107 @@ function exportAuditoriaHTML(){let html=`<html><head><meta charset="utf-8"><titl
 @media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(165px,1fr))!important;max-height:none!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria .audit-parameter-grid{grid-template-columns:1fr!important}}
 @media(max-width:760px){#p_auditoria #audit_eval .audit-selection-grid-v35{grid-template-columns:1fr!important}#p_auditoria #audit_eval .audit-selection-grid-v35 .aud-field-wide,#p_auditoria #audit_eval .audit-selection-grid-v35 .audit-bim-field{grid-column:span 1!important}.panel [style*="grid-column"]{grid-column:span 1!important}}
 
-</style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Reporte de Auditoría Académica Moodle</h2></div>${document.getElementById('audReport').innerHTML}<footer>© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</footer></body></html>`;download('reporte_auditoria_moodle.html',html,'text/html')}
+</style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Reporte de Auditoría Académica Moodle</h2></div>${document.getElementById('audReport').innerHTML}<footer>© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</footer>
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`;download('reporte_auditoria_moodle.html',html,'text/html')}
 
 </script>
 <title>Sistema de Formularios Institucionales</title>
@@ -879,7 +979,107 @@ function renderGeneralReports(){
 }
 function exportGeneralReportHTML(){const content=document.getElementById('generalReportTable')?.innerHTML||'';const kpis=document.getElementById('generalReportKpis')?.innerHTML||'';const html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reporte general</title><style>body{font-family:Arial;margin:22px;color:#102033}.head{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#006068,#00CE7C);color:white;padding:18px;border-radius:16px}img{width:70px;height:70px;border-radius:12px}table{border-collapse:collapse;width:100%;margin-top:14px}th{background:#006068;color:white}th,td{border:1px solid #d8e7e2;padding:9px}.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:16px 0}.report-card{border:1px solid #d8e7e2;border-radius:12px;padding:12px}strong{font-size:26px;color:#006068}.footer{text-align:center;margin-top:20px;color:#666}.nav-group-label{margin:18px 8px 8px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;opacity:.72;font-weight:900}.flow-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.nav .hidden{display:none!important}
 .student-template-box{background:#f8fffc;border:1px dashed #00CE7C;border-radius:18px;padding:16px;margin:0 0 20px}.student-template-box h4{margin:0 0 8px;color:#006068}.student-template-box code{display:block;background:#ffffff;border:1px solid #d7e8e4;border-radius:12px;padding:12px;font-weight:800;color:#006068;white-space:normal;margin:8px 0}.student-template-box .template-buttons{justify-content:flex-start}.student-template-box table th{background:#006068;color:#fff}.student-template-box table td,.student-template-box table th{font-size:13px}
-</style></head><body><div class="head"><img src="${LOGO}"><div><h1>Reporte general por formulario</h1><p>Instituto Tecnológico Universitario Cordillera</p></div></div><div class="cards">${kpis}</div>${content}<div class="footer">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div></body></html>`;download('reporte_general_formularios.html',html,'text/html')}
+</style></head><body><div class="head"><img src="${LOGO}"><div><h1>Reporte general por formulario</h1><p>Instituto Tecnológico Universitario Cordillera</p></div></div><div class="cards">${kpis}</div>${content}<div class="footer">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div>
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`;download('reporte_general_formularios.html',html,'text/html')}
 
 function currentPublicFormIdFromHash(){
   const h=location.hash||'';
@@ -952,7 +1152,107 @@ function renderKpis(){
 }
 function exportDashboard(type){const title='Reporte Dashboard - Encuesta de satisfacción Docente';const content=document.getElementById('p_kpi').cloneNode(true);content.querySelectorAll('button,select,input').forEach(e=>e.remove());const html=`<html><head><title>${title}</title><style>body{font-family:Arial;color:#102033;padding:24px}table{border-collapse:collapse;width:100%;font-size:12px}td,th{border:1px solid #ddd;padding:6px}th{background:#006068;color:white}.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.kpi,.dash-chart,.admin-card{border:1px solid #d8e7e2;border-radius:10px;padding:12px;margin:10px 0}.dashboard-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}.nav-group-label{margin:18px 8px 8px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;opacity:.72;font-weight:900}.flow-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.nav .hidden{display:none!important}
 .student-template-box{background:#f8fffc;border:1px dashed #00CE7C;border-radius:18px;padding:16px;margin:0 0 20px}.student-template-box h4{margin:0 0 8px;color:#006068}.student-template-box code{display:block;background:#ffffff;border:1px solid #d7e8e4;border-radius:12px;padding:12px;font-weight:800;color:#006068;white-space:normal;margin:8px 0}.student-template-box .template-buttons{justify-content:flex-start}.student-template-box table th{background:#006068;color:#fff}.student-template-box table td,.student-template-box table th{font-size:13px}
-</style></head><body><h1>${title}</h1>${content.innerHTML}</body></html>`;if(type==='html'){const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dashboard_encuesta_docente.html';a.click();return}const w=window.open('','_blank');w.document.write(html);w.document.close();if(type==='pdf')setTimeout(()=>w.print(),500);}
+</style></head><body><h1>${title}</h1>${content.innerHTML}
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`;if(type==='html'){const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dashboard_encuesta_docente.html';a.click();return}const w=window.open('','_blank');w.document.write(html);w.document.close();if(type==='pdf')setTimeout(()=>w.print(),500);}
 
 function modsForInputs(){return [modLinea,modPresencial,modHibrida].filter(x=>x.checked).map(x=>x.value)}
 async function savePeriod(){if(!perName.value||!perStart.value||!perEnd.value)return alert('Completa nombre y fechas.');const payload={nombre:perName.value,fecha_inicio:perStart.value,fecha_fin:perEnd.value,activo:perActive.value==='true',estado:true,modalidades_habilitadas:modsForInputs()};try{if(payload.activo){await sb('periodos?activo=eq.true',{method:'PATCH',body:JSON.stringify({activo:false})})}if(perId.value)await sb(`periodos?id=eq.${perId.value}`,{method:'PATCH',body:JSON.stringify(payload)});else await sb('periodos',{method:'POST',body:JSON.stringify(payload)});clearPeriodForm();await loadAll();alert('Periodo guardado.')}catch(e){alert('No se pudo guardar periodo: '+e.message)}}
@@ -1168,7 +1468,107 @@ function exportHTML(){
   :root{--claro:#00CE7C;--oscuro:#006068;--tomate:#E47E3D;--plomo:#666666;--blanco:#FFFFFF}
   *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#102033;background:#f4fbf8}.page{padding:22px}.report-head{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,var(--oscuro),var(--claro));color:white;padding:18px 22px;border-radius:18px;margin-bottom:14px}.report-head img{width:76px;height:76px;border-radius:14px;background:white;object-fit:cover}.report-head h1{margin:0;font-size:24px}.meta{margin-top:5px;font-size:13px;opacity:.95}.table-wrap{background:white;border:1px solid #d8e7e2;border-radius:14px;overflow:auto;box-shadow:0 8px 22px rgba(0,96,104,.12)}table{border-collapse:collapse;width:max-content;min-width:100%;font-size:12px}th{background:var(--oscuro);color:white;text-align:center;vertical-align:middle;position:sticky;top:0;z-index:1;max-width:170px;min-width:92px;white-space:normal;line-height:1.15}td{background:white;vertical-align:top;min-width:92px}th,td{border:1px solid #dce7e4;padding:8px}tbody tr:nth-child(even) td{background:#f8fffc}tbody tr:hover td{background:#eafaf0}.footer{margin-top:16px;text-align:center;color:var(--plomo);font-size:12px}@media print{@page{size:landscape;margin:10mm}body{background:white}.page{padding:0}.report-head{border-radius:0}.table-wrap{box-shadow:none;border:0}th{position:static}}.nav-group-label{margin:18px 8px 8px;font-size:12px;text-transform:uppercase;letter-spacing:.7px;opacity:.72;font-weight:900}.flow-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.nav .hidden{display:none!important}
 .student-template-box{background:#f8fffc;border:1px dashed #00CE7C;border-radius:18px;padding:16px;margin:0 0 20px}.student-template-box h4{margin:0 0 8px;color:#006068}.student-template-box code{display:block;background:#ffffff;border:1px solid #d7e8e4;border-radius:12px;padding:12px;font-weight:800;color:#006068;white-space:normal;margin:8px 0}.student-template-box .template-buttons{justify-content:flex-start}.student-template-box table th{background:#006068;color:#fff}.student-template-box table td,.student-template-box table th{font-size:13px}
-</style></head><body><div class="page"><div class="report-head"><img src="${LOGO}" alt="Logo"><div><h1>${title}</h1><div class="meta">Instituto Tecnológico Universitario Cordillera · Generado: ${generated}</div></div></div><div class="table-wrap">${table}</div><div class="footer">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div></div></body></html>`;
+</style></head><body><div class="page"><div class="report-head"><img src="${LOGO}" alt="Logo"><div><h1>${title}</h1><div class="meta">Instituto Tecnológico Universitario Cordillera · Generado: ${generated}</div></div></div><div class="table-wrap">${table}</div><div class="footer">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div></div>
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`;
   download('reporte_matriz_encuesta_formateado.html',html,'text/html')
 }
 function download(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click()}
@@ -1317,8 +1717,208 @@ function renderPsicoFilters(){fillSelectFromArray('psDashPeriod',periods,p=>p.no
 function renderPsicoDashboard(){renderPsicoFilters(); const rows=psFilteredRows(); const total=rows.length; const ac=rows.filter(r=>r.alerta_academica).length, te=rows.filter(r=>r.alerta_tecnologica).length, em=rows.filter(r=>r.alerta_emocional).length; const crit=rows.filter(r=>psSeverity(r)==='crit').length; const closed=rows.filter(r=>norm(r.estado_seguimiento)==='CERRADO').length; const k=document.getElementById('psicoKpis'); if(k)k.innerHTML=`<div class="kpi"><div class="kpi-icon">👥</div><div class="kpi-text"><span>Total seguimientos</span><strong>${total}</strong></div></div><div class="kpi"><div class="kpi-icon warn">📘</div><div class="kpi-text"><span>Apoyo académico</span><strong>${ac}</strong></div></div><div class="kpi"><div class="kpi-icon">💻</div><div class="kpi-text"><span>Apoyo tecnológico</span><strong>${te}</strong></div></div><div class="kpi"><div class="kpi-icon crit">❤</div><div class="kpi-text"><span>Apoyo emocional</span><strong>${em}</strong></div></div><div class="kpi"><div class="kpi-icon crit">⚠</div><div class="kpi-text"><span>Alertas críticas</span><strong>${crit}</strong></div></div><div class="kpi"><div class="kpi-icon ok">✓</div><div class="kpi-text"><span>Cerrados</span><strong>${closed}</strong></div></div>`; const byCar=Object.entries(groupCount(rows,r=>r.carrera)).map(([label,value])=>({label,value})).sort((a,b)=>b.value-a.value).slice(0,12); const byClass=Object.entries(groupCount(rows,r=>r.clases)).map(([label,value])=>({label,value})); const byEstado=Object.entries(groupCount(rows,r=>r.estado_seguimiento)).map(([label,value])=>({label,value})); if(psChartApoyos)psChartApoyos.innerHTML=renderDashboardDonut(ac,te,em); if(psChartCarrera)psChartCarrera.innerHTML=renderHorizontalChart(byCar,Math.max(1,total)); if(psChartClases)psChartClases.innerHTML=renderHorizontalChart(byClass,Math.max(1,total)); if(psChartEstado)psChartEstado.innerHTML=renderHorizontalChart(byEstado,Math.max(1,total)); const table=document.getElementById('psicoDecisionTable'); if(table){let html='<table class="psico-alert-table"><thead><tr><th>Estudiante</th><th>Carrera</th><th>Jornada</th><th>Alertas</th><th>Estado</th><th>Observación</th><th>Plan sugerido</th></tr></thead><tbody>'; rows.filter(r=>psSeverity(r)!=='ok').forEach(r=>{const plan=r.alerta_emocional?'Derivar a Bienestar Estudiantil y programar seguimiento individual.':r.alerta_academica?'Coordinar refuerzo académico/tutoría con la carrera.':r.alerta_tecnologica?'Derivar a soporte o capacitación tecnológica.':'Seguimiento preventivo.'; html+=`<tr class="${psSeverity(r)}"><td>${esc(r.nombres)}</td><td>${esc(r.carrera)}</td><td>${esc(r.jornada)}</td><td>${r.alerta_academica?'Académica ':''}${r.alerta_tecnologica?'Tecnológica ':''}${r.alerta_emocional?'Emocional':''}</td><td>${esc(r.estado_seguimiento)}</td><td>${esc(r.observacion_extra||r.observacion_profesor||'')}</td><td>${esc(plan)}</td></tr>`}); html+='</tbody></table>'; table.innerHTML=html;}}
 function psicoRowsCSV(rows){const head=['fecha','periodo','identificacion','nombres','carrera','jornada','nivel','clases','trato_docente','ayuda_academica','ayuda_tecnologica','refuerzo_contenidos','feliz_instituto','apoyo_emocional','estado_seguimiento','responsable','observacion_profesor','observacion_extra']; return '\uFEFF'+[head.join(';'),...rows.map(r=>head.map(h=>'"'+String((h==='fecha'?(r.created_at||'').slice(0,10):h==='periodo'?(r.periodo_nombre||getPeriodName(r.periodo_id)):r[h])??'').replace(/"/g,'""')+'"').join(';'))].join('\n')}
 function exportPsicoCSV(){download('seguimiento_psicopedagogico.csv',psicoRowsCSV(psicoSeguimientos),'text/csv;charset=utf-8')}
-function exportPsicoHTML(){const rows=psicoSeguimientos; let table='<table><thead><tr><th>Fecha</th><th>Estudiante</th><th>Carrera</th><th>Jornada</th><th>Nivel</th><th>Apoyo académico</th><th>Apoyo tecnológico</th><th>Apoyo emocional</th><th>Estado</th><th>Observaciones</th></tr></thead><tbody>'; rows.forEach(r=>table+=`<tr><td>${esc((r.created_at||'').slice(0,10))}</td><td>${esc(r.nombres)}</td><td>${esc(r.carrera)}</td><td>${esc(r.jornada)}</td><td>${esc(r.nivel)}</td><td>${esc(r.ayuda_academica)}</td><td>${esc(r.ayuda_tecnologica)}</td><td>${esc(r.apoyo_emocional)}</td><td>${esc(r.estado_seguimiento)}</td><td>${esc(r.observacion_extra||'')}</td></tr>`); table+='</tbody></table>'; download('reporte_psicopedagogico.html',`<html><head><meta charset="utf-8"><style>body{font-family:Arial;color:#333;padding:25px}th{background:#006068;color:#fff}td,th{border:1px solid #ddd;padding:8px}table{border-collapse:collapse;width:100%;font-size:12px}.head{border-bottom:4px solid #00CE7C;padding-bottom:15px;margin-bottom:20px}</style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Reporte de seguimiento psicopedagógico</h2></div>${table}<footer>© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</footer></body></html>`,'text/html')}
-function exportPsicoDashboardHTML(){const html=`<html><head><meta charset="utf-8"><title>Dashboard psicopedagógico</title><style>body{font-family:Arial;padding:25px} .head{border-bottom:4px solid #00CE7C;margin-bottom:20px} .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.kpi{border:1px solid #ddd;border-radius:12px;padding:16px}th{background:#006068;color:white}td,th{border:1px solid #ddd;padding:8px}table{border-collapse:collapse;width:100%}</style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Dashboard Psicopedagógico</h2></div>${document.getElementById('psicoKpis')?.outerHTML||''}${document.getElementById('psicoDecisionTable')?.innerHTML||''}</body></html>`; download('dashboard_psicopedagogico.html',html,'text/html')}
+function exportPsicoHTML(){const rows=psicoSeguimientos; let table='<table><thead><tr><th>Fecha</th><th>Estudiante</th><th>Carrera</th><th>Jornada</th><th>Nivel</th><th>Apoyo académico</th><th>Apoyo tecnológico</th><th>Apoyo emocional</th><th>Estado</th><th>Observaciones</th></tr></thead><tbody>'; rows.forEach(r=>table+=`<tr><td>${esc((r.created_at||'').slice(0,10))}</td><td>${esc(r.nombres)}</td><td>${esc(r.carrera)}</td><td>${esc(r.jornada)}</td><td>${esc(r.nivel)}</td><td>${esc(r.ayuda_academica)}</td><td>${esc(r.ayuda_tecnologica)}</td><td>${esc(r.apoyo_emocional)}</td><td>${esc(r.estado_seguimiento)}</td><td>${esc(r.observacion_extra||'')}</td></tr>`); table+='</tbody></table>'; download('reporte_psicopedagogico.html',`<html><head><meta charset="utf-8"><style>body{font-family:Arial;color:#333;padding:25px}th{background:#006068;color:#fff}td,th{border:1px solid #ddd;padding:8px}table{border-collapse:collapse;width:100%;font-size:12px}.head{border-bottom:4px solid #00CE7C;padding-bottom:15px;margin-bottom:20px}</style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Reporte de seguimiento psicopedagógico</h2></div>${table}<footer>© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</footer>
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`,'text/html')}
+function exportPsicoDashboardHTML(){const html=`<html><head><meta charset="utf-8"><title>Dashboard psicopedagógico</title><style>body{font-family:Arial;padding:25px} .head{border-bottom:4px solid #00CE7C;margin-bottom:20px} .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.kpi{border:1px solid #ddd;border-radius:12px;padding:16px}th{background:#006068;color:white}td,th{border:1px solid #ddd;padding:8px}table{border-collapse:collapse;width:100%}</style></head><body><div class="head"><img src="${LOGO}" style="height:70px"><h2>Dashboard Psicopedagógico</h2></div>${document.getElementById('psicoKpis')?.outerHTML||''}${document.getElementById('psicoDecisionTable')?.innerHTML||''}
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`; download('dashboard_psicopedagogico.html',html,'text/html')}
 
 /* ===================== MODULO AUDITORIA ACADEMICA MOODLE ===================== */
 const AUD_DEFAULT_BASE=[
@@ -1409,7 +2009,107 @@ function exportAuditoriaHTML(){
   const heads=auditoriaReportHeaders(); const rows=auditoriaReportRows();
   const th=heads.map(h=>`<th>${esc(h)}</th>`).join('');
   const tr=rows.map(r=>'<tr>'+r.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('');
-  let html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reporte Auditoría Académica Moodle</title><style>@page{size:landscape;margin:10mm}body{font-family:Arial,Helvetica,sans-serif;color:#102033;margin:20px}.head{display:flex;align-items:center;gap:16px;border-bottom:5px solid #00CE7C;padding-bottom:14px;margin-bottom:18px}.head img{height:64px}.head h1{color:#006068;margin:0;font-size:22px}.head p{margin:4px 0 0;color:#666}table{border-collapse:collapse;width:100%;font-size:10px}th{background:#006068;color:#fff;padding:8px;border:1px solid #dce7e4;vertical-align:bottom}td{padding:7px;border:1px solid #dce7e4;vertical-align:top}tr:nth-child(even){background:#f7fbfa}.foot{margin-top:18px;text-align:center;color:#666;border-top:2px solid #00CE7C;padding-top:10px}</style></head><body><div class="head"><img src="${LOGO}" alt="Cordillera"><div><h1>Reporte Oficial de Auditoría Académica Moodle</h1><p>Matriz completa con todos los indicadores de auditoría y GML</p></div></div><table><thead><tr>${th}</tr></thead><tbody>${tr||'<tr><td colspan="99">Sin registros</td></tr>'}</tbody></table><div class="foot">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div></body></html>`;
+  let html=`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Reporte Auditoría Académica Moodle</title><style>@page{size:landscape;margin:10mm}body{font-family:Arial,Helvetica,sans-serif;color:#102033;margin:20px}.head{display:flex;align-items:center;gap:16px;border-bottom:5px solid #00CE7C;padding-bottom:14px;margin-bottom:18px}.head img{height:64px}.head h1{color:#006068;margin:0;font-size:22px}.head p{margin:4px 0 0;color:#666}table{border-collapse:collapse;width:100%;font-size:10px}th{background:#006068;color:#fff;padding:8px;border:1px solid #dce7e4;vertical-align:bottom}td{padding:7px;border:1px solid #dce7e4;vertical-align:top}tr:nth-child(even){background:#f7fbfa}.foot{margin-top:18px;text-align:center;color:#666;border-top:2px solid #00CE7C;padding-top:10px}</style></head><body><div class="head"><img src="${LOGO}" alt="Cordillera"><div><h1>Reporte Oficial de Auditoría Académica Moodle</h1><p>Matriz completa con todos los indicadores de auditoría y GML</p></div></div><table><thead><tr>${th}</tr></thead><tbody>${tr||'<tr><td colspan="99">Sin registros</td></tr>'}</tbody></table><div class="foot">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div>
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`;
   download('reporte_auditoria_moodle.html',html,'text/html');
 }
 function renderAuditoriaCatalog(){const st=document.getElementById('audCatalogStatus'); if(st)st.innerHTML=`Registros activos en catálogo de auditoría: <b>${audCatalog.length}</b>`; const el=document.getElementById('audCatalogTable'); if(!el)return; let html='<table><thead><tr><th>Modalidad</th><th>Jornada</th><th>Carrera</th><th>Nivel</th><th>Paralelo</th><th>Materia</th><th>Docente</th><th>Periodo</th></tr></thead><tbody>'; audCatalog.slice(0,300).forEach(r=>html+=`<tr><td>${esc(r.modalidad)}</td><td>${esc(r.jornada)}</td><td>${esc(r.carrera)}</td><td>${esc(r.nivel)}</td><td>${esc(r.paralelo)}</td><td>${esc(r.materia)}</td><td>${esc(r.docente)}</td><td>${esc(r.periodo)}</td></tr>`); el.innerHTML=html+'</tbody></table>'+(audCatalog.length>300?`<p class="mini-muted">Mostrando 300 de ${audCatalog.length} registros.</p>`:'')}
@@ -1535,7 +2235,107 @@ function exportAuditoriaHTML(){
 @media(max-width:1280px){#p_auditoria .audit-selection-grid-v35{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-selection-grid-v35 .aud-field-wide{grid-column:span 2!important}}
 @media(max-width:980px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;display:grid!important;grid-template-columns:repeat(2,1fr)!important}#p_auditoria .audit-selection-grid-v35{grid-template-columns:repeat(2,minmax(0,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}}
 @media(max-width:620px){#p_auditoria .audit-tabs{grid-template-columns:1fr!important}#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-parameter-grid{grid-template-columns:1fr!important}#p_auditoria .audit-selection-grid-v35 .aud-field-wide{grid-column:span 1!important}}
-</style></head><body><div class="head"><img src="${LOGO}" alt="Cordillera"><div><h1>Reporte Oficial de Auditoría Académica Moodle</h1><p>Matriz completa con todos los indicadores de auditoría y GML</p></div></div><table><thead><tr>${th}</tr></thead><tbody>${tr||'<tr><td colspan="99">Sin registros</td></tr>'}</tbody></table><div class="foot">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div></body></html>`;
+</style></head><body><div class="head"><img src="${LOGO}" alt="Cordillera"><div><h1>Reporte Oficial de Auditoría Académica Moodle</h1><p>Matriz completa con todos los indicadores de auditoría y GML</p></div></div><table><thead><tr>${th}</tr></thead><tbody>${tr||'<tr><td colspan="99">Sin registros</td></tr>'}</tbody></table><div class="foot">© Instituto Tecnológico Universitario Cordillera / Asesor Virtual</div>
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
+</body></html>`;
   download('reporte_auditoria_moodle.html',html,'text/html');
 }
 
@@ -1917,5 +2717,105 @@ function v33RefreshStudentDependentModules(){try{refreshTutoriaCareers();refresh
 document.addEventListener('DOMContentLoaded',()=>setTimeout(v33RefreshStudentDependentModules,900));
 
 </script>
+
+<style id="v38-auditoria-compacta-final">
+/* V38 - Corrección final de visualización compacta para todos los módulos y auditoría Moodle */
+:root{--v38-verde:#00CE7C;--v38-oscuro:#006068;--v38-tomate:#E47E3D;--v38-plomo:#666666;--v38-line:#d8e7e2;--v38-soft:#f1fbf7;}
+.admin .main{overflow:auto!important;}
+.admin .panel{max-width:100%!important;}
+.admin .admin-card{border-radius:18px!important;overflow:hidden!important;background:#fff!important;border:1px solid var(--v38-line)!important;box-shadow:0 12px 32px rgba(0,96,104,.10)!important;}
+.admin .admin-card>.inside{padding:16px!important;}
+.admin .module-help{padding:10px 12px!important;border-radius:12px!important;font-size:12px!important;line-height:1.35!important;margin-bottom:12px!important;background:#eefaf6!important;border:1px solid #cde9df!important;}
+.admin .dynamic-grid,.admin .compact-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px 12px!important;align-items:end!important;}
+.admin .dynamic-grid>div,.admin .compact-grid>div{min-width:0!important;}
+.admin label{display:block!important;font-size:11px!important;font-weight:900!important;line-height:1.1!important;margin:0 0 4px!important;color:#102033!important;}
+.admin input,.admin select,.admin textarea{width:100%!important;border:1px solid #c9dce2!important;border-radius:10px!important;min-height:34px!important;height:34px!important;padding:6px 9px!important;font-size:13px!important;line-height:1.15!important;background:#fff!important;box-sizing:border-box!important;}
+.admin textarea{height:auto!important;min-height:72px!important;}
+.admin .toolbar{display:flex!important;gap:8px!important;flex-wrap:wrap!important;align-items:center!important;margin-top:10px!important;}
+.admin .table-wrap{width:100%!important;max-width:100%!important;overflow:auto!important;-webkit-overflow-scrolling:touch!important;}
+.admin .table-wrap table{min-width:900px!important;width:max-content!important;border-collapse:collapse!important;}
+.admin .table-wrap th,.admin .table-wrap td{white-space:normal!important;vertical-align:top!important;}
+
+/* Auditoría Moodle: layout profesional compacto */
+#p_auditoria .admin-card{max-width:100%!important;}
+#p_auditoria .admin-card>h3{padding:12px 16px!important;margin:0!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;font-size:18px!important;color:var(--v38-oscuro)!important;}
+#p_auditoria .inside{padding:12px!important;background:#f8fffc!important;}
+#p_auditoria .audit-workspace{display:grid!important;grid-template-columns:190px minmax(0,1fr)!important;gap:12px!important;align-items:start!important;width:100%!important;}
+#p_auditoria .audit-tabs{position:sticky!important;top:10px!important;background:linear-gradient(180deg,#006068,#004d52)!important;border-radius:16px!important;padding:10px!important;display:flex!important;flex-direction:column!important;gap:7px!important;max-height:calc(100vh - 140px)!important;overflow:auto!important;border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 10px 24px rgba(0,96,104,.18)!important;}
+#p_auditoria .audit-menu-title{font-size:11px!important;text-transform:uppercase!important;letter-spacing:.08em!important;color:#c8fff0!important;font-weight:900!important;margin:2px 4px 4px!important;}
+#p_auditoria .audit-tabs .btn{width:100%!important;display:flex!important;align-items:center!important;justify-content:flex-start!important;text-align:left!important;white-space:normal!important;margin:0!important;border-radius:11px!important;padding:9px 10px!important;font-size:12px!important;line-height:1.15!important;border:1px solid rgba(255,255,255,.18)!important;background:rgba(255,255,255,.10)!important;color:#fff!important;box-shadow:none!important;}
+#p_auditoria .audit-tabs .btn.green{background:var(--v38-verde)!important;color:#fff!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-tabs .btn:hover{background:rgba(0,206,124,.38)!important;}
+#p_auditoria .audit-user-box{margin-top:6px!important;padding:8px!important;border-top:1px solid rgba(255,255,255,.18)!important;color:#fff!important;font-size:11px!important;line-height:1.2!important;}
+#p_auditoria .audit-user-box b{display:block!important;color:#c8fff0!important;text-transform:uppercase!important;font-size:10px!important;letter-spacing:.05em!important;margin-bottom:2px!important;}
+#p_auditoria .audit-content{min-width:0!important;width:100%!important;background:#fff!important;border:1px solid var(--v38-line)!important;border-radius:18px!important;overflow:hidden!important;box-shadow:0 14px 30px rgba(0,96,104,.08)!important;}
+#p_auditoria .audit-pane{padding:0!important;margin:0!important;}
+#p_auditoria .audit-pane>h4{margin:0!important;padding:12px 16px!important;font-size:17px!important;color:var(--v38-oscuro)!important;background:#fff!important;border-bottom:1px solid var(--v38-line)!important;}
+#p_auditoria .audit-block{margin:0!important;border:0!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;border-radius:0!important;overflow:hidden!important;}
+#p_auditoria .audit-block-title{display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;padding:9px 14px!important;background:#edf9f5!important;border-bottom:2px solid var(--v38-verde)!important;color:var(--v38-oscuro)!important;font-size:12px!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.03em!important;}
+#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;align-items:end!important;}
+#p_auditoria .audit-selection-grid-v35>div,#p_auditoria .audit-selection-grid>div{min-width:0!important;}
+#p_auditoria .aud-field-wide{grid-column:span 2!important;}
+#p_auditoria .audit-bim-field{grid-column:span 1!important;padding:7px!important;border-radius:12px!important;border:1px solid rgba(228,126,61,.45)!important;background:#fff8f4!important;}
+#p_auditoria .audit-selection-grid label{font-size:10px!important;text-transform:uppercase!important;color:#102033!important;}
+#p_auditoria .audit-selection-grid select,#p_auditoria .audit-selection-grid input{height:34px!important;min-height:34px!important;font-size:12px!important;border-radius:9px!important;}
+#p_auditoria .audit-summary-v35{display:grid!important;grid-template-columns:2fr 1fr 1fr!important;gap:8px!important;padding:0 14px 12px!important;margin:0!important;}
+#p_auditoria .summary-item{padding:8px 10px!important;border-radius:12px!important;border:1px solid var(--v38-line)!important;background:#fbfffd!important;min-width:0!important;}
+#p_auditoria .summary-item span{display:block!important;font-size:10px!important;color:#607081!important;font-weight:900!important;text-transform:uppercase!important;letter-spacing:.04em!important;margin-bottom:3px!important;}
+#p_auditoria .summary-item b{display:block!important;font-size:12px!important;color:var(--v38-oscuro)!important;line-height:1.25!important;word-break:break-word!important;}
+#p_auditoria #audChecklist{display:block!important;margin:0!important;padding:0!important;}
+#p_auditoria .audit-indicator-box{padding:12px 14px!important;border-bottom:1px solid var(--v38-line)!important;background:#fff!important;}
+#p_auditoria .audit-indicator-box.gml{background:#f8fffc!important;}
+#p_auditoria .audit-indicator-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:0 0 10px!important;padding:0 0 7px!important;border-bottom:1px solid #e4efeb!important;}
+#p_auditoria .audit-indicator-title b{font-size:13px!important;color:var(--v38-oscuro)!important;text-transform:uppercase!important;}
+#p_auditoria .audit-indicator-title span{display:block!important;font-size:11px!important;color:var(--v38-plomo)!important;margin-top:2px!important;}
+#p_auditoria .audit-indicator-title em{font-style:normal!important;background:#eefaf6!important;color:var(--v38-oscuro)!important;border:1px solid #cce9df!important;border-radius:999px!important;padding:4px 8px!important;font-size:11px!important;font-weight:900!important;white-space:nowrap!important;}
+#p_auditoria .audit-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(240px,1fr))!important;gap:8px!important;}
+#p_auditoria .audit-check-card{display:grid!important;grid-template-columns:24px minmax(0,1fr) 44px!important;align-items:center!important;gap:8px!important;min-height:42px!important;margin:0!important;padding:8px 10px!important;background:#fff!important;border:1px solid #e0ebe7!important;border-radius:11px!important;cursor:pointer!important;transition:.15s!important;}
+#p_auditoria .audit-check-card:hover{border-color:var(--v38-verde)!important;background:#fbfffd!important;}
+#p_auditoria .audit-check-card input{position:absolute!important;opacity:0!important;pointer-events:none!important;width:1px!important;height:1px!important;}
+#p_auditoria .audit-num{font-size:11px!important;color:var(--v38-verde)!important;font-weight:900!important;text-align:center!important;}
+#p_auditoria .audit-label{font-size:12px!important;line-height:1.18!important;color:#102033!important;font-weight:800!important;word-break:normal!important;}
+#p_auditoria .audit-label small{display:block!important;color:var(--v38-tomate)!important;font-size:10px!important;margin-top:2px!important;font-weight:800!important;}
+#p_auditoria .audit-toggle{justify-self:end!important;position:relative!important;width:38px!important;height:21px!important;border-radius:999px!important;background:#dce3e6!important;border:1px solid #c8d5d9!important;transition:.15s!important;}
+#p_auditoria .audit-toggle:after{content:''!important;position:absolute!important;left:2px!important;top:2px!important;width:15px!important;height:15px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 1px 3px rgba(0,0,0,.18)!important;transition:.15s!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle{background:var(--v38-verde)!important;border-color:var(--v38-verde)!important;}
+#p_auditoria .audit-check-card input:checked ~ .audit-toggle:after{left:19px!important;}
+#p_auditoria #audObs{display:block!important;margin:12px 14px 0!important;width:calc(100% - 28px)!important;min-height:86px!important;border-radius:12px!important;}
+#p_auditoria .audit-block .toolbar{padding:0 14px 12px!important;margin-top:10px!important;}
+#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important;padding:12px 14px!important;}
+#p_auditoria #audit_rep .toolbar,#p_auditoria #audit_cat .catalog-actions{margin:12px 14px!important;}
+#p_auditoria .catalog-actions{display:grid!important;grid-template-columns:minmax(220px,1fr) repeat(3,auto)!important;gap:8px!important;align-items:end!important;}
+#p_auditoria #audReport,#p_auditoria #audCatalogTable,#p_auditoria #audIndicadoresTable{margin:12px 14px!important;width:calc(100% - 28px)!important;overflow:auto!important;}
+#p_auditoria .audit-report-matrix{overflow:auto!important;max-width:100%!important;}
+#p_auditoria .audit-report-matrix table{min-width:1500px!important;width:max-content!important;}
+@media(max-width:1300px){#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}#p_auditoria .audit-card-grid{grid-template-columns:1fr!important}}
+@media(max-width:1050px){#p_auditoria .audit-workspace{grid-template-columns:1fr!important}#p_auditoria .audit-tabs{position:relative!important;top:0!important;max-height:none!important;display:grid!important;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))!important}#p_auditoria .audit-summary-v35{grid-template-columns:1fr!important}#p_auditoria #audit_dash .dynamic-grid,#p_auditoria #audit_ind .dynamic-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){.admin .dynamic-grid,.admin .compact-grid,#p_auditoria .audit-selection-grid-v35,#p_auditoria .audit-selection-grid{grid-template-columns:1fr!important}#p_auditoria .aud-field-wide,#p_auditoria .audit-bim-field{grid-column:auto!important}#p_auditoria .catalog-actions{grid-template-columns:1fr!important}}
+</style>
+<script id="v38-auditoria-compacta-runtime">
+(function(){
+  function applyV38(){
+    document.body.classList.add('v38-ready');
+    const p=document.getElementById('p_auditoria');
+    if(!p)return;
+    const work=p.querySelector('.audit-workspace');
+    const tabs=p.querySelector('.audit-tabs');
+    const cont=p.querySelector('.audit-content');
+    if(work){work.style.display='grid';work.style.gridTemplateColumns=window.innerWidth>1050?'190px minmax(0,1fr)':'1fr';work.style.gap='12px';}
+    if(tabs){tabs.style.display=window.innerWidth>1050?'flex':'grid';tabs.style.flexDirection='column';tabs.style.overflow='auto';}
+    if(cont){cont.style.minWidth='0';cont.style.width='100%';}
+    p.querySelectorAll('.audit-selection-grid,.audit-selection-grid-v35').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(4,minmax(0,1fr))':(window.innerWidth>760?'repeat(3,minmax(0,1fr))':'1fr');g.style.gap='10px';});
+    p.querySelectorAll('.audit-card-grid').forEach(g=>{g.style.display='grid';g.style.gridTemplateColumns=window.innerWidth>1300?'repeat(2,minmax(240px,1fr))':'1fr';g.style.gap='8px';});
+  }
+  document.addEventListener('DOMContentLoaded',()=>{applyV38();setTimeout(applyV38,600);setTimeout(applyV38,1500);});
+  window.addEventListener('resize',applyV38);
+  const oldAuditTab=window.auditTab;
+  window.auditTab=function(tab){ if(typeof oldAuditTab==='function') oldAuditTab(tab); setTimeout(applyV38,50); };
+  const oldAdminPanel=window.adminPanel;
+  window.adminPanel=function(id,btn){ if(typeof oldAdminPanel==='function') oldAdminPanel(id,btn); setTimeout(applyV38,80); };
+})();
+</script>
+
 </body>
 </html>
