@@ -147,6 +147,37 @@ footer{margin-top:30px;background:#173b40;color:#d5e8e3;padding:28px}
 @media(max-width:700px){.topbar{padding:12px 14px}.brand strong{font-size:.88rem}.brand small{font-size:.7rem}.logo-shell{width:72px;height:48px}.view-switch{width:100%;display:grid;grid-template-columns:1fr 1fr}.topbar{flex-wrap:wrap}.single-file-note{font-size:.76rem}.hero{padding:28px 23px;border-radius:22px}.hero h1{font-size:2.2rem}.hero-summary{padding:17px}.process-step{padding:14px}.panel{border-radius:17px}.section-heading{align-items:flex-start}.section-number{width:40px;height:40px}.button.large{width:100%;min-width:0}.options{grid-template-columns:1fr 1fr}.scale-legend{grid-template-columns:1fr 1fr}.dashboard-title{padding:22px;align-items:flex-start;flex-direction:column}.login-panel{padding:28px 20px;margin-top:72px}}
 @media(max-width:430px){.options,.scale-legend{grid-template-columns:1fr}.hero-metric{grid-template-columns:42px 1fr}.hero-metric i{width:42px;height:42px}.score-grid,.kpi-grid{grid-template-columns:1fr 1fr}}
 @media print{.process-strip,.single-file-note,.view-switch{display:none!important}.submit-row{position:static;background:none;border:0;box-shadow:none}}
+
+/* Corrección 2026-08-05: contraste estable de navegación */
+.topbar .view-switch .button.primary{
+  background:#ffffff !important;
+  color:#004f55 !important;
+  border:2px solid #ffffff !important;
+  box-shadow:0 8px 20px rgba(0,0,0,.18) !important;
+  text-shadow:none !important;
+}
+.topbar .view-switch .button.secondary{
+  background:#00555c !important;
+  color:#ffffff !important;
+  border:2px solid rgba(255,255,255,.38) !important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.05) !important;
+  text-shadow:0 1px 1px rgba(0,0,0,.16) !important;
+}
+.topbar .view-switch .button.primary:hover,
+.topbar .view-switch .button.primary:focus-visible{
+  background:#f1fffa !important;
+  color:#003f44 !important;
+}
+.topbar .view-switch .button.secondary:hover,
+.topbar .view-switch .button.secondary:focus-visible{
+  background:#007078 !important;
+  color:#ffffff !important;
+  border-color:#ffffff !important;
+}
+.topbar .view-switch .button:focus-visible{
+  outline:3px solid #7bf2bb;
+  outline-offset:3px;
+}
 </style>
 
 </head>
@@ -503,11 +534,20 @@ window.APP_CONFIG = {
     const known = {
       ENCUESTA_YA_REGISTRADA:'La encuesta ya fue registrada previamente.',
       RESPUESTAS_INCOMPLETAS:'Debe responder todos los ítems antes de enviar.',
+      RESPUESTAS_INVALIDAS:'Las respuestas enviadas no tienen el formato esperado.',
+      PREGUNTA_NO_RECONOCIDA:'La evaluación contiene una pregunta que no pertenece a la campaña activa.',
+      VALOR_RESPUESTA_INVALIDO:'Una de las respuestas contiene un valor inválido.',
       DOCENTE_NO_ENCONTRADO:'El docente no fue encontrado o está inactivo.',
       NO_HAY_CAMPANA_ABIERTA:'La campaña de evaluación no se encuentra abierta.',
-      CONSENTIMIENTO_REQUERIDO:'Debe aceptar el aviso de privacidad para continuar.'
+      CONSENTIMIENTO_REQUERIDO:'Debe aceptar el aviso de privacidad para continuar.',
+      MODALIDAD_INVALIDA:'La modalidad seleccionada no está disponible. Recargue la página y selecciónela nuevamente.',
+      CARRERA_INVALIDA:'La carrera seleccionada no está disponible. Recargue la página y selecciónela nuevamente.',
+      NIVEL_AUTOPERCIBIDO_INVALIDO:'Seleccione un nivel autopercibido válido.',
+      PGRST202:'La función de registro de Supabase debe actualizarse. Ejecute CORRECCION_GUARDADO.sql en SQL Editor.',
+      '42883':'La función de registro de Supabase debe actualizarse. Ejecute CORRECCION_GUARDADO.sql en SQL Editor.'
     };
-    return Object.entries(known).find(([key]) => text.includes(key))?.[1] || 'No fue posible registrar la evaluación. Revise la información e intente nuevamente.';
+    const match = Object.entries(known).find(([key]) => text.includes(key) || String(error?.code || '') === key);
+    return match?.[1] || `No fue posible registrar la evaluación${error?.code ? ` (código ${error.code})` : ''}. Ejecute CORRECCION_GUARDADO.sql y vuelva a intentarlo.`;
   }
   async function submitSurvey(event) {
     event.preventDefault(); hideMessage();
@@ -517,15 +557,36 @@ window.APP_CONFIG = {
     if (!modalidad.value || !carrera.value || !nivel.value || !consentimiento.checked) { showMessage('Complete modalidad, carrera, nivel autopercibido y consentimiento.', 'warning'); return; }
     submitButton.disabled = true; submitButton.textContent = 'Registrando…';
     try {
-      const {data, error} = await client.rpc('registrar_encuesta', {
-        p_cedula: normalizeId(cedula.value),
-        p_modalidad_id: Number(modalidad.value),
-        p_carrera_id: Number(carrera.value),
-        p_nivel_autopercibido: nivel.value,
-        p_respuestas: answers,
-        p_consentimiento: true
-      });
-      if (error) throw error;
+      const payload = {
+        cedula: normalizeId(cedula.value),
+        modalidad_id: Number(modalidad.value),
+        carrera_id: Number(carrera.value),
+        nivel_autopercibido: nivel.value,
+        respuestas: answers,
+        consentimiento: true
+      };
+      let response = await client.rpc('registrar_encuesta_publica', {p_payload: payload});
+      // Compatibilidad con instalaciones anteriores mientras se ejecuta el SQL de corrección.
+      if (response.error && ['PGRST202','42883'].includes(String(response.error.code || ''))) {
+        response = await client.rpc('registrar_encuesta', {
+          p_cedula: payload.cedula,
+          p_modalidad_id: payload.modalidad_id,
+          p_carrera_id: payload.carrera_id,
+          p_nivel_autopercibido: payload.nivel_autopercibido,
+          p_respuestas: payload.respuestas,
+          p_consentimiento: payload.consentimiento
+        });
+      }
+      const {data, error} = response;
+      if (error) {
+        console.error('Error al registrar la evaluación:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        throw error;
+      }
       const result = data?.[0];
       if (!result) throw new Error('Respuesta vacía del servidor');
       document.getElementById('resultTeacher').textContent = `${docente.value} · ${normalizeId(cedula.value)}`;
@@ -661,6 +722,8 @@ window.APP_CONFIG = {
     btnPublic.classList.toggle('secondary', admin);
     btnAdmin.classList.toggle('primary', admin);
     btnAdmin.classList.toggle('secondary', !admin);
+    btnPublic.setAttribute('aria-pressed', String(!admin));
+    btnAdmin.setAttribute('aria-pressed', String(admin));
     if (updateHash) history.replaceState(null, '', admin ? '#admin' : '#formulario');
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
