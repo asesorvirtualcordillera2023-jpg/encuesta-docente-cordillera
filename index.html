@@ -543,11 +543,11 @@ window.APP_CONFIG = {
       MODALIDAD_INVALIDA:'La modalidad seleccionada no está disponible. Recargue la página y selecciónela nuevamente.',
       CARRERA_INVALIDA:'La carrera seleccionada no está disponible. Recargue la página y selecciónela nuevamente.',
       NIVEL_AUTOPERCIBIDO_INVALIDO:'Seleccione un nivel autopercibido válido.',
-      PGRST202:'La función de registro de Supabase debe actualizarse. Ejecute CORRECCION_GUARDADO.sql en SQL Editor.',
-      '42883':'La función de registro de Supabase debe actualizarse. Ejecute CORRECCION_GUARDADO.sql en SQL Editor.'
+      PGRST202:'La función registrar_diagnostico_moodle_2026 no está publicada en este proyecto. Ejecute REPARACION_DEFINITIVA_GUARDADO.sql y confirme que la verificación final devuelve PUBLICADA.',
+      '42883':'La función registrar_diagnostico_moodle_2026 no está publicada en este proyecto. Ejecute REPARACION_DEFINITIVA_GUARDADO.sql y confirme que la verificación final devuelve PUBLICADA.'
     };
     const match = Object.entries(known).find(([key]) => text.includes(key) || String(error?.code || '') === key);
-    return match?.[1] || `No fue posible registrar la evaluación${error?.code ? ` (código ${error.code})` : ''}. Ejecute CORRECCION_GUARDADO.sql y vuelva a intentarlo.`;
+    return match?.[1] || `No fue posible registrar la evaluación${error?.code ? ` (código ${error.code})` : ''}. Detalle: ${error?.message || 'sin detalle del servidor'}.`;
   }
   async function submitSurvey(event) {
     event.preventDefault(); hideMessage();
@@ -565,18 +565,7 @@ window.APP_CONFIG = {
         respuestas: answers,
         consentimiento: true
       };
-      let response = await client.rpc('registrar_encuesta_publica', {p_payload: payload});
-      // Compatibilidad con instalaciones anteriores mientras se ejecuta el SQL de corrección.
-      if (response.error && ['PGRST202','42883'].includes(String(response.error.code || ''))) {
-        response = await client.rpc('registrar_encuesta', {
-          p_cedula: payload.cedula,
-          p_modalidad_id: payload.modalidad_id,
-          p_carrera_id: payload.carrera_id,
-          p_nivel_autopercibido: payload.nivel_autopercibido,
-          p_respuestas: payload.respuestas,
-          p_consentimiento: payload.consentimiento
-        });
-      }
+      const response = await client.rpc('registrar_diagnostico_moodle_2026', {p_data: payload});
       const {data, error} = response;
       if (error) {
         console.error('Error al registrar la evaluación:', {
