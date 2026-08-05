@@ -126,7 +126,7 @@
 <h1>Reportes institucionales</h1>
 <p>Ingrese con el usuario creado en Supabase Authentication y autorizado en <code>perfiles_admin</code>.</p>
 <form class="login-form" id="loginForm">
-<label class="field"><span>Correo electrónico</span><input autocomplete="username" id="adminEmail" required="" type="email"/></label>
+<label class="field"><span>Correo o usuario</span><input autocomplete="username" id="adminEmail" placeholder="LUIS HERNANDEZ o correo institucional" required="" type="text"/></label>
 <label class="field"><span>Contraseña</span><input autocomplete="off" id="authSecret" required=""/></label>
 <button class="button primary" id="loginButton" type="submit">Ingresar</button>
 </form>
@@ -477,7 +477,8 @@ window.APP_CONFIG = {
   }
   async function showDashboard(){loginPanel.classList.add('hidden');dashboard.classList.remove('hidden');await loadCatalogs();await loadRecords()}
   function showLogin(){dashboard.classList.add('hidden');loginPanel.classList.remove('hidden')}
-  async function login(event){event.preventDefault();loginMessage.className='message hidden';const btn=document.getElementById('loginButton');btn.disabled=true;btn.textContent='Ingresando…';try{const {error}=await client.auth.signInWithPassword({email:document.getElementById('adminEmail').value.trim(),password:document.getElementById('authSecret').value});if(error)throw error;await showDashboard()}catch(err){showLoginMessage('Credenciales inválidas o usuario no autorizado.')}finally{btn.disabled=false;btn.textContent='Ingresar'}}
+  function resolveAdminEmail(value){const clean=value.trim();const normalized=clean.toUpperCase().replace(/\s+/g,' ');return normalized==='LUIS HERNANDEZ'?'luis.hernandez@cordillera.edu.ec':clean.toLowerCase()}
+  async function login(event){event.preventDefault();loginMessage.className='message hidden';const btn=document.getElementById('loginButton');btn.disabled=true;btn.textContent='Ingresando…';try{const email=resolveAdminEmail(document.getElementById('adminEmail').value);const {error}=await client.auth.signInWithPassword({email,password:document.getElementById('authSecret').value});if(error)throw error;await showDashboard()}catch(err){showLoginMessage('Credenciales inválidas o usuario no autorizado.')}finally{btn.disabled=false;btn.textContent='Ingresar'}}
   async function logout(){await client.auth.signOut();records=[];showLogin()}
   function clearFilters(){['filterSearch','filterModality','filterCareer','filterLevel','filterFrom','filterTo'].forEach(id=>document.getElementById(id).value='');loadRecords()}
   function exportCsv(){if(!records.length){showToast('No existen registros para exportar.');return}const headers=['Campaña','Cédula','Docente','Modalidad','Carrera','Nivel autopercibido','Puntaje básico','Puntaje intermedio','Puntaje avanzado','Total','Nivel recomendado','Comparación','Estado','Fecha'];const lines=[headers.map(csvCell).join(',')];records.forEach(r=>lines.push([r.campana,r.cedula,r.docente,r.modalidad,r.carrera,r.nivel_autopercibido,r.puntaje_basico,r.puntaje_intermedio,r.puntaje_avanzado,r.puntaje_total,r.nivel_recomendado,r.comparacion,r.estado,formatDate(r.fecha_registro)].map(csvCell).join(',')));const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`reporte_encuesta_moodle_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url)}
