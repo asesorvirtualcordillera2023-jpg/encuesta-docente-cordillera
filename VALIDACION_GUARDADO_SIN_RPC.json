@@ -1,0 +1,17 @@
+{
+  "checks": {
+    "archivo_unico_sin_assets": true,
+    "sin_rpc_de_registro_en_html": true,
+    "insert_auditoria_presente": true,
+    "popup_inicial_presente": true,
+    "confirmacion_guardado_presente": true,
+    "trigger_security_definer": true,
+    "politica_insert": true,
+    "politica_select_recibo": true,
+    "sin_pii_en_recibo": true,
+    "version_html": true
+  },
+  "ok": true,
+  "html_bytes": 70428,
+  "sql_bytes": 8820
+}
