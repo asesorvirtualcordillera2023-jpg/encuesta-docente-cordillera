@@ -543,8 +543,9 @@ window.APP_CONFIG = {
       MODALIDAD_INVALIDA:'La modalidad seleccionada no está disponible. Recargue la página y selecciónela nuevamente.',
       CARRERA_INVALIDA:'La carrera seleccionada no está disponible. Recargue la página y selecciónela nuevamente.',
       NIVEL_AUTOPERCIBIDO_INVALIDO:'Seleccione un nivel autopercibido válido.',
-      PGRST202:'La función registrar_diagnostico_moodle_2026 no está publicada en este proyecto. Ejecute REPARACION_DEFINITIVA_GUARDADO.sql y confirme que la verificación final devuelve PUBLICADA.',
-      '42883':'La función registrar_diagnostico_moodle_2026 no está publicada en este proyecto. Ejecute REPARACION_DEFINITIVA_GUARDADO.sql y confirme que la verificación final devuelve PUBLICADA.'
+      PGRST202:'La API de Supabase todavía no reconoce las funciones de registro. Ejecute REPARAR_CACHE_Y_RPC.sql y reemplace este index.html.',
+      '42883':'La API de Supabase todavía no reconoce las funciones de registro. Ejecute REPARAR_CACHE_Y_RPC.sql y reemplace este index.html.',
+      RPC_NO_PUBLICADA:'No se encontró ninguna función de registro publicada. Ejecute REPARAR_CACHE_Y_RPC.sql en el mismo proyecto Supabase configurado en este HTML.'
     };
     const match = Object.entries(known).find(([key]) => text.includes(key) || String(error?.code || '') === key);
     return match?.[1] || `No fue posible registrar la evaluación${error?.code ? ` (código ${error.code})` : ''}. Detalle: ${error?.message || 'sin detalle del servidor'}.`;
@@ -565,15 +566,39 @@ window.APP_CONFIG = {
         respuestas: answers,
         consentimiento: true
       };
-      const response = await client.rpc('registrar_diagnostico_moodle_2026', {p_data: payload});
-      const {data, error} = response;
-      if (error) {
-        console.error('Error al registrar la evaluación:', {
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
+      const rpcAttempts = [
+        ['registrar_diagnostico_moodle_v3', {p_payload: payload}],
+        ['registrar_diagnostico_moodle_2026', {p_data: payload}],
+        ['registrar_encuesta_publica', {p_payload: payload}],
+        ['registrar_encuesta', {
+          p_cedula: payload.cedula,
+          p_modalidad_id: payload.modalidad_id,
+          p_carrera_id: payload.carrera_id,
+          p_nivel_autopercibido: payload.nivel_autopercibido,
+          p_respuestas: payload.respuestas,
+          p_consentimiento: payload.consentimiento
+        }]
+      ];
+      let data = null;
+      let lastMissingError = null;
+      for (const [rpcName, rpcArgs] of rpcAttempts) {
+        const response = await client.rpc(rpcName, rpcArgs);
+        if (!response.error) {
+          data = response.data;
+          break;
+        }
+        const missing = response.error.code === 'PGRST202' || response.error.code === '42883';
+        if (missing) {
+          lastMissingError = response.error;
+          continue;
+        }
+        console.error(`Error en RPC ${rpcName}:`, response.error);
+        throw response.error;
+      }
+      if (!data) {
+        const error = new Error('RPC_NO_PUBLICADA');
+        error.code = lastMissingError?.code || 'PGRST202';
+        error.details = lastMissingError?.details || '';
         throw error;
       }
       const result = data?.[0];
