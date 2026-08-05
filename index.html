@@ -11,6 +11,144 @@
 .view-switch{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.view-switch button{font:inherit}.single-file-note{margin:0 auto 18px;max-width:1180px;padding:10px 16px;border-radius:12px;background:#e9f7f2;color:#005b61;font-size:.88rem}.result-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}.config-warning{position:fixed;left:16px;right:16px;bottom:16px;z-index:80;max-width:900px;margin:auto;padding:14px 18px;border-radius:14px;background:#fff3cd;color:#664d03;border:1px solid #ffecb5;box-shadow:0 12px 35px rgba(0,0,0,.14)}
 @media print{.topbar,.view-switch,.admin-link,.submit-row,.result-actions,.filters-panel,#logoutButton,.single-file-note{display:none!important}body{background:#fff}.panel{box-shadow:none;border:1px solid #ddd}.hidden.print-target{display:block!important}}
 </style>
+
+<style id="visual-upgrade-2026">
+:root{
+  --deep:#004a50;
+  --teal:#006068;
+  --mint:#00ce7c;
+  --mint-soft:#dff9ee;
+  --orange:#e47e3d;
+  --orange-soft:#fff0e6;
+  --slate:#5f6b70;
+  --canvas:#eef7f4;
+  --shadow-lg:0 22px 55px rgba(0,72,77,.14);
+  --shadow-md:0 12px 30px rgba(0,72,77,.10);
+}
+body{
+  background:
+    radial-gradient(circle at 8% 8%,rgba(0,206,124,.10),transparent 23%),
+    radial-gradient(circle at 92% 3%,rgba(228,126,61,.10),transparent 22%),
+    linear-gradient(180deg,#f7fbfa 0%,#edf5f2 100%);
+}
+.topbar{
+  min-height:88px;
+  padding:14px clamp(18px,4vw,64px);
+  background:linear-gradient(112deg,#004d53 0%,#006068 57%,#00777d 100%);
+  border-bottom:1px solid rgba(255,255,255,.16);
+  box-shadow:0 10px 30px rgba(0,62,68,.22);
+}
+.topbar:after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.13;
+  background-image:linear-gradient(115deg,transparent 0 68%,rgba(255,255,255,.22) 68% 69%,transparent 69%);
+}
+.brand,.view-switch{position:relative;z-index:1}
+.logo-shell{
+  width:102px;height:62px;border-radius:17px;padding:9px;
+  border:1px solid rgba(0,206,124,.32);
+  box-shadow:0 8px 22px rgba(0,0,0,.20);
+}
+.brand strong{font-size:1.08rem;letter-spacing:.01em}.brand small{font-size:.78rem}
+.view-switch{display:flex;gap:10px;padding:5px;border-radius:15px;background:rgba(0,55,61,.28);backdrop-filter:blur(8px)}
+.view-switch .button{min-width:154px;border-radius:11px;padding:11px 16px}
+.view-switch .primary{background:white;color:var(--teal);box-shadow:0 5px 16px rgba(0,0,0,.15)}
+.view-switch .secondary{background:transparent;color:white;border-color:rgba(255,255,255,.22)}
+.single-file-note{
+  width:min(1160px,calc(100% - 28px));margin:0 auto;padding:11px 18px;
+  background:linear-gradient(90deg,#e5f8f1,#f8fffc,#fff3eb);
+  color:#075d62;border:1px solid rgba(0,96,104,.10);border-top:0;
+  border-radius:0 0 16px 16px;font-size:.87rem;box-shadow:0 7px 20px rgba(0,72,77,.06)
+}
+.single-file-note:before{content:"●";color:var(--mint);margin-right:9px;font-size:.9rem}
+.page-shell{width:min(1160px,calc(100% - 30px));margin-top:28px}
+.hero{
+  display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.55fr);gap:34px;align-items:center;
+  min-height:390px;padding:clamp(34px,5vw,66px);border-radius:30px;
+  background:
+    radial-gradient(circle at 88% 15%,rgba(0,206,124,.34),transparent 24%),
+    radial-gradient(circle at 78% 105%,rgba(228,126,61,.34),transparent 31%),
+    linear-gradient(135deg,#00454b 0%,#006068 56%,#00737a 100%);
+  box-shadow:0 25px 60px rgba(0,70,76,.22);border:1px solid rgba(255,255,255,.14)
+}
+.hero:before{content:"";position:absolute;inset:auto -90px -150px auto;width:360px;height:360px;border-radius:50%;border:58px solid rgba(255,255,255,.07)}
+.hero:after{width:210px;height:210px;right:34%;bottom:-138px;background:rgba(0,206,124,.15)}
+.hero-content,.hero-summary{position:relative;z-index:2}
+.hero h1{font-size:clamp(2.25rem,5vw,4.15rem);max-width:760px;letter-spacing:-.045em}
+.hero p{max-width:720px;color:#e3f8f1;font-size:1.08rem}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:rgba(0,206,124,.14);border:1px solid rgba(0,206,124,.34)}
+.hero .eyebrow:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 5px rgba(0,206,124,.12)}
+.hero-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.hero-tags span{padding:9px 12px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.15);font-size:.82rem;font-weight:750;color:white}
+.hero-summary{
+  padding:24px;border-radius:23px;background:rgba(255,255,255,.11);border:1px solid rgba(255,255,255,.22);
+  backdrop-filter:blur(11px);box-shadow:inset 0 1px rgba(255,255,255,.12),0 16px 34px rgba(0,35,39,.18)
+}
+.hero-summary h3{margin:0 0 17px;font-size:1rem;color:#fff}.hero-metrics{display:grid;gap:11px}
+.hero-metric{display:grid;grid-template-columns:48px 1fr;align-items:center;gap:12px;padding:12px;border-radius:15px;background:rgba(255,255,255,.10)}
+.hero-metric strong{font-size:1.45rem;color:white}.hero-metric span{display:block;font-size:.76rem;color:#cdeee3;margin-top:2px}
+.hero-metric i{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;font-style:normal;font-weight:900;background:white;color:var(--teal)}
+.process-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:-2px 0 24px}
+.process-step{position:relative;display:flex;gap:13px;align-items:center;padding:17px 18px;border-radius:17px;background:white;border:1px solid rgba(0,96,104,.10);box-shadow:var(--shadow-md)}
+.process-step b{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;color:white;background:linear-gradient(135deg,var(--teal),var(--mint));flex:none}
+.process-step:nth-child(2) b{background:linear-gradient(135deg,var(--orange),#f5a26e)}
+.process-step:nth-child(3) b{background:linear-gradient(135deg,#4d5a60,#7c8a90)}
+.process-step strong{display:block;color:var(--teal);font-size:.91rem}.process-step span{display:block;color:var(--muted);font-size:.77rem;margin-top:3px;line-height:1.35}
+.panel{border-radius:22px;box-shadow:var(--shadow-md);border:1px solid rgba(0,96,104,.09);position:relative;overflow:hidden}
+.identity-panel:before,.questions-panel:before,.consent-panel:before,.filters-panel:before,.table-panel:before,.chart-panel:before{
+  content:"";position:absolute;left:0;top:0;right:0;height:5px;background:linear-gradient(90deg,var(--teal),var(--mint),var(--orange))
+}
+.section-heading{align-items:center}.section-number{width:46px;height:46px;border-radius:15px;font-size:1.08rem;background:linear-gradient(135deg,var(--teal),#008188);box-shadow:0 7px 16px rgba(0,96,104,.22)}
+.section-heading h2{font-size:1.48rem;letter-spacing:-.015em}.section-heading p{font-size:.9rem}
+.form-grid{gap:20px}.field{gap:9px}.field>span{display:flex;align-items:center;gap:7px;font-size:.9rem}.field>span:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 0 4px rgba(0,206,124,.10)}
+input,select{min-height:48px;border-radius:13px;border-color:#c8dcd6;background:linear-gradient(180deg,#fff,#fbfdfc);box-shadow:inset 0 1px 2px rgba(0,0,0,.025)}
+input:hover,select:hover{border-color:#a6c9bf}.input-action .button{min-width:112px}
+.button{border-radius:12px;box-shadow:0 5px 13px rgba(0,72,77,.07)}
+.button.primary{background:linear-gradient(135deg,#006068,#007b80)}
+.button.success{background:linear-gradient(135deg,#00ce7c,#47df9d)}
+.button.secondary{background:linear-gradient(180deg,#f7fbfa,#eaf4f1)}
+.button.large{min-width:320px;padding:16px 28px;border-radius:15px;font-size:1.02rem;box-shadow:0 12px 24px rgba(0,96,104,.20)}
+.scale-legend{gap:12px}.scale-legend div{position:relative;overflow:hidden;min-height:74px;border-radius:15px;padding:13px 14px;background:white;box-shadow:0 6px 16px rgba(0,72,77,.06)}
+.scale-legend div:after{content:"";position:absolute;left:0;bottom:0;width:100%;height:4px;background:#7c878c}
+.scale-legend div:nth-child(2):after{background:#37a7cc}.scale-legend div:nth-child(3):after{background:#006fd1}.scale-legend div:nth-child(4):after{background:var(--mint)}
+.scale-legend div:nth-child(1) b{background:#68747a}.scale-legend div:nth-child(2) b{background:#37a7cc}.scale-legend div:nth-child(3) b{background:#006fd1}.scale-legend div:nth-child(4) b{background:#00a866}
+.progress-wrap{padding:14px 17px;border-radius:15px;background:#f4faf7;border:1px solid #dceae5}.progress-track{height:12px}.progress-track span{background:linear-gradient(90deg,var(--teal),var(--mint),#a7edcb)}
+.questions-container{gap:22px}.level-section{border-radius:19px;border:1px solid #dce8e4;box-shadow:0 8px 20px rgba(0,72,77,.06);background:white}
+.level-header{padding:18px 22px;color:white;background:linear-gradient(135deg,#5e696f,#7b878c)}
+.level-section:nth-child(2) .level-header{background:linear-gradient(135deg,#d56827,var(--orange))}
+.level-section:nth-child(3) .level-header{background:linear-gradient(135deg,#00565d,var(--teal))}
+.level-header h3{font-size:1.06rem}.level-header span{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.16);color:white}
+.question-card{padding:20px 22px;transition:background .18s,transform .18s}.question-card:hover{background:#fbfefd;transform:translateY(-1px)}
+.question-title{margin-bottom:15px}.question-code{border-radius:10px;padding:6px 9px;background:#e5f6ef}
+.options{gap:10px}.option span{min-height:55px;border-radius:13px;padding:11px 12px;transition:.16s;box-shadow:0 3px 10px rgba(0,72,77,.035)}
+.option span:hover{border-color:#86cbb5;transform:translateY(-1px)}
+.option input:checked+span{background:linear-gradient(135deg,#e8fbf3,#f5fffb);border-color:var(--mint);box-shadow:0 0 0 3px rgba(0,206,124,.13),0 7px 16px rgba(0,96,104,.08)}
+.consent-panel{background:linear-gradient(135deg,#f5fffb,#fffaf6)}
+.submit-row{position:sticky;bottom:12px;z-index:8;padding:12px;border-radius:20px;background:rgba(238,247,244,.88);backdrop-filter:blur(10px);border:1px solid rgba(0,96,104,.08);box-shadow:0 12px 28px rgba(0,72,77,.10)}
+.result-panel{background:linear-gradient(145deg,#fff,#f1fbf7);border-top:0}.result-panel:before{content:"";position:absolute;left:0;right:0;top:0;height:7px;background:linear-gradient(90deg,var(--mint),var(--teal),var(--orange))}
+.success-icon{width:70px;height:70px;font-size:2.4rem;box-shadow:0 10px 24px rgba(0,168,102,.18)}
+.score-grid article{position:relative;overflow:hidden;background:white;border-radius:17px;box-shadow:0 8px 18px rgba(0,72,77,.07)}
+.score-grid article:after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:#68747a}.score-grid article:nth-child(2):after{background:var(--orange)}.score-grid article:nth-child(3):after{background:var(--teal)}.score-grid article:nth-child(4):after{background:var(--mint)}
+.recommendation{border:1px solid rgba(228,126,61,.18);box-shadow:0 9px 22px rgba(228,126,61,.08)}
+.login-panel{max-width:600px;margin:55px auto;padding:38px;background:linear-gradient(145deg,#fff,#f7fbfa)}
+.login-panel:before{content:"🔐";display:grid;place-items:center;width:70px;height:70px;margin:-76px auto 20px;border-radius:22px;background:linear-gradient(135deg,var(--teal),#008188);box-shadow:0 16px 28px rgba(0,96,104,.24);font-size:1.9rem}
+.login-panel h1{font-size:2.2rem;letter-spacing:-.035em}.login-panel code{padding:2px 6px;border-radius:6px;background:#eaf5f1;color:var(--teal)}
+.dashboard-title{position:relative;overflow:hidden;padding:27px 30px;border-radius:24px;color:white;background:linear-gradient(135deg,#006068,#00454b 60%,#e47e3d 160%);box-shadow:var(--shadow-lg)}
+.dashboard-title:after{content:"";position:absolute;right:-55px;top:-85px;width:240px;height:240px;border-radius:50%;background:rgba(0,206,124,.16)}
+.dashboard-title>div,.dashboard-title>button{position:relative;z-index:1}.dashboard-title h1{color:white;font-size:2rem;margin:.3rem 0}.dashboard-title p{margin:.35rem 0 0;color:#d8f2ea;max-width:760px;line-height:1.45}.dashboard-title .eyebrow{color:#79f2bc}.dashboard-title .danger{background:rgba(255,255,255,.14);color:white;border:1px solid rgba(255,255,255,.22)}
+.filters-panel{margin-top:22px}.filters-grid{gap:14px}.filter-actions{padding-top:17px;border-top:1px solid #e2ece8}
+.kpi-grid{gap:15px}.kpi-grid article{position:relative;overflow:hidden;padding:22px 18px;background:white;border-radius:18px;box-shadow:var(--shadow-md);border:1px solid rgba(0,96,104,.08)}
+.kpi-grid article:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--teal)}
+.kpi-grid article:nth-child(2):before{background:#68747a}.kpi-grid article:nth-child(3):before{background:var(--orange)}.kpi-grid article:nth-child(4):before{background:var(--mint)}
+.kpi-grid strong{font-size:2.1rem}.chart-panel,.table-panel{box-shadow:var(--shadow-md)}
+.bars>div{padding:13px 15px;border-radius:13px;background:#f8fbfa}.bars div div{height:18px}.bars>div:nth-child(1) i{background:linear-gradient(90deg,#59666c,#899399)}.bars>div:nth-child(2) i{background:linear-gradient(90deg,#d56827,#f0a171)}.bars>div:nth-child(3) i{background:linear-gradient(90deg,#006068,#00ce7c)}
+.table-scroll{border-radius:16px;box-shadow:inset 0 1px rgba(255,255,255,.8)}th{background:linear-gradient(180deg,#edf8f4,#e5f2ee)}tbody tr:nth-child(even){background:#fbfdfc}
+footer{margin-top:30px;background:#173b40;color:#d5e8e3;padding:28px}
+@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto}.hero-summary{max-width:520px}.process-strip{grid-template-columns:1fr}.submit-row{position:static}.view-switch .button{min-width:auto}.topbar{align-items:flex-start}}
+@media(max-width:700px){.topbar{padding:12px 14px}.brand strong{font-size:.88rem}.brand small{font-size:.7rem}.logo-shell{width:72px;height:48px}.view-switch{width:100%;display:grid;grid-template-columns:1fr 1fr}.topbar{flex-wrap:wrap}.single-file-note{font-size:.76rem}.hero{padding:28px 23px;border-radius:22px}.hero h1{font-size:2.2rem}.hero-summary{padding:17px}.process-step{padding:14px}.panel{border-radius:17px}.section-heading{align-items:flex-start}.section-number{width:40px;height:40px}.button.large{width:100%;min-width:0}.options{grid-template-columns:1fr 1fr}.scale-legend{grid-template-columns:1fr 1fr}.dashboard-title{padding:22px;align-items:flex-start;flex-direction:column}.login-panel{padding:28px 20px;margin-top:72px}}
+@media(max-width:430px){.options,.scale-legend{grid-template-columns:1fr}.hero-metric{grid-template-columns:42px 1fr}.hero-metric i{width:42px;height:42px}.score-grid,.kpi-grid{grid-template-columns:1fr 1fr}}
+@media print{.process-strip,.single-file-note,.view-switch{display:none!important}.submit-row{position:static;background:none;border:0;box-shadow:none}}
+</style>
+
 </head>
 <body>
   <header class="topbar">
@@ -23,13 +161,29 @@
       <button id="navAdmin" class="button secondary" type="button">Reportes y KPIs</button>
     </nav>
   </header>
-  <p class="single-file-note">Aplicación de archivo único para GitHub Pages. El formulario y el panel administrativo comparten Supabase como base central.</p>
+  <p class="single-file-note">Formulario institucional conectado a Supabase · Respuestas centralizadas, acceso protegido y reportes en tiempo real.</p>
 
   <div id="publicView"><main class="page-shell">
 <section class="hero">
-<span class="eyebrow">Diagnóstico institucional</span>
-<h1>Competencias Moodle, H5P y SCORM</h1>
-<p>Complete los 30 ítems con sinceridad. El resultado permitirá asignar una ruta de capacitación acorde con su dominio actual.</p>
+<div class="hero-content">
+<span class="eyebrow">Diagnóstico institucional 2026</span>
+<h1>Potenciamos sus competencias digitales para la enseñanza</h1>
+<p>Evalúe su dominio en Moodle, H5P y SCORM. Sus respuestas permitirán construir una ruta formativa personalizada, práctica y alineada con sus necesidades docentes.</p>
+<div class="hero-tags"><span>✓ Respuesta confidencial</span><span>✓ Resultado inmediato</span><span>✓ Ruta personalizada</span></div>
+</div>
+<aside class="hero-summary" aria-label="Resumen de la evaluación">
+<h3>Su diagnóstico en tres pasos</h3>
+<div class="hero-metrics">
+<div class="hero-metric"><i>30</i><div><strong>Ítems</strong><span>Competencias tecno-pedagógicas</span></div></div>
+<div class="hero-metric"><i>3</i><div><strong>Niveles</strong><span>Básico, intermedio y avanzado</span></div></div>
+<div class="hero-metric"><i>1</i><div><strong>Ruta</strong><span>Recomendación formativa individual</span></div></div>
+</div>
+</aside>
+</section>
+<section class="process-strip" aria-label="Pasos para completar el formulario">
+<article class="process-step"><b>1</b><div><strong>Valide su identidad</strong><span>Digite su cédula para cargar el nombre registrado.</span></div></article>
+<article class="process-step"><b>2</b><div><strong>Complete el diagnóstico</strong><span>Seleccione una respuesta en cada una de las 30 afirmaciones.</span></div></article>
+<article class="process-step"><b>3</b><div><strong>Obtenga su resultado</strong><span>Conozca el nivel y la ruta formativa recomendada.</span></div></article>
 </section>
 <div aria-live="polite" class="message hidden" id="systemMessage" role="status"></div>
 <form id="surveyForm" novalidate="">
@@ -122,9 +276,9 @@
 </main><footer>© 2026 Tecnológico Universitario Cordillera · Formación Docente</footer></div>
   <div id="adminView" class="hidden"><main class="page-shell admin-shell">
 <section class="panel login-panel" id="loginPanel">
-<span class="eyebrow">Acceso restringido</span>
-<h1>Reportes institucionales</h1>
-<p>Ingrese con el usuario creado en Supabase Authentication y autorizado en <code>perfiles_admin</code>.</p>
+<span class="eyebrow">Acceso seguro</span>
+<h1>Panel de analítica institucional</h1>
+<p>Consulte indicadores, resultados y reportes consolidados mediante su cuenta administrativa autorizada.</p>
 <form class="login-form" id="loginForm">
 <label class="field"><span>Correo o usuario</span><input autocomplete="username" id="adminEmail" placeholder="LUIS HERNANDEZ o correo institucional" required="" type="text"/></label>
 <label class="field"><span>Contraseña</span><input autocomplete="off" id="authSecret" required=""/></label>
@@ -134,7 +288,7 @@
 </section>
 <section class="hidden" id="dashboardPanel">
 <div class="dashboard-title">
-<div><span class="eyebrow">Analítica institucional</span><h1>Resultados de la encuesta</h1></div>
+<div><span class="eyebrow">Analítica institucional</span><h1>Resultados y toma de decisiones</h1><p>Seguimiento consolidado de participación, niveles recomendados y brechas de formación.</p></div>
 <button class="button danger" id="logoutButton">Cerrar sesión</button>
 </div>
 <section class="panel filters-panel">
@@ -478,7 +632,7 @@ window.APP_CONFIG = {
   async function showDashboard(){loginPanel.classList.add('hidden');dashboard.classList.remove('hidden');await loadCatalogs();await loadRecords()}
   function showLogin(){dashboard.classList.add('hidden');loginPanel.classList.remove('hidden')}
   function resolveAdminEmail(value){const clean=value.trim();const normalized=clean.toUpperCase().replace(/\s+/g,' ');return normalized==='LUIS HERNANDEZ'?'luis.hernandez@cordillera.edu.ec':clean.toLowerCase()}
-  async function login(event){event.preventDefault();loginMessage.className='message hidden';const btn=document.getElementById('loginButton');btn.disabled=true;btn.textContent='Ingresando…';try{const email=resolveAdminEmail(document.getElementById('adminEmail').value);const {error}=await client.auth.signInWithPassword({email,password:document.getElementById('authSecret').value});if(error)throw error;await showDashboard()}catch(err){showLoginMessage('Credenciales inválidas o usuario no autorizado.')}finally{btn.disabled=false;btn.textContent='Ingresar'}}
+  async function login(event){event.preventDefault();loginMessage.className='message hidden';const btn=document.getElementById('loginButton');btn.disabled=true;btn.textContent='Ingresando…';try{const email=resolveAdminEmail(document.getElementById('adminEmail').value);const password=document.getElementById('authSecret').value;const {error}=await client.auth.signInWithPassword({email,password});if(error){const msg=String(error.message||'').toLowerCase();if(msg.includes('invalid login credentials'))throw new Error('AUTH_USUARIO_NO_EXISTE');throw error}if(email==='luis.hernandez@cordillera.edu.ec'){const {error:repairError}=await client.rpc('activar_admin_inicial');if(repairError&&!String(repairError.message||'').includes('CORREO_NO_AUTORIZADO'))console.warn('No se pudo reparar el perfil admin:',repairError.message)}await showDashboard()}catch(err){if(String(err.message).includes('AUTH_USUARIO_NO_EXISTE'))showLoginMessage('La cuenta no existe todavía en Supabase Authentication o la contraseña es incorrecta. Créela primero con el instalador temporal incluido en el paquete.');else showLoginMessage('No fue posible iniciar sesión. Revise la cuenta de Supabase Authentication y la autorización administrativa.')}finally{btn.disabled=false;btn.textContent='Ingresar'}}
   async function logout(){await client.auth.signOut();records=[];showLogin()}
   function clearFilters(){['filterSearch','filterModality','filterCareer','filterLevel','filterFrom','filterTo'].forEach(id=>document.getElementById(id).value='');loadRecords()}
   function exportCsv(){if(!records.length){showToast('No existen registros para exportar.');return}const headers=['Campaña','Cédula','Docente','Modalidad','Carrera','Nivel autopercibido','Puntaje básico','Puntaje intermedio','Puntaje avanzado','Total','Nivel recomendado','Comparación','Estado','Fecha'];const lines=[headers.map(csvCell).join(',')];records.forEach(r=>lines.push([r.campana,r.cedula,r.docente,r.modalidad,r.carrera,r.nivel_autopercibido,r.puntaje_basico,r.puntaje_intermedio,r.puntaje_avanzado,r.puntaje_total,r.nivel_recomendado,r.comparacion,r.estado,formatDate(r.fecha_registro)].map(csvCell).join(',')));const blob=new Blob(['\ufeff'+lines.join('\r\n')],{type:'text/csv;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`reporte_encuesta_moodle_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url)}
